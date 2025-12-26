@@ -1,70 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Love Ruqayya</title>
+    <title>حب حياتي رقية</title>
     <style>
-        /* === تنسيق الخطوط والألوان === */
-        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Tajawal:wght@500;700&display=swap');
+        /* === الخطوط والألوان === */
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@600;900&family=Tajawal:wght@500;800&display=swap');
 
         body {
-            /* خلفية متدرجة وردية */
             background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
-            min-height: 100vh; /* استخدام min-height لضمان التمدد */
+            min-height: 100vh;
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             font-family: 'Tajawal', sans-serif;
-            overflow-x: hidden; /* منع التمرير الجانبي */
+            overflow: hidden;
             text-align: center;
-            padding-bottom: 50px; /* مساحة اضافية بالاسفل */
         }
 
-        /* === عنوان الموقع === */
+        /* === العنوان العربي === */
         h1 {
-            font-family: 'Dancing Script', cursive;
+            font-family: 'Cairo', sans-serif;
             color: #d6336c;
             font-size: 3rem;
             margin-top: 30px;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
             text-shadow: 2px 2px 4px rgba(255, 255, 255, 0.5);
             z-index: 10;
         }
 
-        /* === الصورة المتحركة (GIF) === */
+        /* === الصورة المتحركة (القلب الصغير فوق الظرف) === */
         .heart-gif {
-            width: 180px; /* حجم الصورة */
+            width: 150px;
             height: auto;
-            border-radius: 20px;
+            border-radius: 50%; /* شكل دائري */
             box-shadow: 0 5px 15px rgba(214, 51, 108, 0.3);
             margin-bottom: 20px;
             z-index: 10;
-            /* إطار خفيف */
-            border: 3px solid rgba(255, 255, 255, 0.7);
+            border: 4px solid white;
         }
 
-        /* === حاوية الظرف (المكان اللي بيه الظرف) === */
+        /* === حاوية الظرف === */
         .envelope-wrapper {
             position: relative;
             cursor: pointer;
-            margin-top: 30px;
+            margin-top: 20px;
             z-index: 10;
-            transform: scale(0.9); /* تصغير قليل للموبايل */
+            transition: opacity 0.5s ease; /* تأثير اختفاء ناعم */
         }
 
-        /* === تصميم جسم الظرف === */
+        /* === تصميم الظرف === */
         .envelope {
             width: 300px;
             height: 200px;
-            background: #ff4757; /* لون الظرف الأساسي */
+            background: #ff4757;
             position: relative;
             border-radius: 5px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
-        /* لسان الظرف العلوي (المثلث اللي ينفتح) */
         .envelope::before {
             content: '';
             position: absolute;
@@ -72,13 +68,12 @@
             left: 0;
             border-left: 150px solid transparent;
             border-right: 150px solid transparent;
-            border-top: 100px solid #ff6b81; /* لون لسان الظرف افتح شوية */
+            border-top: 100px solid #ff6b81;
             z-index: 3;
             transform-origin: top;
-            transition: 0.6s ease-in-out; /* سرعة الفتح */
+            transition: 0.6s ease-in-out;
         }
 
-        /* الجوانب السفلى للظرف (المثلثات الثابتة) */
         .envelope::after {
             content: '';
             position: absolute;
@@ -86,20 +81,20 @@
             left: 0;
             border-left: 150px solid #ff4757;
             border-right: 150px solid #ff4757;
-            border-bottom: 100px solid #ff8fa3; /* لون الداخل */
+            border-bottom: 100px solid #ff8fa3;
             border-top: 100px solid transparent;
             border-radius: 5px;
             z-index: 2;
         }
 
-        /* === الورقة/الرسالة داخل الظرف === */
+        /* === الرسالة === */
         .letter {
             position: absolute;
             top: 10px;
             left: 10px;
             width: 280px;
             height: 180px;
-            background: white; /* لون الورقة */
+            background: white;
             border-radius: 5px;
             z-index: 1;
             transition: 0.6s ease-in-out;
@@ -110,183 +105,94 @@
             padding: 15px;
             box-sizing: border-box;
             text-align: center;
-            /* زخرفة بسيطة للورقة */
-            background-image: radial-gradient(circle, rgba(255,0,0,0.05) 1px, transparent 1px);
-            background-size: 20px 20px;
         }
 
-        /* تنسيق النص داخل الرسالة */
         .letter p {
             color: #d6336c;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: 700;
             margin: 0;
             line-height: 1.4;
-            transition: opacity 0.3s; /* تأثير اختفاء النص عند التبديل */
         }
 
-        /* === الزر داخل الرسالة === */
+        /* === الزر === */
         .next-btn {
             margin-top: 15px;
             background: linear-gradient(to right, #ff4757, #ff6b81);
             color: white;
             border: none;
-            padding: 8px 20px;
+            padding: 8px 25px;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 0.9rem;
+            font-size: 1rem;
             font-family: 'Tajawal', sans-serif;
             box-shadow: 0 4px 10px rgba(255, 71, 87, 0.3);
-            display: none; /* مخفي بالبداية */
-            outline: none;
-        }
-        .next-btn:active {
-            transform: scale(0.95);
+            display: none;
         }
 
-        /* === حركات الفتح (تشتغل من نضيف كلاس open) === */
-        .envelope-wrapper.open .envelope::before {
-            transform: rotateX(180deg); /* قلب اللسان */
-            z-index: 0;
-        }
-
+        .envelope-wrapper.open .envelope::before { transform: rotateX(180deg); z-index: 0; }
         .envelope-wrapper.open .letter {
-            transform: translateY(-140px); /* خروج الورقة للأعلى */
-            height: auto; /* السماح للورقة بالتمدد حسب النص */
+            transform: translateY(-140px);
+            height: auto;
             min-height: 220px;
-            box-shadow: 0 -5px 20px rgba(0,0,0,0.15);
-            z-index: 4; /* تصير فوق كلشي */
+            z-index: 4;
         }
 
-        /* === قلوب الخلفية المتساقطة === */
+        /* === المفاجأة النهائية (القلب الكبير) === */
+        #final-surprise {
+            display: none; /* مخفي بالبداية */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 100;
+            text-align: center;
+            width: 100%;
+        }
+
+        .big-heart {
+            font-size: 150px; /* حجم القلب */
+            color: red;
+            animation: pulse 1s infinite alternate;
+            text-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+        }
+
+        .final-text {
+            font-size: 2rem;
+            color: #d6336c;
+            font-family: 'Cairo', sans-serif;
+            margin-top: 10px;
+            animation: fadeIn 2s;
+        }
+
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.2); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* === قلوب الخلفية === */
         .bg-heart {
             position: absolute;
             top: -10vh;
             color: #ff4757;
             animation: fall linear infinite;
             z-index: 1;
-            opacity: 0.7;
-            text-shadow: 0 0 5px rgba(255, 192, 203, 0.5);
+            opacity: 0.6;
         }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
 
-        @keyframes fall {
-            to { transform: translateY(110vh) rotate(360deg); }
-        }
-
-        /* تحسين للعرض على الموبايل */
         @media (max-width: 400px) {
-             h1 { font-size: 2.5rem; }
-             .envelope-wrapper { transform: scale(0.85); margin-top: 20px; }
+             h1 { font-size: 2.2rem; }
+             .envelope-wrapper { transform: scale(0.9); }
         }
-
     </style>
 </head>
 <body>
 
-    <h1>My Love Ruqayya</h1>
-
-    <img src="https://i.pinimg.com/originals/f8/80/c9/f880c9349391f0fb684ec6318891b3b6.gif" alt="Romantic Heart GIF" class="heart-gif">
-
-    <div class="envelope-wrapper" onclick="openEnvelope()">
-        <div class="envelope"></div>
-        <div class="letter">
-            <p id="message-text">اضغطي على الظرف.. عندي الج 10 رسائل ❤️</p>
-            <button class="next-btn" id="next-btn" onclick="nextMessage(event)">الرسالة التالية 💌</button>
-        </div>
-    </div>
-
-    <script>
-        /*
-         ========================================
-         👇 هنا تكتب رسائلك الـ 10 👇
-         ========================================
-         غير الكلام الموجود بين علامات الاقتباس ""
-        */
-        const messages = [
-            "الرسالة (1/10): إلى أغلى ما عندي.. رقية ❤️",
-            "الرسالة (2/10): حبيت أذكرج شكد أني أحبج.",
-            "الرسالة (3/10): أنتي النعمة اللي أشكر الله عليها كل يوم.",
-            "الرسالة (4/10): وجودج بحياتي هو السعادة الحقيقية.",
-            "الرسالة (5/10): ضحكتج تسوى الدنيا وما بيها عندي.",
-            "الرسالة (6/10): الله لا يحرمني منج يا روحي.",
-            "الرسالة (7/10): كل يوم يمر، حبي الج يزيد أكثر.",
-            "الرسالة (8/10): أنتي مو بس زوجتي، أنتي صديقتي وحبيبتي.",
-            "الرسالة (9/10): ما أتمنى غير نظل سوية طول العمر.",
-            "الرسالة (10/10): أحبج.. وهسه روحي شوفي المفاجأة الحقيقية 😉❤️"
-        ];
-        /* ======================================== */
-
-
-        let currentStep = -1; // -1 يعني لسه ما مفتوح
-        const envelopeWrapper = document.querySelector('.envelope-wrapper');
-        const messageText = document.getElementById('message-text');
-        const nextBtn = document.getElementById('next-btn');
-
-        // دالة فتح الظرف لأول مرة
-        function openEnvelope() {
-            if (currentStep === -1) {
-                envelopeWrapper.classList.add('open');
-                currentStep = 0;
-                
-                // تأثير اختفاء بسيط للنص القديم
-                messageText.style.opacity = 0;
-
-                setTimeout(() => {
-                    messageText.innerHTML = messages[0];
-                    messageText.style.opacity = 1;
-                    nextBtn.style.display = 'inline-block'; // إظهار الزر
-                }, 600); // الانتظار لحد ما ينفتح الظرف
-            }
-        }
-
-        // دالة الانتقال للرسالة التالية
-        function nextMessage(event) {
-            // هذا السطر مهم حتى ما ينغلق الظرف من ندوس الدكمة
-            event.stopPropagation();
-
-            currentStep++;
-            
-            // نخفي النص القديم
-            messageText.style.opacity = 0;
-
-            setTimeout(() => {
-                if (currentStep < messages.length) {
-                    // نغير النص
-                    messageText.innerHTML = messages[currentStep];
-                    // نظهر النص الجديد
-                    messageText.style.opacity = 1;
-                    
-                    // اذا وصلنا لآخر رسالة نغير شكل الزر
-                    if (currentStep === messages.length - 1) {
-                        nextBtn.innerHTML = "❤️ أحبج ❤️";
-                        // nextBtn.onclick = null; // تكدر تلغي هذا السطر اذا تريد الزر يظل ينداس
-                    }
-                }
-            }, 300); // سرعة تبديل النص
-        }
-
-        // --- كود القلوب المتساقطة بالخلفية (مطر الحب) ---
-        function createHearts() {
-            const heart = document.createElement('div');
-            heart.classList.add('bg-heart');
-            // اختيار شكل عشوائي للقلب
-            const heartShapes = ['❤', '💖', '💗'];
-            heart.innerText = heartShapes[Math.floor(Math.random() * heartShapes.length)];
-            
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = Math.random() * 3 + 4 + 's'; // سرعة السقوط
-            heart.style.fontSize = Math.random() * 15 + 10 + 'px'; // حجم القلب
-            document.body.appendChild(heart);
-
-            // مسح القلب بعد ما يوكع حتى لا يثكل الموقع
-            setTimeout(() => {
-                heart.remove();
-            }, 6000);
-        }
-
-        // تشغيل مطر القلوب
-        setInterval(createHearts, 400); 
-    </script>
-
-</body>
-</html>
+    <div id="main-content">
+        <h1>حب حيات
