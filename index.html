@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>إلى رقية ❤️</title>
+<style>
+body {
+  margin: 0;
+  height: 100vh;
+  background: linear-gradient(#ffdde1, #ee9ca7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Arial', sans-serif;
+}
+
+.container {
+  text-align: center;
+}
+
+.envelope {
+  width: 220px;
+  height: 140px;
+  background: #c0392b;
+  position: relative;
+  cursor: pointer;
+  transition: 0.6s;
+}
+
+.envelope::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  border-left: 110px solid transparent;
+  border-right: 110px solid transparent;
+  border-top: 70px solid #e74c3c;
+}
+
+.message {
+  display: none;
+  background: white;
+  padding: 25px;
+  border-radius: 10px;
+  margin-top: 20px;
+  font-size: 20px;
+  color: #c0392b;
+}
+
+button {
+  margin-top: 10px;
+  padding: 8px 16px;
+  border: none;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 6px;
+  font-size: 16px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="envelope" onclick="openLetter()"></div>
+  <p>اضغط للفتح 💌</p>
+
+  <div class="message" id="msg">
+    أحبج حياتي وأم بيتي  
+    <br><br>
+    انتي كل دنيتي ❤️🌹
+  </div>
+</div>
+
+<script>
+function openLetter() {
+  document.querySelector('.envelope').style.transform = 'scale(0.9)';
+  document.getElementById('msg').style.display = 'block';
+}
+</script>
+
+</body>
+</html>
