@@ -10,139 +10,110 @@
             --env-color: #ff4d6d;
             --env-dark: #c9184a;
             --paper-color: #ffffff;
+            --text-color: #c9184a;
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background: var(--bg-color);
-            overflow: hidden;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0; padding: 0;
+            display: flex; justify-content: center; align-items: center;
+            height: 100vh; background: var(--bg-color);
+            overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* القلوب المتساقطة */
-        .bg-heart {
+        /* كلمات الأغنية في الخلفية */
+        .lyric-cloud {
             position: absolute;
-            top: -10%;
-            color: #ff4d6d;
+            color: rgba(201, 24, 74, 0.3);
+            font-size: 1.3rem;
             pointer-events: none;
-            animation: fall linear forwards;
             z-index: 1;
+            white-space: nowrap;
+            animation: floatLyrics linear forwards;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
 
-        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+        @keyframes floatLyrics {
+            0% { transform: translateY(110vh) scale(0.8); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 1; }
+            100% { transform: translateY(-20vh) scale(1.1); opacity: 0; }
+        }
 
         /* حاوية الظرف */
-        .envelope-container {
-            position: relative;
-            width: 300px;
-            height: 200px;
-            background: var(--env-dark);
-            cursor: pointer;
-            z-index: 10;
+        .envelope-wrapper {
+            position: relative; z-index: 10;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .envelope {
+            position: relative; width: 320px; height: 220px;
+            background: var(--env-dark); cursor: pointer;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
             transition: transform 0.3s;
         }
 
-        .envelope-container:hover { transform: scale(1.05); }
-
-        /* غطاء الظرف */
         .flap {
-            position: absolute;
-            top: 0;
-            width: 0;
-            height: 0;
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
-            border-top: 100px solid var(--env-color);
-            transform-origin: top;
-            transition: transform 0.6s ease;
-            z-index: 30;
+            position: absolute; top: 0; width: 0; height: 0;
+            border-left: 160px solid transparent; border-right: 160px solid transparent;
+            border-top: 110px solid var(--env-color);
+            transform-origin: top; transition: transform 0.6s ease; z-index: 30;
         }
 
-        /* جسم الظرف الأمامي */
-        .envelope-front {
-            position: absolute;
-            bottom: 0;
-            width: 0;
-            height: 0;
-            border-left: 150px solid transparent;
-            border-right: 150px solid transparent;
-            border-bottom: 100px solid #ff758f;
-            z-index: 40;
-        }
-
-        .envelope-sides {
-            position: absolute;
-            bottom: 0;
-            width: 300px;
-            height: 200px;
-            background: var(--env-color);
-            z-index: 20;
-        }
-
-        /* الورقة (الرسالة) داخل الظرف */
+        /* الورقة */
         .paper {
-            position: absolute;
-            bottom: 10px;
-            left: 15px;
-            width: 270px;
-            height: 180px;
+            position: absolute; top: 10px; left: 10px;
+            width: 300px; height: 180px;
             background: var(--paper-color);
-            padding: 20px;
-            box-sizing: border-box;
-            text-align: center;
-            transition: transform 0.8s ease, height 0.8s ease;
-            z-index: 25;
-            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
-            border-radius: 5px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            padding: 30px; box-sizing: border-box;
+            text-align: right; /* الكتابة من اليمين */
+            transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 25; border-radius: 15px;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
         }
 
-        /* الحالة عند فتح الظرف */
+        /* أنيميشن الفتح والوسط */
         .open .flap { transform: rotateX(180deg); z-index: 10; }
-        .open .paper { 
-            transform: translateY(-150px); 
-            height: 350px; 
-            width: 320px;
-            left: -10px;
-            z-index: 50; 
+        .open .paper {
+            position: fixed; top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(1.1);
+            height: 450px; width: 340px;
+            z-index: 100;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
+        /* نص الرسالة وتأثير الكتابة */
         #messageText {
-            font-size: 20px;
-            color: #c9184a;
-            font-weight: bold;
-            line-height: 1.5;
-            opacity: 0;
-            transition: opacity 0.5s;
+            font-size: 24px; color: var(--text-color);
+            font-weight: bold; line-height: 1.6;
+            min-height: 150px;
+            display: inline-block;
+            position: relative;
         }
+
+        /* مؤشر الكتابة الومّاض */
+        #messageText::after {
+            content: '|';
+            animation: blink 0.7s infinite;
+            margin-right: 5px;
+        }
+
+        @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
         #nextBtn {
-            margin-top: 15px;
-            background: var(--env-color);
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 20px;
-            cursor: pointer;
-            display: none;
+            margin-top: 30px; background: var(--env-color); color: white;
+            border: none; padding: 12px 35px; border-radius: 50px;
+            cursor: pointer; display: none; font-weight: bold;
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
+            transition: 0.3s;
         }
 
-        /* القلب النهائي */
-        #finalHeart {
-            display: none;
-            text-align: center;
-            z-index: 100;
-        }
-        .big-heart { font-size: 150px; color: #ff4d6d; animation: pulse 0.8s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        #nextBtn:hover { transform: scale(1.1); background: var(--env-dark); }
+
+        #finalHeart { display: none; text-align: center; z-index: 200; position: fixed; }
+        .big-heart { font-size: 180px; color: #ff4d6d; animation: pulse 0.8s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
 
         .hidden { display: none !important; }
     </style>
@@ -153,22 +124,35 @@
         <source src="V-audio.mp3" type="audio/mpeg">
     </audio>
 
-    <div class="envelope-container" id="envelope" onclick="openEnvelope()">
-        <div class="flap"></div>
-        <div class="paper">
-            <div id="messageText">اضغطي هنا لتفتحي رسالتي ❤️</div>
-            <button id="nextBtn" onclick="nextMessage(event)">التالي ✨</button>
+    <div class="envelope-wrapper" id="mainContainer">
+        <div class="envelope" id="envelope" onclick="openEnvelope()">
+            <div id="openInstruction" style="position:absolute; z-index:35; color:white; font-weight:bold; left:50%; top:50%; transform:translate(-50%,-50%); width:100%; text-align:center;">اضغطي للفتح ❤️</div>
+            <div class="flap"></div>
+            <div class="paper">
+                <div id="messageText"></div>
+                <button id="nextBtn" onclick="nextMessage(event)">التالي ✨</button>
+            </div>
+            <div style="position:absolute; bottom:0; width:0; height:0; border-left:160px solid transparent; border-right:160px solid transparent; border-bottom:110px solid #ff758f; z-index:40;"></div>
+            <div style="position:absolute; bottom:0; width:320px; height:220px; background:var(--env-color); z-index:20;"></div>
         </div>
-        <div class="envelope-front"></div>
-        <div class="envelope-sides"></div>
     </div>
 
     <div id="finalHeart">
         <div class="big-heart">❤️</div>
-        <h2 style="color: #c9184a;">أحبج يا رقية</h2>
+        <h1 style="color: #c9184a; font-size: 40px; margin-top: 10px;">أحبج يا رقية</h1>
     </div>
 
     <script>
+        // الكلمات الكاملة المستخرجة من الأغنية
+        const lyrics = [
+            "مهداة إلى زوجتي العزيزة رقية", "حبي الأول والأخير", "رفيقة عمري وأجمل أقداري",
+            "رقية ابنة خالتي.. هادئة كالصفاء", "كنت صغيراً أنظر إليها في الخفاء",
+            "ذهبت إلى أمي.. قلت لها عن حبي الكبير", "قالت لي لا تخف سرك سيبقى أسير",
+            "تسارعت نبضاتي.. وارتبكت في همي", "ابني يحب ابنتكِ.. هكذا قالت أمي",
+            "يا حبي الأول والأخير.. منذ طفولتي كنتِ النور", "واليوم أصبحتِ زوجتي.. والفرح يملأ الزمان",
+            "ضحكاتنا وخجلنا.. صارت أغنية وردية", "معكِ العمر طريق بلا نهاية", "أحبكِ يا نعمة من السماء"
+        ];
+
         const messages = [
             "إلى أغلى ما عندي.. رقية ❤️",
             "حبيت أذكرج شكد أني أحبج.",
@@ -184,6 +168,7 @@
 
         let currentStep = 0;
         let isOpened = false;
+        let isTyping = false;
         const msgEl = document.getElementById('messageText');
         const nextBtn = document.getElementById('nextBtn');
         const bgMusic = document.getElementById('bgMusic');
@@ -192,46 +177,60 @@
             if (isOpened) return;
             isOpened = true;
             document.getElementById('envelope').classList.add('open');
+            document.getElementById('openInstruction').style.opacity = '0';
             bgMusic.play().catch(() => {});
             
+            setInterval(createFallingLyric, 800);
+
             setTimeout(() => {
-                msgEl.style.opacity = 1;
-                msgEl.innerHTML = messages[0];
+                typeWriter(messages[0]);
                 nextBtn.style.display = 'inline-block';
-            }, 800);
+            }, 1200);
+        }
+
+        // دالة تأثير الكتابة
+        function typeWriter(text) {
+            isTyping = true;
+            msgEl.innerHTML = "";
+            let i = 0;
+            function type() {
+                if (i < text.length) {
+                    msgEl.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, 100); // سرعة الكتابة
+                } else {
+                    isTyping = false;
+                }
+            }
+            type();
+        }
+
+        function createFallingLyric() {
+            const el = document.createElement('div');
+            el.className = 'lyric-cloud';
+            el.innerText = Math.random() > 0.2 ? lyrics[Math.floor(Math.random() * lyrics.length)] : "❤️";
+            el.style.left = Math.random() * 80 + "vw";
+            el.style.animationDuration = (Math.random() * 6 + 6) + "s";
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 12000);
         }
 
         function nextMessage(event) {
             event.stopPropagation();
-            currentStep++;
+            if (isTyping) return; // منع التخطي أثناء الكتابة
 
+            currentStep++;
             if (currentStep >= messages.length) {
-                document.getElementById('envelope').classList.add('hidden');
+                document.getElementById('mainContainer').classList.add('hidden');
                 document.getElementById('finalHeart').style.display = 'block';
                 document.body.style.background = '#ffccd5';
             } else {
-                msgEl.style.opacity = 0;
-                setTimeout(() => {
-                    msgEl.innerHTML = messages[currentStep];
-                    msgEl.style.opacity = 1;
-                    if (currentStep === messages.length - 1) {
-                        nextBtn.innerHTML = "❤️ المفاجأة الأخيرة ❤️";
-                    }
-                }, 300);
+                typeWriter(messages[currentStep]);
+                if (currentStep === messages.length - 1) {
+                    nextBtn.innerHTML = "❤️ المفاجأة الأخيرة ❤️";
+                }
             }
         }
-
-        // مطر القلوب
-        setInterval(() => {
-            const heart = document.createElement('div');
-            heart.className = 'bg-heart';
-            heart.innerHTML = ['❤','💖','💗'][Math.floor(Math.random()*3)];
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
-            heart.style.animationDuration = Math.random() * 3 + 3 + 's';
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 5000);
-        }, 300);
     </script>
 </body>
 </html>
