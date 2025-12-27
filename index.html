@@ -5,6 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>إلى رقية ❤️</title>
     <style>
+        :root {
+            --bg-color: #ffdae0;
+            --env-color: #ff4d6d;
+            --env-dark: #c9184a;
+            --paper-color: #ffffff;
+        }
+
         body {
             margin: 0;
             padding: 0;
@@ -12,10 +19,9 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: #fff0f3;
+            background: var(--bg-color);
             overflow: hidden;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            transition: background 0.8s ease, transform 0.1s ease;
         }
 
         /* القلوب المتساقطة */
@@ -28,92 +34,115 @@
             z-index: 1;
         }
 
-        @keyframes fall {
-            to { transform: translateY(110vh) rotate(360deg); }
+        @keyframes fall { to { transform: translateY(110vh) rotate(360deg); } }
+
+        /* حاوية الظرف */
+        .envelope-container {
+            position: relative;
+            width: 300px;
+            height: 200px;
+            background: var(--env-dark);
+            cursor: pointer;
+            z-index: 10;
+            transition: transform 0.3s;
         }
 
-        /* حاوية الرسالة */
-        #envelopeWrapper {
+        .envelope-container:hover { transform: scale(1.05); }
+
+        /* غطاء الظرف */
+        .flap {
+            position: absolute;
+            top: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-top: 100px solid var(--env-color);
+            transform-origin: top;
+            transition: transform 0.6s ease;
+            z-index: 30;
+        }
+
+        /* جسم الظرف الأمامي */
+        .envelope-front {
+            position: absolute;
+            bottom: 0;
+            width: 0;
+            height: 0;
+            border-left: 150px solid transparent;
+            border-right: 150px solid transparent;
+            border-bottom: 100px solid #ff758f;
+            z-index: 40;
+        }
+
+        .envelope-sides {
+            position: absolute;
+            bottom: 0;
+            width: 300px;
+            height: 200px;
+            background: var(--env-color);
+            z-index: 20;
+        }
+
+        /* الورقة (الرسالة) داخل الظرف */
+        .paper {
+            position: absolute;
+            bottom: 10px;
+            left: 15px;
+            width: 270px;
+            height: 180px;
+            background: var(--paper-color);
+            padding: 20px;
+            box-sizing: border-box;
             text-align: center;
-            z-index: 10;
-            background: rgba(255, 255, 255, 0.92);
-            padding: 40px;
-            border-radius: 30px;
-            box-shadow: 0 20px 60px rgba(255, 77, 109, 0.25);
-            max-width: 85%;
-            border: 3px solid #ffccd5;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: transform 0.8s ease, height 0.8s ease;
+            z-index: 25;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.1);
+            border-radius: 5px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* الحالة عند فتح الظرف */
+        .open .flap { transform: rotateX(180deg); z-index: 10; }
+        .open .paper { 
+            transform: translateY(-150px); 
+            height: 350px; 
+            width: 320px;
+            left: -10px;
+            z-index: 50; 
         }
 
         #messageText {
-            font-size: 26px;
+            font-size: 20px;
             color: #c9184a;
-            margin-bottom: 30px;
-            min-height: 90px;
-            opacity: 0;
-            transition: all 0.5s ease;
             font-weight: bold;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+            line-height: 1.5;
+            opacity: 0;
+            transition: opacity 0.5s;
         }
 
         #nextBtn {
-            display: none;
-            background: linear-gradient(45deg, #ff4d6d, #ff758f);
+            margin-top: 15px;
+            background: var(--env-color);
             color: white;
             border: none;
-            padding: 15px 35px;
-            border-radius: 50px;
-            font-size: 20px;
+            padding: 8px 20px;
+            border-radius: 20px;
             cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 8px 20px rgba(255, 77, 109, 0.4);
-            position: relative;
-            outline: none;
-        }
-
-        #nextBtn:active { transform: scale(0.9); }
-
-        /* تأثير الإيموجيات الطائرة */
-        .floating-emoji {
-            position: absolute;
-            pointer-events: none;
-            animation: floatUp 1.5s ease-out forwards;
-            z-index: 100;
-        }
-
-        @keyframes floatUp {
-            0% { transform: translate(-50%, -50%) scale(0.5); opacity: 1; }
-            100% { transform: translate(-50%, -200px) scale(2) rotate(20deg); opacity: 0; }
-        }
-
-        /* هزة الشاشة */
-        .shake { animation: shakeScreen 0.2s ease-in-out; }
-        @keyframes shakeScreen {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
+            display: none;
         }
 
         /* القلب النهائي */
         #finalHeart {
             display: none;
             text-align: center;
-            z-index: 20;
+            z-index: 100;
         }
-
-        .big-heart-icon {
-            font-size: 160px;
-            color: #ff4d6d;
-            animation: pulse 0.8s infinite;
-            display: block;
-            text-shadow: 0 0 50px rgba(255, 77, 109, 0.8);
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.25); }
-            100% { transform: scale(1); }
-        }
+        .big-heart { font-size: 150px; color: #ff4d6d; animation: pulse 0.8s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
 
         .hidden { display: none !important; }
     </style>
@@ -124,14 +153,19 @@
         <source src="V-audio.mp3" type="audio/mpeg">
     </audio>
 
-    <div id="envelopeWrapper">
-        <div id="messageText"></div>
-        <button id="nextBtn" onclick="handleInteraction(event)">اضغطي لفتح الرسالة ❤️</button>
+    <div class="envelope-container" id="envelope" onclick="openEnvelope()">
+        <div class="flap"></div>
+        <div class="paper">
+            <div id="messageText">اضغطي هنا لتفتحي رسالتي ❤️</div>
+            <button id="nextBtn" onclick="nextMessage(event)">التالي ✨</button>
+        </div>
+        <div class="envelope-front"></div>
+        <div class="envelope-sides"></div>
     </div>
 
     <div id="finalHeart">
-        <span class="big-heart-icon">❤️</span>
-        <div style="color: #c9184a; font-size: 32px; font-weight: bold; margin-top: 20px;">أحبج يا رقية</div>
+        <div class="big-heart">❤️</div>
+        <h2 style="color: #c9184a;">أحبج يا رقية</h2>
     </div>
 
     <script>
@@ -149,98 +183,55 @@
         ];
 
         let currentStep = 0;
-        let heartSpeed = 400;
-        const messageText = document.getElementById('messageText');
+        let isOpened = false;
+        const msgEl = document.getElementById('messageText');
         const nextBtn = document.getElementById('nextBtn');
-        const envelopeWrapper = document.getElementById('envelopeWrapper');
-        const finalHeart = document.getElementById('finalHeart');
         const bgMusic = document.getElementById('bgMusic');
 
-        window.onload = () => {
+        function openEnvelope() {
+            if (isOpened) return;
+            isOpened = true;
+            document.getElementById('envelope').classList.add('open');
+            bgMusic.play().catch(() => {});
+            
             setTimeout(() => {
-                messageText.innerHTML = "رسالة حب من زوجكِ...";
-                messageText.style.opacity = 1;
+                msgEl.style.opacity = 1;
+                msgEl.innerHTML = messages[0];
                 nextBtn.style.display = 'inline-block';
             }, 800);
-        };
-
-        function handleInteraction(event) {
-            // تشغيل الموسيقى
-            if (currentStep === 0) {
-                bgMusic.play().catch(() => {});
-            }
-
-            // هزة شاشة خفيفة
-            document.body.classList.add('shake');
-            setTimeout(() => document.body.classList.remove('shake'), 200);
-
-            // إطلاق إيموجيات طائرة
-            spawnEmojis(event.clientX, event.clientY);
-
-            // تسريع القلوب وزيادة كثافتها مع كل ضغطة
-            heartSpeed = Math.max(100, heartSpeed - 30);
-            updateHeartInterval();
-
-            nextMessage();
         }
 
-        function nextMessage() {
-            if (currentStep >= messages.length) {
-                envelopeWrapper.classList.add('hidden');
-                finalHeart.style.display = 'block';
-                clearInterval(heartInterval);
-            } else {
-                messageText.style.opacity = 0;
-                messageText.style.transform = "translateY(20px)";
+        function nextMessage(event) {
+            event.stopPropagation();
+            currentStep++;
 
+            if (currentStep >= messages.length) {
+                document.getElementById('envelope').classList.add('hidden');
+                document.getElementById('finalHeart').style.display = 'block';
+                document.body.style.background = '#ffccd5';
+            } else {
+                msgEl.style.opacity = 0;
                 setTimeout(() => {
-                    messageText.innerHTML = messages[currentStep];
-                    messageText.style.opacity = 1;
-                    messageText.style.transform = "translateY(0)";
-                    
+                    msgEl.innerHTML = messages[currentStep];
+                    msgEl.style.opacity = 1;
                     if (currentStep === messages.length - 1) {
-                        nextBtn.innerHTML = "❤️ اضغطي للمفاجأة الأخيرة ❤️";
-                        nextBtn.style.background = "linear-gradient(45deg, #c9184a, #ff4d6d)";
-                    } else {
-                        nextBtn.innerHTML = "رسالة أخرى ✨";
+                        nextBtn.innerHTML = "❤️ المفاجأة الأخيرة ❤️";
                     }
-                    currentStep++;
                 }, 300);
             }
         }
 
-        function spawnEmojis(x, y) {
-            const emojis = ['🥰', '😍', '✨', '❤️', '💕', '🔥'];
-            for(let i=0; i<6; i++) {
-                const el = document.createElement('div');
-                el.className = 'floating-emoji';
-                el.innerHTML = emojis[Math.floor(Math.random() * emojis.length)];
-                el.style.left = x + 'px';
-                el.style.top = y + 'px';
-                el.style.fontSize = (Math.random() * 20 + 20) + 'px';
-                document.body.appendChild(el);
-                setTimeout(() => el.remove(), 1500);
-            }
-        }
-
-        function createHearts() {
+        // مطر القلوب
+        setInterval(() => {
             const heart = document.createElement('div');
-            heart.classList.add('bg-heart');
-            const shapes = ['❤', '💖', '💗', '💓'];
-            heart.innerText = shapes[Math.floor(Math.random() * shapes.length)];
+            heart.className = 'bg-heart';
+            heart.innerHTML = ['❤','💖','💗'][Math.floor(Math.random()*3)];
             heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (Math.random() * 2 + 3) + 's';
-            heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            heart.style.fontSize = Math.random() * 20 + 10 + 'px';
+            heart.style.animationDuration = Math.random() * 3 + 3 + 's';
             document.body.appendChild(heart);
             setTimeout(() => heart.remove(), 5000);
-        }
-
-        let heartInterval = setInterval(createHearts, heartSpeed);
-
-        function updateHeartInterval() {
-            clearInterval(heartInterval);
-            heartInterval = setInterval(createHearts, heartSpeed);
-        }
+        }, 300);
     </script>
 </body>
 </html>
