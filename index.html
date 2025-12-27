@@ -20,24 +20,18 @@
             overflow: hidden; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
 
-        /* كلمات الأغنية في الخلفية */
-        .lyric-cloud {
+        /* القلوب المتساقطة فقط في الخلفية */
+        .bg-heart {
             position: absolute;
-            color: rgba(201, 24, 74, 0.3);
-            font-size: 1.3rem;
+            top: -10%;
+            color: rgba(201, 24, 74, 0.4);
             pointer-events: none;
+            animation: fall linear forwards;
             z-index: 1;
-            white-space: nowrap;
-            animation: floatLyrics linear forwards;
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
 
-        @keyframes floatLyrics {
-            0% { transform: translateY(110vh) scale(0.8); opacity: 0; }
-            20% { opacity: 1; }
-            80% { opacity: 1; }
-            100% { transform: translateY(-20vh) scale(1.1); opacity: 0; }
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
         }
 
         /* حاوية الظرف */
@@ -47,7 +41,7 @@
         }
 
         .envelope {
-            position: relative; width: 320px; height: 220px;
+            position: relative; width: 300px; height: 200px;
             background: var(--env-dark); cursor: pointer;
             box-shadow: 0 15px 40px rgba(0,0,0,0.2);
             transition: transform 0.3s;
@@ -55,20 +49,20 @@
 
         .flap {
             position: absolute; top: 0; width: 0; height: 0;
-            border-left: 160px solid transparent; border-right: 160px solid transparent;
-            border-top: 110px solid var(--env-color);
+            border-left: 150px solid transparent; border-right: 150px solid transparent;
+            border-top: 100px solid var(--env-color);
             transform-origin: top; transition: transform 0.6s ease; z-index: 30;
         }
 
-        /* الورقة */
+        /* الورقة - تم تصغير الحجم وجعلها في الوسط */
         .paper {
             position: absolute; top: 10px; left: 10px;
-            width: 300px; height: 180px;
+            width: 280px; height: 180px;
             background: var(--paper-color);
-            padding: 30px; box-sizing: border-box;
-            text-align: right; /* الكتابة من اليمين */
+            padding: 20px; box-sizing: border-box;
+            text-align: center;
             transition: all 1s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 25; border-radius: 15px;
+            z-index: 25; border-radius: 10px;
             display: flex; flex-direction: column;
             justify-content: center; align-items: center;
         }
@@ -77,22 +71,22 @@
         .open .flap { transform: rotateX(180deg); z-index: 10; }
         .open .paper {
             position: fixed; top: 50%; left: 50%;
-            transform: translate(-50%, -50%) scale(1.1);
-            height: 450px; width: 340px;
+            transform: translate(-50%, -50%) scale(1);
+            height: 320px; width: 300px; /* حجم أصغر وأكثر تناسقاً */
             z-index: 100;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.25);
         }
 
         /* نص الرسالة وتأثير الكتابة */
         #messageText {
-            font-size: 24px; color: var(--text-color);
-            font-weight: bold; line-height: 1.6;
-            min-height: 150px;
+            font-size: 20px; color: var(--text-color);
+            font-weight: bold; line-height: 1.5;
+            min-height: 100px;
             display: inline-block;
             position: relative;
         }
 
-        /* مؤشر الكتابة الومّاض */
+        /* مؤشر الكتابة */
         #messageText::after {
             content: '|';
             animation: blink 0.7s infinite;
@@ -102,18 +96,15 @@
         @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
         #nextBtn {
-            margin-top: 30px; background: var(--env-color); color: white;
-            border: none; padding: 12px 35px; border-radius: 50px;
+            margin-top: 20px; background: var(--env-color); color: white;
+            border: none; padding: 10px 25px; border-radius: 50px;
             cursor: pointer; display: none; font-weight: bold;
-            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
-            transition: 0.3s;
+            font-size: 14px; transition: 0.3s;
         }
 
-        #nextBtn:hover { transform: scale(1.1); background: var(--env-dark); }
-
         #finalHeart { display: none; text-align: center; z-index: 200; position: fixed; }
-        .big-heart { font-size: 180px; color: #ff4d6d; animation: pulse 0.8s infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
+        .big-heart { font-size: 150px; color: #ff4d6d; animation: pulse 0.8s infinite; }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.1); } }
 
         .hidden { display: none !important; }
     </style>
@@ -126,33 +117,23 @@
 
     <div class="envelope-wrapper" id="mainContainer">
         <div class="envelope" id="envelope" onclick="openEnvelope()">
-            <div id="openInstruction" style="position:absolute; z-index:35; color:white; font-weight:bold; left:50%; top:50%; transform:translate(-50%,-50%); width:100%; text-align:center;">اضغطي للفتح ❤️</div>
+            <div id="openInstruction" style="position:absolute; z-index:35; color:white; font-weight:bold; left:50%; top:50%; transform:translate(-50%,-50%); width:100%; text-align:center; pointer-events:none;">اضغطي للفتح ❤️</div>
             <div class="flap"></div>
             <div class="paper">
                 <div id="messageText"></div>
                 <button id="nextBtn" onclick="nextMessage(event)">التالي ✨</button>
             </div>
-            <div style="position:absolute; bottom:0; width:0; height:0; border-left:160px solid transparent; border-right:160px solid transparent; border-bottom:110px solid #ff758f; z-index:40;"></div>
-            <div style="position:absolute; bottom:0; width:320px; height:220px; background:var(--env-color); z-index:20;"></div>
+            <div style="position:absolute; bottom:0; width:0; height:0; border-left:150px solid transparent; border-right:150px solid transparent; border-bottom:100px solid #ff758f; z-index:40;"></div>
+            <div style="position:absolute; bottom:0; width:300px; height:200px; background:var(--env-color); z-index:20;"></div>
         </div>
     </div>
 
     <div id="finalHeart">
         <div class="big-heart">❤️</div>
-        <h1 style="color: #c9184a; font-size: 40px; margin-top: 10px;">أحبج يا رقية</h1>
+        <h1 style="color: #c9184a; font-size: 30px; margin-top: 10px;">أحبج يا رقية</h1>
     </div>
 
     <script>
-        // الكلمات الكاملة المستخرجة من الأغنية
-        const lyrics = [
-            "مهداة إلى زوجتي العزيزة رقية", "حبي الأول والأخير", "رفيقة عمري وأجمل أقداري",
-            "رقية ابنة خالتي.. هادئة كالصفاء", "كنت صغيراً أنظر إليها في الخفاء",
-            "ذهبت إلى أمي.. قلت لها عن حبي الكبير", "قالت لي لا تخف سرك سيبقى أسير",
-            "تسارعت نبضاتي.. وارتبكت في همي", "ابني يحب ابنتكِ.. هكذا قالت أمي",
-            "يا حبي الأول والأخير.. منذ طفولتي كنتِ النور", "واليوم أصبحتِ زوجتي.. والفرح يملأ الزمان",
-            "ضحكاتنا وخجلنا.. صارت أغنية وردية", "معكِ العمر طريق بلا نهاية", "أحبكِ يا نعمة من السماء"
-        ];
-
         const messages = [
             "إلى أغلى ما عندي.. رقية ❤️",
             "حبيت أذكرج شكد أني أحبج.",
@@ -180,7 +161,7 @@
             document.getElementById('openInstruction').style.opacity = '0';
             bgMusic.play().catch(() => {});
             
-            setInterval(createFallingLyric, 800);
+            setInterval(createHearts, 400);
 
             setTimeout(() => {
                 typeWriter(messages[0]);
@@ -188,7 +169,6 @@
             }, 1200);
         }
 
-        // دالة تأثير الكتابة
         function typeWriter(text) {
             isTyping = true;
             msgEl.innerHTML = "";
@@ -197,7 +177,7 @@
                 if (i < text.length) {
                     msgEl.innerHTML += text.charAt(i);
                     i++;
-                    setTimeout(type, 100); // سرعة الكتابة
+                    setTimeout(type, 80); 
                 } else {
                     isTyping = false;
                 }
@@ -205,19 +185,20 @@
             type();
         }
 
-        function createFallingLyric() {
-            const el = document.createElement('div');
-            el.className = 'lyric-cloud';
-            el.innerText = Math.random() > 0.2 ? lyrics[Math.floor(Math.random() * lyrics.length)] : "❤️";
-            el.style.left = Math.random() * 80 + "vw";
-            el.style.animationDuration = (Math.random() * 6 + 6) + "s";
-            document.body.appendChild(el);
-            setTimeout(() => el.remove(), 12000);
+        function createHearts() {
+            const heart = document.createElement('div');
+            heart.className = 'bg-heart';
+            heart.innerText = ['❤️', '💖', '💕'][Math.floor(Math.random() * 3)];
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.fontSize = Math.random() * 15 + 10 + "px";
+            heart.style.animationDuration = Math.random() * 3 + 3 + "s";
+            document.body.appendChild(heart);
+            setTimeout(() => heart.remove(), 6000);
         }
 
         function nextMessage(event) {
             event.stopPropagation();
-            if (isTyping) return; // منع التخطي أثناء الكتابة
+            if (isTyping) return;
 
             currentStep++;
             if (currentStep >= messages.length) {
