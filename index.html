@@ -3,298 +3,344 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LoveFlix - 2026</title>
+    <title>Cinemana Love 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
     <style>
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            font-family: 'Cairo', sans-serif;
         }
 
         body {
-            background-color: #141414;
+            background-color: #0f151b; /* لون خلفية سينمانا */
             color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow-x: hidden;
+            padding-bottom: 70px; /* مسافة للشريط السفلي */
         }
 
-        /* شريط العنوان */
+        /* 1. الشريط العلوي */
         .header {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            padding: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.7) 10%, rgba(0,0,0,0));
+            padding: 15px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            position: fixed;
+            top: 0;
+            width: 100%;
             z-index: 100;
         }
 
-        .logo {
-            color: #E50914;
-            font-size: 30px;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-        }
-
-        /* القسم الرئيسي (البنر) */
-        .banner {
-            /* ⚠️ غير رابط الصورة هنا بصورة الكم بالعرض */
-            background-image: url('https://images.unsplash.com/photo-1518199266791-5375a83190b7?q=80&w=2000');
-            background-size: cover;
-            background-position: center center;
-            height: 80vh; /* يغطي اغلب الشاشة */
-            position: relative;
-        }
-
-        .banner-contents {
-            position: absolute;
-            bottom: 100px;
-            right: 20px; /* لليمين لأن عربي */
-            max-width: 500px;
-            z-index: 10;
-        }
-
-        .banner-title {
-            font-size: 3rem;
-            font-weight: 800;
-            padding-bottom: 0.3rem;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-        }
-
-        .banner-desc {
-            font-size: 1.2rem;
-            line-height: 1.3;
-            padding-top: 1rem;
-            max-width: 360px;
-            margin-bottom: 20px;
-            text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
-        }
-
-        /* الازرار */
-        .btn {
-            cursor: pointer;
-            color: #fff;
-            outline: none;
-            border: none;
-            font-weight: 700;
-            border-radius: 4px;
-            padding: 10px 25px;
-            margin-left: 1rem;
-            font-size: 1.1rem;
-            display: inline-flex;
+        .logo-area {
+            display: flex;
             align-items: center;
-            gap: 10px;
-            transition: transform 0.2s;
+            gap: 5px;
         }
 
-        .btn-play {
-            background-color: white;
-            color: black;
+        .logo-text {
+            font-size: 1.2rem;
+            font-weight: bold;
         }
 
-        .btn-list {
-            background-color: rgba(109, 109, 110, 0.7);
+        .logo-icon {
+            width: 30px;
+            height: 30px;
+            background-color: #e50914;
             color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 18px;
         }
 
-        .btn:hover {
-            transform: scale(1.05);
-            opacity: 0.8;
+        /* 2. القسم الرئيسي (البنر الكبير) */
+        .hero {
+            position: relative;
+            height: 60vh;
+            width: 100%;
+            /* ⚠️ غير رابط الصورة بصورة الكم بالعرض */
+            background-image: url('https://images.unsplash.com/photo-1516961642265-531546e84af2?q=80&w=1000'); 
+            background-size: cover;
+            background-position: center;
         }
 
-        /* التدرج الاسود اسفل البنر */
-        .banner--fadeBottom {
-            height: 7.4rem;
-            background-image: linear-gradient(180deg, transparent, rgba(20, 20, 20, 0.61), #141414);
+        .hero-overlay {
             position: absolute;
             bottom: 0;
             width: 100%;
-        }
-
-        /* قوائم الصور */
-        .row {
-            margin-top: 20px;
-            margin-right: 20px;
-        }
-
-        .row h2 {
-            margin-bottom: 10px;
-            font-size: 1.5rem;
-        }
-
-        .row-posters {
+            height: 100%;
+            background: linear-gradient(to top, #0f151b 5%, transparent 60%);
             display: flex;
-            overflow-y: hidden;
-            overflow-x: scroll;
-            padding: 20px 0 20px 20px;
-            /* اخفاء شريط التمرير */
-            -ms-overflow-style: none;  
-            scrollbar-width: none;  
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 20px;
         }
 
-        .row-posters::-webkit-scrollbar {
-            display: none;
+        .watch-btn {
+            background-color: #d92525;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            width: fit-content;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+
+        /* نقاط التنقل */
+        .dots {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+            justify-content: center;
+        }
+        .dot {
+            width: 8px;
+            height: 8px;
+            background-color: #555;
+            border-radius: 50%;
+        }
+        .dot.active { background-color: #d92525; }
+
+        /* 3. الأقسام (الاسليدر) */
+        .section-title {
+            padding: 10px 20px 0;
+            font-size: 1.1rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .more { font-size: 0.8rem; color: #aaa; }
+
+        .scroll-container {
+            display: flex;
+            overflow-x: auto;
+            padding: 15px 20px;
+            gap: 15px;
+            scrollbar-width: none; /* اخفاء شريط التمرير */
+        }
+        .scroll-container::-webkit-scrollbar { display: none; }
+
+        .movie-card {
+            min-width: 120px;
+            width: 120px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
         }
 
         .poster {
-            /* حجم البوسترات */
-            max-height: 200px;
+            width: 100%;
+            height: 180px;
+            border-radius: 8px;
             object-fit: cover;
-            margin-left: 15px;
-            border-radius: 5px;
-            transition: transform 450ms;
-            cursor: pointer;
+            /* ⚠️ غير الروابط هنا بصوركم بالطول */
         }
 
-        .poster:hover {
-            transform: scale(1.09);
+        .movie-info {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.7rem;
+            color: #ccc;
+            align-items: center;
         }
 
-        .poster-large {
-            max-height: 300px;
+        .imdb-badge {
+            background-color: #f5c518;
+            color: black;
+            padding: 1px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 0.6rem;
         }
+
+        .movie-title {
+            font-size: 0.8rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* 4. الشريط السفلي */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            background-color: #1a222a;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px 0;
+            border-top: 1px solid #333;
+            z-index: 200;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #777;
+            font-size: 0.7rem;
+            gap: 5px;
+        }
+
+        .nav-item.active { color: white; }
+        .nav-item i { font-size: 1.2rem; }
 
         /* النافذة المنبثقة (الرسالة) */
-        .modal-overlay {
+        .modal {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.9);
-            z-index: 200;
+            z-index: 1000;
             justify-content: center;
             align-items: center;
-            animation: fadeIn 0.5s;
+            padding: 20px;
         }
-
         .modal-content {
-            background-color: #181818;
-            padding: 40px;
-            border-radius: 10px;
+            background: #1a222a;
+            padding: 30px;
+            border-radius: 15px;
             text-align: center;
-            max-width: 90%;
-            width: 500px;
-            position: relative;
             border: 1px solid #333;
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            font-size: 25px;
-            cursor: pointer;
-            color: #fff;
-        }
-
-        .heart-beat {
-            color: #E50914;
-            font-size: 50px;
-            animation: beat 1s infinite;
-            margin-bottom: 20px;
-        }
-
-        @keyframes beat {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
-
-        /* للتلفونات */
-        @media (max-width: 768px) {
-            .banner { height: 60vh; }
-            .banner-title { font-size: 2rem; }
-            .banner-desc { font-size: 0.9rem; max-width: 300px; }
-            .poster { max-height: 150px; }
-            .poster-large { max-height: 250px; }
+            max-width: 400px;
         }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <div class="logo">OURFLIX</div> <div style="font-size: 1.2rem;">👤</div>
+        <div class="logo-area">
+            <div class="logo-icon">C</div>
+            <div class="logo-text">سينمانا</div>
+        </div>
+        <div>
+            <i class="fas fa-bell"></i>
+        </div>
     </div>
 
-    <div class="banner">
-        <div class="banner-contents">
-            <h1 class="banner-title">أجمل قصة بـ 2025</h1>
-            <div class="banner-desc">
-                بطولة: أنا وأنتي.<br>
-                قصة حب حقيقية، بدت وما راح تنتهي.<br>
-                تقييم: 100% ❤️
+    <div class="hero">
+        <div class="hero-overlay">
+            <h1 style="font-size: 2.5rem; margin-bottom: 5px; color: #fff;">قصة 2026</h1>
+            <p style="color: #aaa; font-size: 0.9rem;">رومانسي • تشويق • واقعي</p>
+            
+            <button class="watch-btn" onclick="openMsg()">
+                <i class="fas fa-play"></i> شاهد الآن
+            </button>
+            
+            <div class="dots">
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot"></span>
+                <span class="dot active"></span>
             </div>
-            <br>
-            <div class="banner-buttons">
-                <button class="btn btn-play" onclick="openModal()">
-                    <i class="fas fa-play"></i> تشغيل الرسالة
-                </button>
-                <button class="btn btn-list">
-                    <i class="fas fa-info-circle"></i> معلومات أكثر
-                </button>
+        </div>
+    </div>
+
+    <div class="section-title">
+        <span>ذكرياتنا 4K</span>
+        <span class="more">المزيد</span>
+    </div>
+
+    <div class="scroll-container">
+        <div class="movie-card">
+            <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=300" class="poster">
+            <div class="movie-title">ضحكتنا الحلوة</div>
+            <div class="movie-info">
+                <span>2025</span>
+                <span class="imdb-badge">9.8</span>
             </div>
         </div>
-        <div class="banner--fadeBottom"></div>
-    </div>
+        <div class="movie-card">
+            <img src="https://images.unsplash.com/photo-1621600411688-4be93cd68504?w=300" class="poster">
+            <div class="movie-title">يوم الخطوبة</div>
+            <div class="movie-info">
+                <span>اكشن</span>
+                <span class="imdb-badge">10.0</span>
+            </div>
+        </div>
 
-    <div class="row">
-        <h2>أكثر المشاهد مشاهدة (ذكرياتنا)</h2>
-        <div class="row-posters">
-            <img class="poster poster-large" src="https://images.unsplash.com/photo-1522609925277-66db8e10f1f6?w=500" alt="صورة">
-            <img class="poster poster-large" src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=500" alt="صورة">
-            <img class="poster poster-large" src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=500" alt="صورة">
-            <img class="poster poster-large" src="https://images.unsplash.com/photo-1511895426328-dc8714191300?w=500" alt="صورة">
+        <div class="movie-card">
+            <img src="https://images.unsplash.com/photo-1522609925277-66db8e10f1f6?w=300" class="poster">
+            <div class="movie-title">سفرة الشمال</div>
+            <div class="movie-info">
+                <span>مغامرة</span>
+                <span class="imdb-badge">9.5</span>
+            </div>
         </div>
     </div>
 
-    <div class="row">
-        <h2>أكشن ومغامرات (سفراتنا)</h2>
-        <div class="row-posters">
-            <img class="poster" src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=500" alt="سفر">
-            <img class="poster" src="https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=500" alt="سفر">
-            <img class="poster" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500" alt="سفر">
+    <div class="section-title">
+        <span>أفلام الكريسماس (مفاجآت)</span>
+        <span class="more">المزيد</span>
+    </div>
+
+    <div class="scroll-container">
+        <div class="movie-card">
+            <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=300" class="poster">
+            <div class="movie-title">مفاجأة 2026</div>
+            <div class="movie-info">
+                <span>خيال</span>
+                <span class="imdb-badge">TOP</span>
+            </div>
+        </div>
+        <div class="movie-card">
+            <img src="https://images.unsplash.com/photo-1513201099705-a9746e1e201f?w=300" class="poster">
+            <div class="movie-title">حب أبدي</div>
+            <div class="movie-info">
+                <span>عائلي</span>
+                <span class="imdb-badge">8.5</span>
+            </div>
         </div>
     </div>
 
-    <div id="modal" class="modal-overlay">
+    <div class="bottom-nav">
+        <div class="nav-item active">
+            <i class="fas fa-home"></i>
+            <span>الرئيسية</span>
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-layer-group"></i>
+            <span>الأقسام</span>
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-search"></i>
+            <span>بحث</span>
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-user-circle"></i>
+            <span>الحساب</span>
+        </div>
+    </div>
+
+    <div id="msgModal" class="modal" onclick="this.style.display='none'">
         <div class="modal-content">
-            <span class="modal-close" onclick="closeModal()">&times;</span>
-            <i class="fas fa-heart heart-beat"></i>
-            <h2>يا أحلى شي بـ 2025</h2>
-            <br>
-            <p style="line-height: 1.8; font-size: 1.1rem; color: #ccc;">
-                مثل الأفلام الحلوة، أتمنى حياتنا تضل مليانة حب وضحك ومغامرات.
-                <br>
-                شكراً لأن أنتي بحياتي.
+            <h2 style="color: #d92525; margin-bottom: 10px;">كل عام وأنتي بخير ❤️</h2>
+            <p style="line-height: 1.6; color: #ddd;">
+                ماكو فلم بالدنيا أحلى من حياتي وياج.
+                ان شاء الله سنة 2026 تكون مثل الأفلام السعيدة،
+                نهايتها خير وبدايتها خير.
                 <br><br>
-                <b>سنة 2026 راح تكون "الموسم الأجمل" ان شاء الله!</b>
+                <b>أحبج!</b>
             </p>
         </div>
     </div>
 
     <script>
-        // تشغيل الرسالة
-        function openModal() {
-            document.getElementById('modal').style.display = 'flex';
-        }
-
-        // اغلاق الرسالة
-        function closeModal() {
-            document.getElementById('modal').style.display = 'none';
-        }
-
-        // اغلاق الرسالة عند الضغط خارج المربع
-        window.onclick = function(event) {
-            let modal = document.getElementById('modal');
-            if (event.target == modal) {
-                modal.style.display = "none";
-            }
+        function openMsg() {
+            document.getElementById('msgModal').style.display = 'flex';
         }
     </script>
 </body>
