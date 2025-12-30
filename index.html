@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>إلى رقية الغالية</title>
+    <title>تحديث النظام 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         /* --- تنسيقات عامة --- */
@@ -38,7 +38,7 @@
 
         /* --- نصوص المشاهد --- */
         .text-line {
-            font-size: 1.4rem; margin-bottom: 25px; opacity: 0;
+            font-size: 1.3rem; margin-bottom: 20px; opacity: 0;
             transform: translateY(20px); transition: opacity 1.5s ease, transform 1.5s ease;
             color: #ccc; line-height: 1.6;
         }
@@ -54,7 +54,6 @@
         /* --- المشهد الثاني --- */
         .heart-icon {
             font-size: 4rem; color: #ff1744; margin-bottom: 20px;
-            /* تم ضبط التوقيت ليتناسب مع صوت القلب */
             animation: heartbeat 1.3s infinite; 
             display: inline-block;
         }
@@ -71,7 +70,6 @@
         }
         .static-num { text-shadow: 0 0 20px rgba(33, 150, 243, 0.6); color: #E3F2FD; }
         
-        /* رفع الرقم 6 للأعلى */
         .morph-wrapper {
             position: relative; display: inline-block;
             width: 55px; height: 80px; text-align: center; top: -20px;
@@ -88,11 +86,10 @@
         .morph-active .digit-six { opacity: 0; transform: scale(1.5) rotate(20deg); }
         .morph-active .baby-icon { opacity: 1; transform: scale(1); }
 
-        /* تنسيق رسالة رقية */
         #typing-container {
             font-size: 1.1rem; line-height: 1.8; color: #fff;
             min-height: 150px; margin-top: 20px; text-align: center;
-            font-weight: bold; white-space: pre-wrap; /* للحفاظ على الأسطر */
+            font-weight: bold; white-space: pre-wrap; 
         }
         .cursor { display: inline-block; width: 2px; height: 1.2rem; background-color: #fff; animation: blink 0.8s infinite; margin-right: 2px; }
 
@@ -101,14 +98,8 @@
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes blink { 50% { opacity: 0; } }
-        /* نبض القلب */
         @keyframes heartbeat { 
-            0% { transform: scale(1); } 
-            15% { transform: scale(1.2); } 
-            30% { transform: scale(1); } 
-            45% { transform: scale(1.2); } 
-            60% { transform: scale(1); } 
-            100% { transform: scale(1); }
+            0% { transform: scale(1); } 15% { transform: scale(1.2); } 30% { transform: scale(1); } 45% { transform: scale(1.2); } 60% { transform: scale(1); } 100% { transform: scale(1); }
         }
 
     </style>
@@ -123,7 +114,12 @@
 
     <div class="scene" id="scene1">
         <div class="loader" id="s1-loader"></div>
-        <div class="text-line" id="s1-line1">جارٍ إغلاق ملفات 2025...</div>
+        <div class="text-line" id="s1-line1">جارٍ إغلاق ملفات سنة 2025...</div>
+        
+        <div class="text-line" id="s1-line-update" style="color: #64B5F6;">
+            جاري أرشفة النسخة القديمة.. والتحضير لترقية 2026 🔄
+        </div>
+
         <div class="text-line" id="s1-line2">تم رصد <span class="highlight">تعب وألم</span> في الأيام الأخيرة...</div>
         <div class="text-line" id="s1-line3" style="margin-top: 30px; color: #fff;">
             لكن النظام اكتشف أنكِ كنتِ <span class="highlight">أقوى وأجمل امرأة</span> تحملت كل هذا.
@@ -164,24 +160,20 @@
     </div>
 
     <script>
-        // --- تعريف الأصوات ---
-        // 1. موسيقى بيانو هادئة (للمشهد الأول)
-        const sadPiano = new Audio('https://www.soundjay.com/free-music/midnight-ride-01a.mp3');
+        // --- الأصوات ---
+        // 1. بيانو هادئ وحزين للنهاية (المشهد الأول)
+        const sadPiano = new Audio('https://www.soundjay.com/free-music/snow-fall-01.mp3'); 
         sadPiano.volume = 0.5;
 
-        // 2. صوت دقات القلب (للمشهد الثاني) - مخفض الصوت
+        // 2. صوت دقات القلب (المشهد الثاني)
         const heartSound = new Audio('https://www.soundjay.com/human/sounds/heartbeat-01a.mp3');
-        heartSound.volume = 0.3; // صوت منخفض كما طلبت
+        heartSound.volume = 0.3; 
         heartSound.loop = true;
 
-        // 3. صوت الكتابة (لرسالة رقية)
-        const typeSound = new Audio('https://www.soundjay.com/mechanical/sounds/typewriter-6.mp3'); 
-        typeSound.volume = 0.4;
-        
-        // 4. صوت ضحكة طفل (للمشهد الثالث)
+        // 3. ضحكة طفل (المشهد الثالث)
         const babySound = new Audio('https://www.soundjay.com/human/sounds/baby-laughing-02.mp3');
 
-        // رسالتك لرقية
+        // الرسالة
         const letterToRuqaya = "إلى زوجتي العزيزة رقية الغالية..\nأحبج يروحي.. هاي الرسالة أريد أكلج بيها شكد أني فخور بيج، والله يروحي ما ألكه مثلج بهاي الدنيا أبد.\nروحي متعلقة بيج وما أعرف أعيش بدونج.\nكل عام أنتي إلي، وكل عام أنتي زوجتي، وكل عام أنتي كل ما أملك يا غاليتي وعزيزتي وكل دنيتي.\nأحبج يروحي، الله يحفظج إلي ويخليج، سنة سعيدة عليج حياتي ❤️";
 
         function startExperience() {
@@ -192,26 +184,29 @@
         function playScene1() {
             const scene1 = document.getElementById('scene1');
             scene1.style.display = 'block';
+            
+            // تشغيل موسيقى البيانو الهادئة
             sadPiano.play().catch(e => console.log("Audio requires interaction"));
 
-            setTimeout(() => { document.getElementById('s1-line1').classList.add('visible'); }, 500);
-            setTimeout(() => { document.getElementById('s1-line2').classList.add('visible'); }, 3500);
+            // تسلسل ظهور النصوص (تم تعديل التوقيت لإضافة جملة التحديث)
+            setTimeout(() => { document.getElementById('s1-line1').classList.add('visible'); }, 500); // إغلاق 2025
+            setTimeout(() => { document.getElementById('s1-line-update').classList.add('visible'); }, 3000); // جملة التحديث الجديدة
+            setTimeout(() => { document.getElementById('s1-line2').classList.add('visible'); }, 6000); // رصد التعب
             setTimeout(() => { 
-                document.getElementById('s1-line3').classList.add('visible');
+                document.getElementById('s1-line3').classList.add('visible'); // المواساة
                 document.getElementById('s1-loader').style.opacity = 0; 
-            }, 7500);
+            }, 9000);
 
-            // زيادة مدة المشهد الأول قليلاً ليناسب الموسيقى
+            // الانتقال للمشهد الثاني (زدنا الوقت قليلاً ليناسب النصوص الجديدة)
             setTimeout(() => {
                 scene1.style.opacity = 0;
-                // خفض صوت البيانو تدريجياً
                 let fadeAudio = setInterval(function () {
                     if (sadPiano.volume > 0.1) { sadPiano.volume -= 0.1; }
                     else { clearInterval(fadeAudio); sadPiano.pause(); }
                 }, 200);
 
                 setTimeout(() => { scene1.style.display = 'none'; playScene2(); }, 1000);
-            }, 14000);
+            }, 15000);
         }
 
         function playScene2() {
@@ -225,7 +220,6 @@
             const bar = document.getElementById('p-bar');
             const counter = document.getElementById('p-counter');
             
-            // جعلت التحميل أبطأ قليلاً ليتناسب مع اللحظة
             let interval = setInterval(() => {
                 width += Math.random() * 1.5; 
                 if(width >= 100) {
@@ -254,38 +248,29 @@
             
             loopFireworks(); 
 
-            // البدء بكتابة الرسالة
             typeWriterEffect(letterToRuqaya, function() {
-                // بعد انتهاء الكتابة وانتظار القراءة
                 setTimeout(() => {
-                    // إخفاء الرسالة
                     const container = document.getElementById('typing-container');
                     container.style.transition = "opacity 2s";
                     container.style.opacity = 0;
 
-                    // بعد الاختفاء.. تظهر المفاجأة
                     setTimeout(() => {
                         triggerSurprise();
                     }, 2000);
 
-                }, 8000); // انتظار 8 ثواني لتقرأ الرسالة
+                }, 8000); 
             });
         }
 
-        // دالة الكتابة (الآلة الكاتبة)
         function typeWriterEffect(text, callback) {
             const container = document.getElementById('typing-container');
             let i = 0;
             container.innerHTML = '<span class="cursor">|</span>';
-            
             function typing() {
                 if (i < text.length) {
-                    // إضافة الحرف قبل المؤشر
                     container.innerHTML = text.substring(0, i + 1) + '<span class="cursor">|</span>';
                     i++;
-                    // صوت خافت جدا للكتابة (اختياري)
-                    // typeSound.play(); 
-                    setTimeout(typing, 50); // سرعة الكتابة
+                    setTimeout(typing, 50); 
                 } else {
                     if (callback) callback();
                 }
@@ -294,20 +279,14 @@
         }
 
         function triggerSurprise() {
-            // تحويل الرقم 6 إلى طفل وتشغيل الضحكة
             document.getElementById('morphBox').classList.add('morph-active');
             babySound.play();
-
-            // إظهار النصوص النهائية
-            const finalDiv = document.getElementById('final-texts');
-            finalDiv.style.display = 'block';
-
+            document.getElementById('final-texts').style.display = 'block';
             setTimeout(() => { document.getElementById('f-msg1').classList.add('visible'); }, 1500);
             setTimeout(() => { document.getElementById('f-msg2').classList.add('visible'); }, 3500);
             setTimeout(() => { document.getElementById('f-msg3').classList.add('visible'); }, 6000);
         }
 
-        // كود الألعاب النارية
         const canvas = document.getElementById('fireworksCanvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
