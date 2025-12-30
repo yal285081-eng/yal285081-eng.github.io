@@ -3,317 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cinemana - Rokaya Love Story</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
+    <title>رسالة خاصة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            box-sizing: border-box;
+        body {
             margin: 0;
             padding: 0;
-            font-family: 'Cairo', sans-serif;
-        }
-
-        body {
-            background-color: #0f151b; /* لون خلفية سينمانا */
-            color: white;
-            padding-bottom: 70px;
-            overflow-x: hidden;
-        }
-
-        /* 1. الشريط العلوي */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.9), transparent);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 100;
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .logo-text { font-size: 1.2rem; font-weight: bold; }
-        .logo-icon {
-            width: 30px; height: 30px;
-            background-color: #e50914;
-            color: white;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: bold; font-size: 18px;
-        }
-
-        /* 2. مشغل الأغنية (البنر) */
-        .hero {
-            position: relative;
-            height: 75vh; /* ارتفاع عالي عشان الكلمات */
-            width: 100%;
-            /* ⚠️ هام: خلي صورة الكم هنا بالعرض */
-            background-image: url('https://images.unsplash.com/photo-1511285560982-1351c4f617b1?q=80&w=1000'); 
-            background-size: cover;
-            background-position: center;
-        }
-
-        .hero-overlay {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to top, #0f151b 10%, rgba(15, 21, 27, 0.4) 50%, rgba(0,0,0,0.6));
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 20px;
-            align-items: center;
-            text-align: center;
-        }
-
-        /* منطقة الكلمات */
-        .lyrics-container {
-            margin-bottom: 30px;
-            min-height: 100px;
-            width: 100%;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
+            background-color: #fdf2f2; /* لون خلفية هادئ وردي فاتح جداً */
+            font-family: 'Tajawal', sans-serif;
+            color: #5d4037; /* لون الخط بني غامق مريح للعين */
+            text-align: center;
+            overflow: hidden;
         }
 
-        .lyrics-text {
-            font-family: 'Amiri', serif; /* خط فني */
-            font-size: 1.4rem;
-            line-height: 1.6;
-            color: #fff;
-            text-shadow: 0 2px 10px rgba(0,0,0,0.8);
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 0.5s ease-in-out;
+        .container {
+            width: 90%;
+            max-width: 600px;
+            padding: 20px;
         }
 
-        .lyrics-text.active {
-            opacity: 1;
-            transform: translateY(0);
-            color: #ffeaa7; /* لون ذهبي فاتح للكلمة الحالية */
-        }
-
-        /* زر التشغيل */
-        .watch-btn {
-            background-color: #d92525;
-            color: white;
-            border: none;
-            padding: 12px 35px;
-            border-radius: 25px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(217, 37, 37, 0.4);
+        /* تنسيق القلب النابض */
+        .heart {
+            font-size: 50px;
+            color: #e57373;
             margin-bottom: 20px;
-            transition: transform 0.2s;
-            z-index: 50;
+            animation: beat 1.5s infinite;
         }
 
-        .watch-btn:active { transform: scale(0.95); }
-
-        /* معلومات الاغنية */
-        .song-info {
-            margin-bottom: 10px;
+        @keyframes beat {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
         }
-        .song-title { font-size: 2rem; font-weight: bold; margin-bottom: 5px; }
-        .song-desc { color: #aaa; font-size: 0.9rem; }
 
-        /* 3. التفاصيل الاضافية (مثل التطبيق) */
-        .section-title {
-            padding: 20px 20px 10px;
-            font-size: 1.1rem;
+        /* تنسيق النص */
+        #message {
+            font-size: 1.5rem;
+            line-height: 1.8;
+            min-height: 200px;
             font-weight: bold;
-            display: flex; justify-content: space-between; align-items: center;
+        }
+
+        /* تنسيق المؤشر الوامض */
+        .cursor {
+            display: inline-block;
+            width: 3px;
+            background-color: #5d4037;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
         }
         
-        .scroll-container {
-            display: flex;
-            overflow-x: auto;
-            padding: 0 20px 20px;
-            gap: 15px;
-            scrollbar-width: none;
-        }
-        
-        .movie-card {
-            min-width: 110px;
-            display: flex; flex-direction: column; gap: 5px;
+        .signature {
+            margin-top: 30px;
+            font-size: 1.2rem;
+            opacity: 0;
+            transition: opacity 2s;
         }
 
-        .poster {
-            width: 100%; height: 160px; border-radius: 8px; object-fit: cover;
-        }
-
-        .imdb-badge {
-            background-color: #f5c518; color: black; padding: 1px 4px;
-            border-radius: 3px; font-weight: bold; font-size: 0.6rem;
-        }
-
-        /* الشريط السفلي */
-        .bottom-nav {
-            position: fixed; bottom: 0; width: 100%;
-            background-color: #1a222a;
-            display: flex; justify-content: space-around;
-            padding: 10px 0; border-top: 1px solid #333; z-index: 200;
-        }
-        .nav-item {
-            display: flex; flex-direction: column; align-items: center;
-            color: #777; font-size: 0.7rem; gap: 5px;
-        }
-        .nav-item.active { color: white; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="logo-area">
-            <div class="logo-icon">C</div>
-            <div class="logo-text">سينمانا</div>
-        </div>
-        <i class="fas fa-search" style="font-size: 1.2rem;"></i>
-    </div>
-
-    <div class="hero">
-        <div class="hero-overlay">
-            
-            <div class="song-info">
-                <div class="song-title">رقية ❤️</div>
-                <div class="song-desc">قصة حبنا | 2026</div>
-            </div>
-
-            <div class="lyrics-container">
-                <p id="lyricText" class="lyrics-text">اضغطي زر التشغيل للمفاجأة...</p>
-            </div>
-            
-            <button class="watch-btn" id="playBtn" onclick="togglePlay()">
-                <i class="fas fa-play" id="playIcon"></i> شاهد الآن
-            </button>
-
-            <audio id="audioPlayer" src="V-audio.mp3" preload="auto"></audio>
-        </div>
-    </div>
-
-    <div class="section-title">
-        <span>ذكرياتنا (البوم الصور)</span>
-        <span style="font-size: 0.8rem; color: #d92525;">عرض الكل</span>
-    </div>
-
-    <div class="scroll-container">
-        <div class="movie-card">
-            <img src="https://images.unsplash.com/photo-1529333166437-7750a6dd5a70?w=300" class="poster">
-            <div style="font-size: 0.8rem;">يوم الخطوبة</div>
-            <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#ccc;">
-                <span>2025</span> <span class="imdb-badge">10.0</span>
-            </div>
-        </div>
-
-        <div class="movie-card">
-            <img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=300" class="poster">
-            <div style="font-size: 0.8rem;">سفرة الحب</div>
-            <div style="display:flex; justify-content:space-between; font-size:0.7rem; color:#ccc;">
-                <span>رومانسي</span> <span class="imdb-badge">TOP</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="bottom-nav">
-        <div class="nav-item active"><i class="fas fa-home"></i><span>الرئيسية</span></div>
-        <div class="nav-item"><i class="fas fa-heart"></i><span>المفضلة</span></div>
-        <div class="nav-item"><i class="fas fa-compass"></i><span>اكتشف</span></div>
-        <div class="nav-item"><i class="fas fa-user"></i><span>ملفي</span></div>
+    <div class="container">
+        <div class="heart">❤️</div>
+        <div id="message"></div>
+        <div class="signature" id="signature">-- طفلكِ القادم (2025)</div>
     </div>
 
     <script>
-        const audio = document.getElementById('audioPlayer');
-        const playBtn = document.getElementById('playBtn');
-        const playIcon = document.getElementById('playIcon');
-        const lyricElement = document.getElementById('lyricText');
+        // هنا يمكنك تعديل نص الرسالة كما تحب
+        const text = "ماما حبيبتي.. كل عام وأنتِ بمليون خير.. أدري أني تعبتك وياي هالأيام، وأعرف أنكِ تتألمين بسببي.. بس بابا خبرني أنكِ أقوى وأصبر إنسانة بالدنيا.. آسف لأني مشاغب.. بس متحمس جداً أشوفك.. سنة 2025 راح تكون أحلى سنة لأننا راح نكون سوا.. أحبك يا ماما.";
+        
+        const messageElement = document.getElementById('message');
+        let index = 0;
 
-        // قائمة الكلمات مع التوقيت (بالثواني)
-        const lyricsData = [
-            { time: 0, text: "🎶 (موسيقى)" },
-            { time: 13, text: "كنتُ صغيراً أنظرُ إليها في الخفاء.." },
-            { time: 20, text: "رقيةُ ابنةُ خالتي هادئةٌ كصفاء" },
-            { time: 28, text: "كلُ شيءٍ فيها جميلٌ كأنها حلمٌ بعيد" },
-            { time: 35, text: "وكنتُ أخشى أن تعلمَ فيظلُ سري أكيد" },
-            
-            { time: 44, text: "رقية.. يا حبي الأول والأخير ❤️" },
-            { time: 52, text: "منذُ طفولتي كنتِ النورَ والمسير" },
-            { time: 59, text: "كلُ شيءٍ فيكِ جميلٌ يا روحَ الحنان" },
-            { time: 66, text: "واليوم أصبحتِ زوجتي والفرحُ يملأ الزمان" },
-            
-            { time: 75, text: "🎶" },
-            
-            { time: 79, text: "ذهبتُ إلى أمي.. قلت لها عن حبي الكبير" },
-            { time: 87, text: "فقالت لي لا تخف.. سرك سيبقى أسيراً" },
-            { time: 94, text: "لكن في اليوم التالي.. أبي قال اسمكِ أمامي" },
-            { time: 101, text: "فعلمت أن السر أضحى على كل لسانٍ ساري" },
-            
-            { time: 110, text: "🎶" },
-            
-            { time: 120, text: "حتى الدواء ترفضه كطفلٍ صغير" },
-            { time: 127, text: "لكن باسمك كنت أتناوله بشجاعة الأمير" },
-            { time: 135, text: "إلى أن جاءت خالتي.. وقالت لها أمي" },
-            { time: 142, text: "ابني يحب ابنتكِ.. فتسارعت نبضاتي" },
-            { time: 149, text: "وارتبكت في همي.." },
-            
-            { time: 154, text: "رقية.. يا حبي الأول والأخير ❤️" },
-            { time: 162, text: "منذُ طفولتي كنتِ النورَ والمسير" },
-            { time: 169, text: "كلُ شيءٍ فيكِ جميلٌ يا أجمل الأقدار" },
-            { time: 176, text: "واليوم أصبحتِ زوجتي والفرح صامد بداري" },
-
-            { time: 185, text: "واليوم نعيش الحلم.. حكاية عشقٍ أبدية" },
-            { time: 192, text: "ضحكاتنا وخجلنا.. صارت أغنية وردية" },
-            { time: 200, text: "رقية معك العمر.. طريق بلا نهاية" },
-            { time: 208, text: "وأنا أحبك يا نعمةً عليّ من السماء ✨" }
-        ];
-
-        function togglePlay() {
-            if (audio.paused) {
-                audio.play();
-                playBtn.innerHTML = '<i class="fas fa-pause"></i> إيقاف مؤقت';
-                playBtn.style.backgroundColor = "rgba(255,255,255,0.2)";
+        function typeWriter() {
+            if (index < text.length) {
+                messageElement.innerHTML = text.substring(0, index + 1) + '<span class="cursor">|</span>';
+                index++;
+                // سرعة الكتابة (كلما زاد الرقم أصبحت أبطأ)
+                setTimeout(typeWriter, 70); 
             } else {
-                audio.pause();
-                playBtn.innerHTML = '<i class="fas fa-play"></i> استئناف';
-                playBtn.style.backgroundColor = "#d92525";
+                // عند انتهاء الكتابة، نحذف المؤشر ونظهر التوقيع
+                messageElement.innerHTML = text;
+                document.getElementById('signature').style.opacity = 1;
             }
         }
 
-        // دالة التزامن
-        audio.addEventListener('timeupdate', () => {
-            const currentTime = audio.currentTime;
-            
-            // البحث عن الجملة الحالية
-            for (let i = 0; i < lyricsData.length; i++) {
-                if (currentTime >= lyricsData[i].time && 
-                   (i === lyricsData.length - 1 || currentTime < lyricsData[i+1].time)) {
-                    
-                    // تغيير النص فقط اذا كان جديداً
-                    if (lyricElement.innerText !== lyricsData[i].text) {
-                        lyricElement.classList.remove('active'); // اخفاء القديم
-                        
-                        setTimeout(() => {
-                            lyricElement.innerText = lyricsData[i].text;
-                            lyricElement.classList.add('active'); // اظهار الجديد
-                        }, 100); // تأخير بسيط للحركة
-                    }
-                    break;
-                }
-            }
-        });
+        // يبدأ الكتابة بعد ثانية ونصف من فتح الصفحة
+        setTimeout(typeWriter, 1500);
     </script>
 </body>
 </html>
