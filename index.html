@@ -3,344 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cinemana Love 2026</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
+    <title>أنتي نجمتي 2026</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Cairo', sans-serif;
-        }
-
         body {
-            background-color: #0f151b; /* لون خلفية سينمانا */
+            margin: 0;
+            overflow: hidden;
+            background: black;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             color: white;
-            padding-bottom: 70px; /* مسافة للشريط السفلي */
-        }
-
-        /* 1. الشريط العلوي */
-        .header {
             display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 15px;
-            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
-            position: fixed;
-            top: 0;
-            width: 100%;
-            z-index: 100;
-        }
-
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .logo-text {
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-
-        .logo-icon {
-            width: 30px;
-            height: 30px;
-            background-color: #e50914;
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
             justify-content: center;
-            font-weight: bold;
-            font-size: 18px;
-        }
-
-        /* 2. القسم الرئيسي (البنر الكبير) */
-        .hero {
-            position: relative;
-            height: 60vh;
-            width: 100%;
-            /* ⚠️ غير رابط الصورة بصورة الكم بالعرض */
-            background-image: url('https://images.unsplash.com/photo-1516961642265-531546e84af2?q=80&w=1000'); 
-            background-size: cover;
-            background-position: center;
-        }
-
-        .hero-overlay {
-            position: absolute;
-            bottom: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(to top, #0f151b 5%, transparent 60%);
-            display: flex;
-            flex-direction: column;
-            justify-content: flex-end;
-            padding: 20px;
-        }
-
-        .watch-btn {
-            background-color: #d92525;
-            color: white;
-            border: none;
-            padding: 10px 25px;
-            border-radius: 25px;
-            font-size: 1rem;
-            font-weight: bold;
-            display: flex;
             align-items: center;
-            gap: 10px;
-            width: fit-content;
-            margin-top: 10px;
+            height: 100vh;
             cursor: pointer;
         }
 
-        /* نقاط التنقل */
-        .dots {
-            display: flex;
-            gap: 5px;
-            margin-top: 10px;
-            justify-content: center;
+        /* خلفية النجوم */
+        .stars {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
         }
-        .dot {
-            width: 8px;
-            height: 8px;
-            background-color: #555;
+
+        .star {
+            position: absolute;
+            background: white;
             border-radius: 50%;
-        }
-        .dot.active { background-color: #d92525; }
-
-        /* 3. الأقسام (الاسليدر) */
-        .section-title {
-            padding: 10px 20px 0;
-            font-size: 1.1rem;
-            font-weight: bold;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .more { font-size: 0.8rem; color: #aaa; }
-
-        .scroll-container {
-            display: flex;
-            overflow-x: auto;
-            padding: 15px 20px;
-            gap: 15px;
-            scrollbar-width: none; /* اخفاء شريط التمرير */
-        }
-        .scroll-container::-webkit-scrollbar { display: none; }
-
-        .movie-card {
-            min-width: 120px;
-            width: 120px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
+            animation: twinkle var(--duration) infinite ease-in-out;
+            opacity: 0.8;
         }
 
-        .poster {
-            width: 100%;
-            height: 180px;
-            border-radius: 8px;
-            object-fit: cover;
-            /* ⚠️ غير الروابط هنا بصوركم بالطول */
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.2); }
         }
 
-        .movie-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.7rem;
-            color: #ccc;
-            align-items: center;
-        }
-
-        .imdb-badge {
-            background-color: #f5c518;
-            color: black;
-            padding: 1px 4px;
-            border-radius: 3px;
-            font-weight: bold;
-            font-size: 0.6rem;
-        }
-
-        .movie-title {
-            font-size: 0.8rem;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        /* 4. الشريط السفلي */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background-color: #1a222a;
-            display: flex;
-            justify-content: space-around;
-            padding: 10px 0;
-            border-top: 1px solid #333;
-            z-index: 200;
-        }
-
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #777;
-            font-size: 0.7rem;
-            gap: 5px;
-        }
-
-        .nav-item.active { color: white; }
-        .nav-item i { font-size: 1.2rem; }
-
-        /* النافذة المنبثقة (الرسالة) */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .modal-content {
-            background: #1a222a;
-            padding: 30px;
-            border-radius: 15px;
+        /* النص والنجم الكبير */
+        .content {
+            z-index: 10;
             text-align: center;
-            border: 1px solid #333;
-            max-width: 400px;
+            opacity: 0;
+            transition: opacity 2s;
         }
+
+        .moon {
+            width: 150px;
+            height: 150px;
+            background: radial-gradient(circle at 30% 30%, #fdfbf7, #ffecb3);
+            border-radius: 50%;
+            box-shadow: 0 0 60px #ffecb3, 0 0 100px rgba(255, 236, 179, 0.4);
+            margin: 0 auto 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* ⚠️ خلي صورة الكم هنا بدل الرابط */
+        .moon img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            opacity: 0.8;
+            mix-blend-mode: multiply;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            text-shadow: 0 0 20px #fff;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 1.2rem;
+            color: #ccc;
+        }
+
+        .hint {
+            position: absolute;
+            bottom: 50px;
+            color: #555;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.3; }
+            50% { opacity: 1; }
+            100% { opacity: 0.3; }
+        }
+
+        /* الشهب */
+        .shooting-star {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 4px;
+            height: 4px;
+            background: #fff;
+            border-radius: 50%;
+            box-shadow: 0 0 0 4px rgba(255,255,255,0.1), 0 0 0 8px rgba(255,255,255,0.1), 0 0 20px rgba(255,255,255,1);
+            animation: shoot 3s linear infinite;
+            opacity: 0;
+        }
+
+        @keyframes shoot {
+            0% { transform: rotate(315deg) translateX(0); opacity: 1; }
+            70% { opacity: 1; }
+            100% { transform: rotate(315deg) translateX(-1000px); opacity: 0; }
+        }
+
     </style>
 </head>
-<body>
+<body onclick="reveal()">
 
-    <div class="header">
-        <div class="logo-area">
-            <div class="logo-icon">C</div>
-            <div class="logo-text">سينمانا</div>
-        </div>
-        <div>
-            <i class="fas fa-bell"></i>
-        </div>
-    </div>
+    <div class="stars" id="starsContainer"></div>
+    
+    <div class="hint" id="hint">اضغطي في أي مكان ✨</div>
 
-    <div class="hero">
-        <div class="hero-overlay">
-            <h1 style="font-size: 2.5rem; margin-bottom: 5px; color: #fff;">قصة 2026</h1>
-            <p style="color: #aaa; font-size: 0.9rem;">رومانسي • تشويق • واقعي</p>
-            
-            <button class="watch-btn" onclick="openMsg()">
-                <i class="fas fa-play"></i> شاهد الآن
-            </button>
-            
-            <div class="dots">
-                <span class="dot"></span>
-                <span class="dot"></span>
-                <span class="dot"></span>
-                <span class="dot active"></span>
-            </div>
+    <div class="content" id="mainContent">
+        <div class="moon">
+            <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=500" alt="Us">
         </div>
-    </div>
-
-    <div class="section-title">
-        <span>ذكرياتنا 4K</span>
-        <span class="more">المزيد</span>
-    </div>
-
-    <div class="scroll-container">
-        <div class="movie-card">
-            <img src="https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=300" class="poster">
-            <div class="movie-title">ضحكتنا الحلوة</div>
-            <div class="movie-info">
-                <span>2025</span>
-                <span class="imdb-badge">9.8</span>
-            </div>
-        </div>
-        <div class="movie-card">
-            <img src="https://images.unsplash.com/photo-1621600411688-4be93cd68504?w=300" class="poster">
-            <div class="movie-title">يوم الخطوبة</div>
-            <div class="movie-info">
-                <span>اكشن</span>
-                <span class="imdb-badge">10.0</span>
-            </div>
-        </div>
-
-        <div class="movie-card">
-            <img src="https://images.unsplash.com/photo-1522609925277-66db8e10f1f6?w=300" class="poster">
-            <div class="movie-title">سفرة الشمال</div>
-            <div class="movie-info">
-                <span>مغامرة</span>
-                <span class="imdb-badge">9.5</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="section-title">
-        <span>أفلام الكريسماس (مفاجآت)</span>
-        <span class="more">المزيد</span>
-    </div>
-
-    <div class="scroll-container">
-        <div class="movie-card">
-            <img src="https://images.unsplash.com/photo-1544161515-4ab6ce6db874?w=300" class="poster">
-            <div class="movie-title">مفاجأة 2026</div>
-            <div class="movie-info">
-                <span>خيال</span>
-                <span class="imdb-badge">TOP</span>
-            </div>
-        </div>
-        <div class="movie-card">
-            <img src="https://images.unsplash.com/photo-1513201099705-a9746e1e201f?w=300" class="poster">
-            <div class="movie-title">حب أبدي</div>
-            <div class="movie-info">
-                <span>عائلي</span>
-                <span class="imdb-badge">8.5</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="bottom-nav">
-        <div class="nav-item active">
-            <i class="fas fa-home"></i>
-            <span>الرئيسية</span>
-        </div>
-        <div class="nav-item">
-            <i class="fas fa-layer-group"></i>
-            <span>الأقسام</span>
-        </div>
-        <div class="nav-item">
-            <i class="fas fa-search"></i>
-            <span>بحث</span>
-        </div>
-        <div class="nav-item">
-            <i class="fas fa-user-circle"></i>
-            <span>الحساب</span>
-        </div>
-    </div>
-
-    <div id="msgModal" class="modal" onclick="this.style.display='none'">
-        <div class="modal-content">
-            <h2 style="color: #d92525; margin-bottom: 10px;">كل عام وأنتي بخير ❤️</h2>
-            <p style="line-height: 1.6; color: #ddd;">
-                ماكو فلم بالدنيا أحلى من حياتي وياج.
-                ان شاء الله سنة 2026 تكون مثل الأفلام السعيدة،
-                نهايتها خير وبدايتها خير.
-                <br><br>
-                <b>أحبج!</b>
-            </p>
-        </div>
+        <h1>يا قمر حياتي</h1>
+        <p>
+            الدنيا كلها ظلمة.. بس أنتي النور بـ 2026.<br>
+            كل عام واحنا سوا.
+        </p>
     </div>
 
     <script>
-        function openMsg() {
-            document.getElementById('msgModal').style.display = 'flex';
+        // تكوين النجوم
+        const container = document.getElementById('starsContainer');
+        const starCount = 150;
+
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            const x = Math.random() * 100;
+            const y = Math.random() * 100;
+            const size = Math.random() * 3 + 1;
+            const duration = Math.random() * 3 + 2;
+
+            star.style.left = x + '%';
+            star.style.top = y + '%';
+            star.style.width = size + 'px';
+            star.style.height = size + 'px';
+            star.style.setProperty('--duration', duration + 's');
+            
+            container.appendChild(star);
+        }
+
+        // اظهار المحتوى
+        function reveal() {
+            document.getElementById('hint').style.display = 'none';
+            document.getElementById('mainContent').style.opacity = '1';
+            
+            // اضافة شهب
+            for(let i=0; i<5; i++) {
+                setTimeout(() => {
+                    createShootingStar();
+                }, i * 500);
+            }
+        }
+
+        function createShootingStar() {
+            const star = document.createElement('div');
+            star.className = 'shooting-star';
+            star.style.top = Math.random() * window.innerHeight + 'px';
+            star.style.left = Math.random() * window.innerWidth + 'px';
+            document.body.appendChild(star);
+            
+            setTimeout(() => {
+                star.remove();
+            }, 3000);
         }
     </script>
 </body>
