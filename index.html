@@ -12,17 +12,16 @@
             padding: 0;
             height: 100vh;
             width: 100vw;
-            background-color: #000; /* البداية سوداء */
+            background-color: #000;
             color: white;
             font-family: 'Tajawal', sans-serif;
-            overflow: hidden; /* يمنع الحركة والسكرول نهائياً */
+            overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
             text-align: center;
         }
 
-        /* حاوية المشاهد - تثبيت مطلق لمنع الاهتزاز */
         .scene {
             display: none;
             position: absolute;
@@ -60,14 +59,14 @@
             animation: pulse 1.5s infinite;
         }
 
-        /* --- تنسيق النصوص (مشترك للمشهد الأول والثالث) --- */
+        /* --- النصوص --- */
         .text-line {
             font-size: 1.4rem;
             margin-bottom: 25px;
             opacity: 0;
             transform: translateY(20px);
             transition: opacity 1.5s ease, transform 1.5s ease;
-            color: #ccc; /* رمادي فاتح */
+            color: #ccc;
             line-height: 1.6;
         }
 
@@ -85,18 +84,18 @@
             margin: 0 auto 30px auto;
         }
 
-        /* --- المشهد الثاني (التثبيت) --- */
+        /* --- المشهد الثاني --- */
         .heart-icon {
             font-size: 4rem;
             color: #ff1744;
             margin-bottom: 20px;
             animation: heartbeat 1.5s infinite;
-            display: inline-block; /* لضمان الثبات */
+            display: inline-block;
         }
 
         .progress-box {
             width: 100%;
-            height: 80px; /* حجز مساحة ثابتة للبار والعداد لمنع الاهتزاز */
+            height: 80px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -121,14 +120,14 @@
         }
 
         .love-msg-box {
-            min-height: 100px; /* حجز مساحة للنص */
+            min-height: 100px;
             margin-top: 20px;
             opacity: 0;
             transform: translateY(10px);
             transition: all 1s ease;
         }
 
-        /* --- المشهد الثالث (المفاجأة) --- */
+        /* --- المشهد الثالث (تم تعديل المحاذاة هنا) --- */
         .year-container {
             font-size: 5rem;
             font-weight: bold;
@@ -136,17 +135,20 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            direction: ltr; /* لتظهر الأرقام مرتبة بشكل صحيح */
+            direction: ltr; 
         }
 
         .static-num { text-shadow: 0 0 20px rgba(33, 150, 243, 0.6); color: #E3F2FD; }
 
+        /* تعديل خاص لرفع الرقم 6 */
         .morph-wrapper {
             position: relative;
             display: inline-block;
-            width: 55px; /* عرض ثابت */
+            width: 55px;
             height: 80px;
             text-align: center;
+            /* هذا السطر هو المسؤول عن رفع الرقم للأعلى */
+            top: -20px; 
         }
 
         .digit-six {
@@ -160,20 +162,17 @@
             opacity: 0;
             transform: scale(0.5);
             transition: opacity 1s ease-in-out, transform 1s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            font-size: 4rem; /* حجم مناسب للإيموجي */
+            font-size: 4rem;
         }
 
-        /* تفعيل التحويل */
         .morph-active .digit-six { opacity: 0; transform: scale(1.5) rotate(20deg); }
         .morph-active .baby-icon { opacity: 1; transform: scale(1); }
 
-        /* الكانفاس للألعاب النارية */
         canvas {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
             pointer-events: none;
         }
 
-        /* Animations */
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes heartbeat { 0% { transform: scale(1); } 15% { transform: scale(1.15); } 30% { transform: scale(1); } 45% { transform: scale(1.15); } 60% { transform: scale(1); } }
@@ -182,7 +181,6 @@
 </head>
 <body>
 
-    <audio id="bgSound" src="baby.mp3"></audio>
     <canvas id="fireworksCanvas"></canvas>
 
     <div id="start-overlay">
@@ -232,12 +230,17 @@
     </div>
 
     <script>
-        const bgSound = document.getElementById('bgSound');
+        // تعريف الأصوات من روابط الإنترنت مباشرة
+        // 1. صوت دقات القلب (للمشهد الثاني)
+        const heartSound = new Audio('https://www.soundjay.com/human/sounds/heartbeat-01a.mp3');
+        heartSound.loop = true; // جعل الصوت يتكرر
+        
+        // 2. صوت ضحكة طفل (للمشهد الثالث)
+        const babySound = new Audio('https://www.soundjay.com/human/sounds/baby-laughing-02.mp3');
         
         function startExperience() {
             document.getElementById('start-overlay').style.display = 'none';
-            bgSound.volume = 0.6;
-            bgSound.play().catch(e => console.log("Audio requires interaction"));
+            // نبدأ بصمت أو صوت هادئ إذا توفر
             playScene1();
         }
 
@@ -261,7 +264,10 @@
         function playScene2() {
             const scene2 = document.getElementById('scene2');
             scene2.style.display = 'block';
-            document.body.style.backgroundColor = "#100000"; // أحمر داكن جداً
+            document.body.style.backgroundColor = "#100000";
+
+            // تشغيل صوت القلب
+            heartSound.play();
 
             let width = 0;
             const bar = document.getElementById('p-bar');
@@ -276,7 +282,12 @@
                     
                     setTimeout(() => {
                         scene2.style.opacity = 0;
-                        setTimeout(() => { scene2.style.display = 'none'; playScene3(); }, 1000);
+                        setTimeout(() => { 
+                            scene2.style.display = 'none'; 
+                            // إيقاف صوت القلب قبل الانتقال
+                            heartSound.pause(); 
+                            playScene3(); 
+                        }, 1000);
                     }, 6000);
                 }
                 bar.style.width = width + "%";
@@ -289,20 +300,19 @@
             scene3.style.display = 'block';
             document.body.style.backgroundColor = "#000"; 
 
-            loopFireworks(); // بدء الألعاب النارية فوراً
+            loopFireworks(); 
+            // تشغيل صوت الطفل
+            babySound.play();
 
-            // بعد 3 ثوانٍ بالضبط: تحويل الـ 6 إلى طفل
             setTimeout(() => {
                 document.getElementById('morphBox').classList.add('morph-active');
             }, 3000);
 
-            // ظهور النصوص بالتتابع بعد التحويل
             setTimeout(() => { document.getElementById('f-msg1').classList.add('visible'); }, 4500);
             setTimeout(() => { document.getElementById('f-msg2').classList.add('visible'); }, 6500);
             setTimeout(() => { document.getElementById('f-msg3').classList.add('visible'); }, 8500);
         }
 
-        // كود الألعاب النارية
         const canvas = document.getElementById('fireworksCanvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
