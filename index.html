@@ -3,179 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>بداية 2026</title>
+    <title>إلى رقية الغالية</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         /* --- تنسيقات عامة --- */
         body {
-            margin: 0;
-            padding: 0;
-            height: 100vh;
-            width: 100vw;
-            background-color: #000;
-            color: white;
+            margin: 0; padding: 0; height: 100vh; width: 100vw;
+            background-color: #000; color: white;
             font-family: 'Tajawal', sans-serif;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
+            display: flex; justify-content: center; align-items: center; text-align: center;
         }
 
         .scene {
-            display: none;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 90%;
-            max-width: 600px;
-            z-index: 10;
+            display: none; position: absolute;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 90%; max-width: 600px; z-index: 10;
         }
 
         /* --- شاشة البداية --- */
         #start-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #000;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
             z-index: 1000;
         }
 
         .start-btn {
-            padding: 15px 40px;
-            font-size: 1.3rem;
-            background: #fff;
-            color: #000;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            font-family: 'Tajawal', sans-serif;
-            font-weight: bold;
-            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4);
-            animation: pulse 1.5s infinite;
+            padding: 15px 40px; font-size: 1.3rem; background: #fff; color: #000;
+            border: none; border-radius: 50px; cursor: pointer;
+            font-family: 'Tajawal', sans-serif; font-weight: bold;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4); animation: pulse 1.5s infinite;
         }
 
-        /* --- النصوص --- */
+        /* --- نصوص المشاهد --- */
         .text-line {
-            font-size: 1.4rem;
-            margin-bottom: 25px;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 1.5s ease, transform 1.5s ease;
-            color: #ccc;
-            line-height: 1.6;
+            font-size: 1.4rem; margin-bottom: 25px; opacity: 0;
+            transform: translateY(20px); transition: opacity 1.5s ease, transform 1.5s ease;
+            color: #ccc; line-height: 1.6;
         }
-
         .highlight { color: #fff; font-weight: bold; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
         .visible { opacity: 1; transform: translateY(0); }
 
         /* --- المشهد الأول --- */
         .loader {
-            border: 3px solid #333;
-            border-top: 3px solid #fff;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 30px auto;
+            border: 3px solid #333; border-top: 3px solid #fff; border-radius: 50%;
+            width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto 30px auto;
         }
 
         /* --- المشهد الثاني --- */
         .heart-icon {
-            font-size: 4rem;
-            color: #ff1744;
-            margin-bottom: 20px;
-            animation: heartbeat 1.5s infinite;
+            font-size: 4rem; color: #ff1744; margin-bottom: 20px;
+            /* تم ضبط التوقيت ليتناسب مع صوت القلب */
+            animation: heartbeat 1.3s infinite; 
             display: inline-block;
         }
 
-        .progress-box {
-            width: 100%;
-            height: 80px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
+        .progress-box { width: 100%; height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .progress-container { width: 100%; height: 15px; background-color: #333; border-radius: 50px; overflow: hidden; margin-bottom: 10px; }
+        .progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #ff1744, #d50000); border-radius: 50px; transition: width 0.1s linear; }
+        .love-msg-box { min-height: 100px; margin-top: 20px; opacity: 0; transform: translateY(10px); transition: all 1s ease; }
 
-        .progress-container {
-            width: 100%;
-            height: 15px;
-            background-color: #333;
-            border-radius: 50px;
-            overflow: hidden;
-            margin-bottom: 10px;
-        }
-
-        .progress-bar {
-            width: 0%;
-            height: 100%;
-            background: linear-gradient(90deg, #ff1744, #d50000);
-            border-radius: 50px;
-            transition: width 0.1s linear;
-        }
-
-        .love-msg-box {
-            min-height: 100px;
-            margin-top: 20px;
-            opacity: 0;
-            transform: translateY(10px);
-            transition: all 1s ease;
-        }
-
-        /* --- المشهد الثالث (تم تعديل المحاذاة هنا) --- */
+        /* --- المشهد الثالث --- */
         .year-container {
-            font-size: 5rem;
-            font-weight: bold;
-            margin-bottom: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            direction: ltr; 
+            font-size: 5rem; font-weight: bold; margin-bottom: 20px;
+            display: flex; align-items: center; justify-content: center; direction: ltr;
         }
-
         .static-num { text-shadow: 0 0 20px rgba(33, 150, 243, 0.6); color: #E3F2FD; }
-
-        /* تعديل خاص لرفع الرقم 6 */
+        
+        /* رفع الرقم 6 للأعلى */
         .morph-wrapper {
-            position: relative;
-            display: inline-block;
-            width: 55px;
-            height: 80px;
-            text-align: center;
-            /* هذا السطر هو المسؤول عن رفع الرقم للأعلى */
-            top: -20px; 
+            position: relative; display: inline-block;
+            width: 55px; height: 80px; text-align: center; top: -20px;
         }
 
-        .digit-six {
-            position: absolute; left: 0; top: 0; width: 100%;
-            transition: opacity 1s ease-in-out, transform 1s;
-            color: #E3F2FD;
-        }
-
+        .digit-six { position: absolute; left: 0; top: 0; width: 100%; transition: opacity 1s ease-in-out, transform 1s; color: #E3F2FD; }
+        
         .baby-icon {
-            position: absolute; left: 0; top: 10px; width: 100%;
-            opacity: 0;
-            transform: scale(0.5);
-            transition: opacity 1s ease-in-out, transform 1s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            position: absolute; left: 0; top: 10px; width: 100%; opacity: 0;
+            transform: scale(0.5); transition: opacity 1s ease-in-out, transform 1s cubic-bezier(0.68, -0.55, 0.27, 1.55);
             font-size: 4rem;
         }
 
         .morph-active .digit-six { opacity: 0; transform: scale(1.5) rotate(20deg); }
         .morph-active .baby-icon { opacity: 1; transform: scale(1); }
 
-        canvas {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
-            pointer-events: none;
+        /* تنسيق رسالة رقية */
+        #typing-container {
+            font-size: 1.1rem; line-height: 1.8; color: #fff;
+            min-height: 150px; margin-top: 20px; text-align: center;
+            font-weight: bold; white-space: pre-wrap; /* للحفاظ على الأسطر */
         }
+        .cursor { display: inline-block; width: 2px; height: 1.2rem; background-color: #fff; animation: blink 0.8s infinite; margin-right: 2px; }
+
+        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
 
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @keyframes heartbeat { 0% { transform: scale(1); } 15% { transform: scale(1.15); } 30% { transform: scale(1); } 45% { transform: scale(1.15); } 60% { transform: scale(1); } }
+        @keyframes blink { 50% { opacity: 0; } }
+        /* نبض القلب */
+        @keyframes heartbeat { 
+            0% { transform: scale(1); } 
+            15% { transform: scale(1.2); } 
+            30% { transform: scale(1); } 
+            45% { transform: scale(1.2); } 
+            60% { transform: scale(1); } 
+            100% { transform: scale(1); }
+        }
 
     </style>
 </head>
@@ -199,14 +133,10 @@
     <div class="scene" id="scene2">
         <div class="heart-icon">❤️</div>
         <div style="margin-bottom: 10px; color: #ffcdd2;">جارٍ تثبيت جرعات إضافية من الحب والدلال...</div>
-        
         <div class="progress-box">
-            <div class="progress-container">
-                <div class="progress-bar" id="p-bar"></div>
-            </div>
+            <div class="progress-container"><div class="progress-bar" id="p-bar"></div></div>
             <div style="font-size: 1.5rem; font-weight: bold;" id="p-counter">0%</div>
         </div>
-        
         <div class="love-msg-box" id="s2-msg">
             <p style="line-height: 1.6; font-size: 1.2rem;">
                 "في 2026، أنا عكازك وقت التعب، وضحكتك وقت الحزن.<br>
@@ -223,42 +153,65 @@
                 <span class="baby-icon">👶</span>
             </div>
         </div>
-        
-        <div class="text-line" id="f-msg1">تم التحديث بنجاح...</div>
-        <div class="text-line" id="f-msg2">تنبيه: تم إضافة <span class="highlight">عضو جديد</span> للمجموعة...</div>
-        <div class="text-line" id="f-msg3" style="color: #64B5F6;">هذه السنة لن نكون اثنين.. سنكون عائلة 💙</div>
+
+        <div id="typing-container"></div>
+
+        <div id="final-texts" style="display: none;">
+            <div class="text-line" id="f-msg1">تم التحديث بنجاح...</div>
+            <div class="text-line" id="f-msg2">تنبيه: تم إضافة <span class="highlight">عضو جديد</span> للمجموعة...</div>
+            <div class="text-line" id="f-msg3" style="color: #64B5F6;">هذه السنة لن نكون اثنين.. سنكون عائلة 💙</div>
+        </div>
     </div>
 
     <script>
-        // تعريف الأصوات من روابط الإنترنت مباشرة
-        // 1. صوت دقات القلب (للمشهد الثاني)
+        // --- تعريف الأصوات ---
+        // 1. موسيقى بيانو هادئة (للمشهد الأول)
+        const sadPiano = new Audio('https://www.soundjay.com/free-music/midnight-ride-01a.mp3');
+        sadPiano.volume = 0.5;
+
+        // 2. صوت دقات القلب (للمشهد الثاني) - مخفض الصوت
         const heartSound = new Audio('https://www.soundjay.com/human/sounds/heartbeat-01a.mp3');
-        heartSound.loop = true; // جعل الصوت يتكرر
+        heartSound.volume = 0.3; // صوت منخفض كما طلبت
+        heartSound.loop = true;
+
+        // 3. صوت الكتابة (لرسالة رقية)
+        const typeSound = new Audio('https://www.soundjay.com/mechanical/sounds/typewriter-6.mp3'); 
+        typeSound.volume = 0.4;
         
-        // 2. صوت ضحكة طفل (للمشهد الثالث)
+        // 4. صوت ضحكة طفل (للمشهد الثالث)
         const babySound = new Audio('https://www.soundjay.com/human/sounds/baby-laughing-02.mp3');
-        
+
+        // رسالتك لرقية
+        const letterToRuqaya = "إلى زوجتي العزيزة رقية الغالية..\nأحبج يروحي.. هاي الرسالة أريد أكلج بيها شكد أني فخور بيج، والله يروحي ما ألكه مثلج بهاي الدنيا أبد.\nروحي متعلقة بيج وما أعرف أعيش بدونج.\nكل عام أنتي إلي، وكل عام أنتي زوجتي، وكل عام أنتي كل ما أملك يا غاليتي وعزيزتي وكل دنيتي.\nأحبج يروحي، الله يحفظج إلي ويخليج، سنة سعيدة عليج حياتي ❤️";
+
         function startExperience() {
             document.getElementById('start-overlay').style.display = 'none';
-            // نبدأ بصمت أو صوت هادئ إذا توفر
             playScene1();
         }
 
         function playScene1() {
             const scene1 = document.getElementById('scene1');
             scene1.style.display = 'block';
+            sadPiano.play().catch(e => console.log("Audio requires interaction"));
 
             setTimeout(() => { document.getElementById('s1-line1').classList.add('visible'); }, 500);
             setTimeout(() => { document.getElementById('s1-line2').classList.add('visible'); }, 3500);
             setTimeout(() => { 
                 document.getElementById('s1-line3').classList.add('visible');
                 document.getElementById('s1-loader').style.opacity = 0; 
-            }, 7000);
+            }, 7500);
 
+            // زيادة مدة المشهد الأول قليلاً ليناسب الموسيقى
             setTimeout(() => {
                 scene1.style.opacity = 0;
+                // خفض صوت البيانو تدريجياً
+                let fadeAudio = setInterval(function () {
+                    if (sadPiano.volume > 0.1) { sadPiano.volume -= 0.1; }
+                    else { clearInterval(fadeAudio); sadPiano.pause(); }
+                }, 200);
+
                 setTimeout(() => { scene1.style.display = 'none'; playScene2(); }, 1000);
-            }, 12000);
+            }, 14000);
         }
 
         function playScene2() {
@@ -266,15 +219,15 @@
             scene2.style.display = 'block';
             document.body.style.backgroundColor = "#100000";
 
-            // تشغيل صوت القلب
             heartSound.play();
 
             let width = 0;
             const bar = document.getElementById('p-bar');
             const counter = document.getElementById('p-counter');
             
+            // جعلت التحميل أبطأ قليلاً ليتناسب مع اللحظة
             let interval = setInterval(() => {
-                width += Math.random() * 2;
+                width += Math.random() * 1.5; 
                 if(width >= 100) {
                     width = 100;
                     clearInterval(interval);
@@ -284,7 +237,6 @@
                         scene2.style.opacity = 0;
                         setTimeout(() => { 
                             scene2.style.display = 'none'; 
-                            // إيقاف صوت القلب قبل الانتقال
                             heartSound.pause(); 
                             playScene3(); 
                         }, 1000);
@@ -292,46 +244,85 @@
                 }
                 bar.style.width = width + "%";
                 counter.innerText = Math.floor(width) + "%";
-            }, 40);
+            }, 50);
         }
 
         function playScene3() {
             const scene3 = document.getElementById('scene3');
             scene3.style.display = 'block';
             document.body.style.backgroundColor = "#000"; 
-
+            
             loopFireworks(); 
-            // تشغيل صوت الطفل
-            babySound.play();
 
-            setTimeout(() => {
-                document.getElementById('morphBox').classList.add('morph-active');
-            }, 3000);
+            // البدء بكتابة الرسالة
+            typeWriterEffect(letterToRuqaya, function() {
+                // بعد انتهاء الكتابة وانتظار القراءة
+                setTimeout(() => {
+                    // إخفاء الرسالة
+                    const container = document.getElementById('typing-container');
+                    container.style.transition = "opacity 2s";
+                    container.style.opacity = 0;
 
-            setTimeout(() => { document.getElementById('f-msg1').classList.add('visible'); }, 4500);
-            setTimeout(() => { document.getElementById('f-msg2').classList.add('visible'); }, 6500);
-            setTimeout(() => { document.getElementById('f-msg3').classList.add('visible'); }, 8500);
+                    // بعد الاختفاء.. تظهر المفاجأة
+                    setTimeout(() => {
+                        triggerSurprise();
+                    }, 2000);
+
+                }, 8000); // انتظار 8 ثواني لتقرأ الرسالة
+            });
         }
 
+        // دالة الكتابة (الآلة الكاتبة)
+        function typeWriterEffect(text, callback) {
+            const container = document.getElementById('typing-container');
+            let i = 0;
+            container.innerHTML = '<span class="cursor">|</span>';
+            
+            function typing() {
+                if (i < text.length) {
+                    // إضافة الحرف قبل المؤشر
+                    container.innerHTML = text.substring(0, i + 1) + '<span class="cursor">|</span>';
+                    i++;
+                    // صوت خافت جدا للكتابة (اختياري)
+                    // typeSound.play(); 
+                    setTimeout(typing, 50); // سرعة الكتابة
+                } else {
+                    if (callback) callback();
+                }
+            }
+            typing();
+        }
+
+        function triggerSurprise() {
+            // تحويل الرقم 6 إلى طفل وتشغيل الضحكة
+            document.getElementById('morphBox').classList.add('morph-active');
+            babySound.play();
+
+            // إظهار النصوص النهائية
+            const finalDiv = document.getElementById('final-texts');
+            finalDiv.style.display = 'block';
+
+            setTimeout(() => { document.getElementById('f-msg1').classList.add('visible'); }, 1500);
+            setTimeout(() => { document.getElementById('f-msg2').classList.add('visible'); }, 3500);
+            setTimeout(() => { document.getElementById('f-msg3').classList.add('visible'); }, 6000);
+        }
+
+        // كود الألعاب النارية
         const canvas = document.getElementById('fireworksCanvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         let particles = [];
-
         function createParticle(x, y) {
             const colors = ['#2196F3', '#64B5F6', '#BBDEFB', '#FFD700', '#FFFFFF'];
             for (let i = 0; i < 30; i++) {
                 particles.push({
-                    x: x, y: y,
-                    color: colors[Math.floor(Math.random() * colors.length)],
-                    radius: Math.random() * 3,
-                    velocity: { x: (Math.random() - 0.5) * 5, y: (Math.random() - 0.5) * 5 },
+                    x: x, y: y, color: colors[Math.floor(Math.random() * colors.length)],
+                    radius: Math.random() * 3, velocity: { x: (Math.random() - 0.5) * 5, y: (Math.random() - 0.5) * 5 },
                     life: 100, alpha: 1
                 });
             }
         }
-
         function loopFireworks() {
             requestAnimationFrame(loopFireworks);
             ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
