@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>رحلة إلى 2026</title>
+    <title>بداية 2026</title>
     <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         /* --- تنسيقات عامة --- */
@@ -11,25 +11,30 @@
             margin: 0;
             padding: 0;
             height: 100vh;
+            width: 100vw;
             background-color: #000; /* البداية سوداء */
             color: white;
             font-family: 'Tajawal', sans-serif;
-            overflow: hidden; /* لمنع التمرير */
+            overflow: hidden; /* يمنع الحركة والسكرول نهائياً */
             display: flex;
             justify-content: center;
             align-items: center;
             text-align: center;
         }
 
+        /* حاوية المشاهد - تثبيت مطلق لمنع الاهتزاز */
         .scene {
-            display: none; /* المشاهد مخفية افتراضياً */
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             width: 90%;
             max-width: 600px;
-            position: relative;
             z-index: 10;
         }
 
-        /* --- تنسيقات شاشة البداية (الزر) --- */
+        /* --- شاشة البداية --- */
         #start-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -55,7 +60,21 @@
             animation: pulse 1.5s infinite;
         }
 
-        /* --- تنسيقات المشهد الأول (الوداع) --- */
+        /* --- تنسيق النصوص (مشترك للمشهد الأول والثالث) --- */
+        .text-line {
+            font-size: 1.4rem;
+            margin-bottom: 25px;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 1.5s ease, transform 1.5s ease;
+            color: #ccc; /* رمادي فاتح */
+            line-height: 1.6;
+        }
+
+        .highlight { color: #fff; font-weight: bold; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        .visible { opacity: 1; transform: translateY(0); }
+
+        /* --- المشهد الأول --- */
         .loader {
             border: 3px solid #333;
             border-top: 3px solid #fff;
@@ -66,24 +85,22 @@
             margin: 0 auto 30px auto;
         }
 
-        .text-line {
-            font-size: 1.4rem;
-            margin-bottom: 25px;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: opacity 1.5s ease, transform 1.5s ease;
-            color: #ccc;
-        }
-
-        .highlight { color: #fff; font-weight: bold; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
-        .visible { opacity: 1; transform: translateY(0); }
-
-        /* --- تنسيقات المشهد الثاني (التثبيت) --- */
+        /* --- المشهد الثاني (التثبيت) --- */
         .heart-icon {
             font-size: 4rem;
             color: #ff1744;
             margin-bottom: 20px;
             animation: heartbeat 1.5s infinite;
+            display: inline-block; /* لضمان الثبات */
+        }
+
+        .progress-box {
+            width: 100%;
+            height: 80px; /* حجز مساحة ثابتة للبار والعداد لمنع الاهتزاز */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .progress-container {
@@ -92,8 +109,7 @@
             background-color: #333;
             border-radius: 50px;
             overflow: hidden;
-            margin: 20px 0;
-            position: relative;
+            margin-bottom: 10px;
         }
 
         .progress-bar {
@@ -105,24 +121,22 @@
         }
 
         .love-msg-box {
-            margin-top: 30px;
+            min-height: 100px; /* حجز مساحة للنص */
+            margin-top: 20px;
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(10px);
             transition: all 1s ease;
-            background: rgba(255, 255, 255, 0.05);
-            padding: 20px;
-            border-radius: 15px;
-            border: 1px solid #ff1744;
         }
 
-        /* --- تنسيقات المشهد الثالث (المفاجأة) --- */
+        /* --- المشهد الثالث (المفاجأة) --- */
         .year-container {
             font-size: 5rem;
             font-weight: bold;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
+            direction: ltr; /* لتظهر الأرقام مرتبة بشكل صحيح */
         }
 
         .static-num { text-shadow: 0 0 20px rgba(33, 150, 243, 0.6); color: #E3F2FD; }
@@ -130,45 +144,36 @@
         .morph-wrapper {
             position: relative;
             display: inline-block;
-            width: 60px;
+            width: 55px; /* عرض ثابت */
+            height: 80px;
             text-align: center;
         }
 
         .digit-six {
             position: absolute; left: 0; top: 0; width: 100%;
-            transition: opacity 1.5s ease-in-out, transform 1.5s;
+            transition: opacity 1s ease-in-out, transform 1s;
             color: #E3F2FD;
         }
 
         .baby-icon {
-            position: absolute; left: 0; top: 0; width: 100%;
+            position: absolute; left: 0; top: 10px; width: 100%;
             opacity: 0;
             transform: scale(0.5);
-            transition: opacity 1.5s ease-in-out, transform 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            font-size: 5rem;
-            line-height: 1.1;
+            transition: opacity 1s ease-in-out, transform 1s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            font-size: 4rem; /* حجم مناسب للإيموجي */
         }
 
         /* تفعيل التحويل */
         .morph-active .digit-six { opacity: 0; transform: scale(1.5) rotate(20deg); }
-        .morph-active .baby-icon { opacity: 1; transform: scale(1.2); }
+        .morph-active .baby-icon { opacity: 1; transform: scale(1); }
 
-        .final-msg-line {
-            font-size: 1.3rem;
-            margin: 15px 0;
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 1s ease;
-            color: #BBDEFB;
-        }
-
-        /* كانفاس الألعاب النارية */
+        /* الكانفاس للألعاب النارية */
         canvas {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
             pointer-events: none;
         }
 
-        /* Animations Keyframes */
+        /* Animations */
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         @keyframes heartbeat { 0% { transform: scale(1); } 15% { transform: scale(1.15); } 30% { transform: scale(1); } 45% { transform: scale(1.15); } 60% { transform: scale(1); } }
@@ -178,11 +183,9 @@
 <body>
 
     <audio id="bgSound" src="baby.mp3"></audio>
-
     <canvas id="fireworksCanvas"></canvas>
 
     <div id="start-overlay">
-        <h2 style="margin-bottom: 20px; color: #ccc;">هل أنتِ جاهزة؟</h2>
         <button class="start-btn" onclick="startExperience()">اضغطي لبدء التحديث ↺</button>
     </div>
 
@@ -190,7 +193,7 @@
         <div class="loader" id="s1-loader"></div>
         <div class="text-line" id="s1-line1">جارٍ إغلاق ملفات 2025...</div>
         <div class="text-line" id="s1-line2">تم رصد <span class="highlight">تعب وألم</span> في الأيام الأخيرة...</div>
-        <div class="text-line" id="s1-line3" style="font-size: 1.5rem; margin-top: 30px; color: #fff;">
+        <div class="text-line" id="s1-line3" style="margin-top: 30px; color: #fff;">
             لكن النظام اكتشف أنكِ كنتِ <span class="highlight">أقوى وأجمل امرأة</span> تحملت كل هذا.
         </div>
     </div>
@@ -198,13 +201,16 @@
     <div class="scene" id="scene2">
         <div class="heart-icon">❤️</div>
         <div style="margin-bottom: 10px; color: #ffcdd2;">جارٍ تثبيت جرعات إضافية من الحب والدلال...</div>
-        <div class="progress-container">
-            <div class="progress-bar" id="p-bar"></div>
+        
+        <div class="progress-box">
+            <div class="progress-container">
+                <div class="progress-bar" id="p-bar"></div>
+            </div>
+            <div style="font-size: 1.5rem; font-weight: bold;" id="p-counter">0%</div>
         </div>
-        <div style="font-size: 2rem; font-weight: bold;" id="p-counter">0%</div>
         
         <div class="love-msg-box" id="s2-msg">
-            <p style="line-height: 1.6;">
+            <p style="line-height: 1.6; font-size: 1.2rem;">
                 "في 2026، أنا عكازك وقت التعب، وضحكتك وقت الحزن.<br>
                 أحبك أكثر من أي سنة مضت."
             </p>
@@ -220,28 +226,18 @@
             </div>
         </div>
         
-        <div class="final-msg-line" id="f-msg1">تم التحديث بنجاح! أهلاً بكم في سنة 2026</div>
-        <div class="final-msg-line" id="f-msg2" style="color: #64B5F6; font-weight: bold; font-size: 1.5rem;">
-            تنبيه: تم إضافة عضو جديد للمجموعة (The Baby)
-        </div>
-        <div class="final-msg-line" id="f-msg3">هذه السنة لن نكون اثنين.. سنكون عائلة 💙</div>
+        <div class="text-line" id="f-msg1">تم التحديث بنجاح...</div>
+        <div class="text-line" id="f-msg2">تنبيه: تم إضافة <span class="highlight">عضو جديد</span> للمجموعة...</div>
+        <div class="text-line" id="f-msg3" style="color: #64B5F6;">هذه السنة لن نكون اثنين.. سنكون عائلة 💙</div>
     </div>
 
     <script>
-        // المتغيرات وعناصر الصفحة
         const bgSound = document.getElementById('bgSound');
         
-        // --- التحكم في التسلسل الزمني ---
-        
         function startExperience() {
-            // إخفاء زر البداية
             document.getElementById('start-overlay').style.display = 'none';
-            
-            // تشغيل الصوت
             bgSound.volume = 0.6;
             bgSound.play().catch(e => console.log("Audio requires interaction"));
-
-            // بدء المشهد الأول
             playScene1();
         }
 
@@ -253,27 +249,20 @@
             setTimeout(() => { document.getElementById('s1-line2').classList.add('visible'); }, 3500);
             setTimeout(() => { 
                 document.getElementById('s1-line3').classList.add('visible');
-                document.getElementById('s1-loader').style.opacity = 0; // إخفاء التحميل
+                document.getElementById('s1-loader').style.opacity = 0; 
             }, 7000);
 
-            // الانتقال للمشهد الثاني بعد 12 ثانية
             setTimeout(() => {
-                scene1.style.opacity = 0; // تأثير تلاشي
-                setTimeout(() => {
-                    scene1.style.display = 'none';
-                    playScene2();
-                }, 1000);
+                scene1.style.opacity = 0;
+                setTimeout(() => { scene1.style.display = 'none'; playScene2(); }, 1000);
             }, 12000);
         }
 
         function playScene2() {
             const scene2 = document.getElementById('scene2');
             scene2.style.display = 'block';
-            
-            // تغيير لون الخلفية قليلاً للأحمر الداكن جداً
-            document.body.style.backgroundColor = "#1a0000";
+            document.body.style.backgroundColor = "#100000"; // أحمر داكن جداً
 
-            // تشغيل شريط التحميل
             let width = 0;
             const bar = document.getElementById('p-bar');
             const counter = document.getElementById('p-counter');
@@ -283,16 +272,11 @@
                 if(width >= 100) {
                     width = 100;
                     clearInterval(interval);
-                    // إظهار رسالة الحب
                     document.getElementById('s2-msg').classList.add('visible');
                     
-                    // الانتقال للمشهد الثالث بعد 6 ثواني من اكتمال التحميل
                     setTimeout(() => {
                         scene2.style.opacity = 0;
-                        setTimeout(() => {
-                            scene2.style.display = 'none';
-                            playScene3();
-                        }, 1000);
+                        setTimeout(() => { scene2.style.display = 'none'; playScene3(); }, 1000);
                     }, 6000);
                 }
                 bar.style.width = width + "%";
@@ -303,24 +287,22 @@
         function playScene3() {
             const scene3 = document.getElementById('scene3');
             scene3.style.display = 'block';
-            document.body.style.backgroundColor = "#000"; // العودة للأسود للألعاب النارية
+            document.body.style.backgroundColor = "#000"; 
 
-            // بدء الألعاب النارية
-            loopFireworks();
+            loopFireworks(); // بدء الألعاب النارية فوراً
 
-            // تحويل 6 إلى طفل بعد 2 ثانية
+            // بعد 3 ثوانٍ بالضبط: تحويل الـ 6 إلى طفل
             setTimeout(() => {
                 document.getElementById('morphBox').classList.add('morph-active');
-            }, 2000);
+            }, 3000);
 
-            // ظهور الرسائل بالتتابع
-            setTimeout(() => { document.getElementById('f-msg1').classList.add('visible'); }, 3500);
-            setTimeout(() => { document.getElementById('f-msg2').classList.add('visible'); }, 5500);
-            setTimeout(() => { document.getElementById('f-msg3').classList.add('visible'); }, 8000);
+            // ظهور النصوص بالتتابع بعد التحويل
+            setTimeout(() => { document.getElementById('f-msg1').classList.add('visible'); }, 4500);
+            setTimeout(() => { document.getElementById('f-msg2').classList.add('visible'); }, 6500);
+            setTimeout(() => { document.getElementById('f-msg3').classList.add('visible'); }, 8500);
         }
 
-
-        // --- كود الألعاب النارية (خفيف وسريع) ---
+        // كود الألعاب النارية
         const canvas = document.getElementById('fireworksCanvas');
         const ctx = canvas.getContext('2d');
         canvas.width = window.innerWidth;
@@ -328,7 +310,6 @@
         let particles = [];
 
         function createParticle(x, y) {
-            // ألوان زرقاء وذهبية
             const colors = ['#2196F3', '#64B5F6', '#BBDEFB', '#FFD700', '#FFFFFF'];
             for (let i = 0; i < 30; i++) {
                 particles.push({
@@ -343,35 +324,19 @@
 
         function loopFireworks() {
             requestAnimationFrame(loopFireworks);
-            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)'; // ذيل للتأثير
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            if (Math.random() < 0.05) { // معدل إطلاق الصواريخ
-                createParticle(Math.random() * canvas.width, Math.random() * canvas.height / 2);
-            }
-
+            if (Math.random() < 0.05) createParticle(Math.random() * canvas.width, Math.random() * canvas.height / 2);
             particles.forEach((p, index) => {
                 if (p.life > 0) {
-                    p.velocity.y += 0.05; // جاذبية
-                    p.x += p.velocity.x; p.y += p.velocity.y;
+                    p.velocity.y += 0.05; p.x += p.velocity.x; p.y += p.velocity.y;
                     p.life--; p.alpha -= 0.01;
-                    ctx.beginPath();
-                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-                    ctx.fillStyle = p.color;
-                    ctx.globalAlpha = p.alpha;
-                    ctx.fill();
-                    ctx.globalAlpha = 1;
-                } else {
-                    particles.splice(index, 1);
-                }
+                    ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color; ctx.globalAlpha = p.alpha; ctx.fill(); ctx.globalAlpha = 1;
+                } else { particles.splice(index, 1); }
             });
         }
-        
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-        });
-
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
     </script>
 </body>
 </html>
