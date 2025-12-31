@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحديث النظام 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- تنسيقات عامة --- */
+        body {
+            margin: 0; padding: 0; height: 100vh; width: 100vw;
+            background-color: #000; color: white;
+            font-family: 'Tajawal', sans-serif;
+            overflow: hidden;
+            display: flex; justify-content: center; align-items: center; text-align: center;
+        }
+
+        .scene {
+            display: none; position: absolute;
+            top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 90%; max-width: 600px; z-index: 10;
+        }
+
+        /* --- شاشة البداية --- */
+        #start-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            z-index: 1000;
+        }
+
+        .start-btn {
+            padding: 15px 40px; font-size: 1.3rem; background: #fff; color: #000;
+            border: none; border-radius: 50px; cursor: pointer;
+            font-family: 'Tajawal', sans-serif; font-weight: bold;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.4); animation: pulse 1.5s infinite;
+        }
+
+        /* --- نصوص المشاهد --- */
+        .text-line {
+            font-size: 1.3rem; margin-bottom: 20px; opacity: 0;
+            transform: translateY(20px); transition: opacity 1.5s ease, transform 1.5s ease;
+            color: #ccc; line-height: 1.6;
+        }
+        .highlight { color: #fff; font-weight: bold; text-shadow: 0 0 10px rgba(255,255,255,0.3); }
+        .visible { opacity: 1; transform: translateY(0); }
+
+        /* --- المشهد الأول --- */
+        .loader {
+            border: 3px solid #333; border-top: 3px solid #fff; border-radius: 50%;
+            width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto 30px auto;
+        }
+
+        /* --- المشهد الثاني --- */
+        .heart-icon {
+            font-size: 4rem; color: #ff1744; margin-bottom: 20px;
+            animation: heartbeat 1.3s infinite; 
+            display: inline-block;
+        }
+
+        .progress-box { width: 100%; height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .progress-container { width: 100%; height: 15px; background-color: #333; border-radius: 50px; overflow: hidden; margin-bottom: 10px; }
+        .progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #ff1744, #d50000); border-radius: 50px; transition: width 0.1s linear; }
+        
+        .flashing-words-box {
+            height: 50px; margin-top: 20px; font-size: 1.5rem; font-weight: bold;
+            color: #ff80ab; opacity: 0; transition: opacity 0.3s ease;
+        }
+        .flash-visible { opacity: 1; }
+
+        /* --- شاشة قفل الاسم (المشهد الإضافي) --- */
+        #password-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 2000;
+            flex-direction: column; justify-content: center; align-items: center;
+        }
+        .pwd-input {
+            padding: 10px; font-size: 1.2rem; border-radius: 10px; border: 2px solid #64B5F6;
+            outline: none; text-align: center; margin-bottom: 15px; width: 70%;
+            font-family: 'Tajawal', sans-serif;
+        }
+        .pwd-btn {
+            padding: 10px 30px; font-size: 1rem; background: #64B5F6; color: #000;
+            border: none; border-radius: 50px; cursor: pointer; font-weight: bold;
+        }
+        
+        /* زر المساعدة */
+        .help-btn {
+            padding: 8px 25px; font-size: 0.9rem; background: #FFD700; color: #000;
+            border: none; border-radius: 50px; cursor: pointer; font-weight: bold;
+            margin-top: 15px; display: none; animation: pulse 2s infinite;
+        }
+
+        .error-msg {
+            color: #ff1744; margin-top: 15px; font-weight: bold; min-height: 25px;
+        }
+        
+        /* عداد المحاولات */
+        .attempts-counter {
+            color: #FFD700; font-size: 0.9rem; margin-bottom: 10px; font-weight: bold;
+            border: 1px dashed #FFD700; padding: 5px 15px; border-radius: 20px;
+        }
+
+        /* شاشة التدمير الذاتي */
+        #destruct-screen {
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            position: absolute; width: 100%;
+        }
+        .destruct-timer {
+            font-size: 6rem; color: red; font-weight: bold; text-shadow: 0 0 20px red;
+            margin: 20px 0;
+        }
+        .destruct-warning {
+            color: #ef5350; font-size: 1.5rem; margin-bottom: 20px; font-weight: bold;
+        }
+
+        /* شاشة الهلهولة (النجاح) */
+        #success-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95); z-index: 2500;
+            flex-direction: column; justify-content: center; align-items: center;
+            text-align: center;
+        }
+        .success-text {
+            font-size: 2rem; color: #4CAF50; font-weight: bold; margin-bottom: 20px;
+            animation: pulse 1s infinite;
+        }
+
+        #input-group {
+            display: flex; flex-direction: column; align-items: center; width: 100%;
+        }
+
+        /* --- المشهد الثالث --- */
+        .year-container {
+            font-size: 5rem; font-weight: bold; margin-bottom: 10px;
+            display: flex; align-items: center; justify-content: center; direction: ltr;
+            transition: transform 1.5s ease;
+        }
+        /* كلاس لتحريك السنة للأسفل */
+        .year-move-down {
+            transform: translateY(120px); 
+        }
+
+        .static-num { text-shadow: 0 0 20px rgba(33, 150, 243, 0.6); color: #E3F2FD; }
+        
+        .morph-wrapper {
+            position: relative; display: inline-block;
+            width: 55px; height: 80px; text-align: center; top: -20px;
+        }
+
+        .digit-six { position: absolute; left: 0; top: 0; width: 100%; transition: opacity 1s ease-in-out, transform 1s; color: #E3F2FD; }
+        
+        .baby-icon {
+            position: absolute; left: 0; top: 10px; width: 100%; opacity: 0;
+            transform: scale(0.5); transition: opacity 1s ease-in-out, transform 1s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+            font-size: 4rem;
+        }
+
+        .morph-active .digit-six { opacity: 0; transform: scale(1.5) rotate(20deg); }
+        .morph-active .baby-icon { opacity: 1; transform: scale(1); }
+
+        #typing-container {
+            font-size: 1.1rem; line-height: 1.8; color: #fff;
+            min-height: 150px; margin-top: 10px; text-align: center;
+            font-weight: bold; white-space: pre-wrap; 
+        }
+        .cursor { display: inline-block; width: 2px; height: 1.2rem; background-color: #fff; animation: blink 0.8s infinite; margin-right: 2px; }
+
+        /* --- زر الواتساب --- */
+        .whatsapp-btn {
+            display: none; 
+            margin: 0 auto 30px auto; 
+            padding: 12px 30px;
+            background-color: #25D366; color: white; text-decoration: none;
+            border-radius: 50px; font-weight: bold; font-size: 1rem;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); animation: pulse 2s infinite;
+            opacity: 0; transition: opacity 1s;
+        }
+
+        /* --- زر الدعاء العائم --- */
+        .prayer-float {
+            position: fixed; top: 20px; right: 20px; 
+            width: 45px; height: 45px; border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255,255,255,0.5);
+            color: #fff; font-size: 1.2rem; display: none; 
+            justify-content: center; align-items: center; cursor: pointer;
+            z-index: 2000; opacity: 0; transition: opacity 1s;
+        }
+        .prayer-float:hover { background: rgba(255, 255, 255, 0.3); }
+
+        /* --- نافذة الدعاء (Modal) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9); z-index: 3000;
+            display: none; justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: #1a1a1a; padding: 30px; border-radius: 20px;
+            max-width: 80%; border: 1px solid #64B5F6; text-align: center;
+            box-shadow: 0 0 30px rgba(100, 181, 246, 0.2);
+        }
+        .close-modal { margin-top: 20px; padding: 8px 20px; background: #333; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+
+        /* --- رسالة المساعدة (Modal) --- */
+        #help-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); z-index: 4000;
+            justify-content: center; align-items: center;
+        }
+        .help-content {
+            background: #fff; color: #000; padding: 40px; border-radius: 20px;
+            font-size: 1.5rem; font-weight: bold;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+            text-align: center;
+        }
+
+        /* --- شريط التحديث السفلي --- */
+        #update-footer {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background-color: rgba(20, 20, 20, 0.95);
+            padding: 12px 0; display: none; justify-content: center; align-items: center;
+            font-size: 0.9rem; color: #ccc; z-index: 100; border-top: 1px solid #333;
+        }
+        .footer-spinner {
+            border: 2px solid rgba(255, 255, 255, 0.1); border-top: 2px solid #64B5F6;
+            border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; margin-left: 12px;
+        }
+
+        canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes blink { 50% { opacity: 0; } }
+        @keyframes heartbeat { 
+            0% { transform: scale(1); } 15% { transform: scale(1.2); } 30% { transform: scale(1); } 45% { transform: scale(1.2); } 60% { transform: scale(1); } 100% { transform: scale(1); }
+        }
+
+    </style>
+</head>
+<body>
+
+    <canvas id="fireworksCanvas"></canvas>
+
+    <div id="start-overlay">
+        <button class="start-btn" onclick="startExperience()">اضغطي لبدء التحديث ↺</button>
+    </div>
+
+    <div id="password-overlay">
+        <h2 id="security-title" style="margin-bottom: 20px; color: #64B5F6;">تنبيه أمني ⚠️</h2>
+        
+        <div id="input-group">
+            <p id="q-text" style="margin-bottom: 20px; font-size: 1.1rem;">للدخول إلى 2026.. ماهو لون اللباس الذي يرتديه يوسف اليوم 🤣؟</p>
+            
+            <div id="attempts-box" class="attempts-counter">باقي المحاولات: <span id="attempt-num">10</span></div>
+
+            <input type="text" id="nameInput" class="pwd-input" placeholder="اكتبي الجواب هنا...">
+            <button class="pwd-btn" onclick="checkAnswer()">تأكيد الدخول</button>
+            <button class="help-btn" id="helpBtn" onclick="showHelpMessage()">مساعدة 💡</button>
+        </div>
+
+        <div id="destruct-screen">
+            <div class="destruct-warning" id="destruct-msg-main">سيتم حذف الموقع نهائياً...</div>
+            <div class="destruct-warning" id="destruct-msg-sub" style="font-size: 1rem; color: #ccc;">فشل التحقق الأمني. لن يتم الدخول لعام 2026.</div>
+            <div class="destruct-timer" id="destruct-timer">10</div>
+        </div>
+
+        <div class="error-msg" id="errorMsg"></div>
+    </div>
+
+    <div id="help-modal" onclick="hideHelpMessage()">
+        <div class="help-content">
+            خطية تريد مساعده 🤣
+            <div style="font-size: 0.8rem; margin-top: 10px; color: #666;">(اضغطي لإغلاق الرسالة)</div>
+        </div>
+    </div>
+
+    <div id="success-overlay">
+        <div class="success-text">صلوات على محمد<br>تحتاجين هلهولة 👏👏</div>
+    </div>
+
+    <div class="prayer-float" id="prayerBtn" onclick="togglePrayer()">🤲</div>
+
+    <div class="modal-overlay" id="prayerModal">
+        <div class="modal-content">
+            <h3 style="color: #64B5F6; margin-bottom: 20px;">دعاء لزوجتي الغالية</h3>
+            <p style="line-height: 1.8; font-size: 1.1rem;">
+                "اللهم إني أستودعك زوجتي وجنينها، فاحفظهم بحفظك،<br>
+                وهون عليها ما تبقى من حملها،<br>
+                واجعلها سنة خير وبركة علينا يا أرحم الراحمين."
+            </p>
+            <button class="close-modal" onclick="togglePrayer()">آمين</button>
+        </div>
+    </div>
+
+    <div class="scene" id="scene1">
+        <div class="loader" id="s1-loader"></div>
+        <div class="text-line" id="s1-line1">جارٍ إغلاق ملفات سنة 2025...</div>
+        <div class="text-line" id="s1-line-update" style="color: #64B5F6;">
+            جاري أرشفة النسخة القديمة.. والتحضير لترقية 2026 🔄
+        </div>
+        <div class="text-line" id="s1-line2">تم رصد <span class="highlight">تعب وألم</span> في الأيام الأخيرة...</div>
+        <div class="text-line" id="s1-line3" style="margin-top: 30px; color: #fff;">
+            لكن النظام اكتشف أنكِ كنتِ <span class="highlight">أقوى وأجمل امرأة</span> تحملت كل هذا.
+        </div>
+    </div>
+
+    <div class="scene" id="scene2">
+        <div class="heart-icon">❤️</div>
+        <div style="margin-bottom: 10px; color: #ffcdd2;">جارٍ تثبيت جرعات إضافية من الحب والدلال...</div>
+        <div class="progress-box">
+            <div class="progress-container"><div class="progress-bar" id="p-bar"></div></div>
+            <div style="font-size: 1.5rem; font-weight: bold;" id="p-counter">0%</div>
+        </div>
+        <div class="flashing-words-box" id="love-words"></div>
+    </div>
+
+    <div class="scene" id="scene3">
+        <div class="year-container" id="year-cont">
+            <span class="static-num">202</span>
+            <div class="morph-wrapper" id="morphBox">
+                <span class="digit-six">6</span>
+                <span class="baby-icon">👶</span>
+            </div>
+        </div>
+        
+        <div id="typing-container"></div>
+        
+        <a href="https://wa.me/9647832268902?text=مفاجأة!%20🎁%20اكو%20هدية%20حقيقية%20تنتظرك%20جوة%20المخدة..%20روحي%20شوفيها%20😉" class="whatsapp-btn" id="wa-btn" target="_blank">
+            🚑 طلب دلال فوري (اضغطي هنا)
+        </a>
+
+        <div id="final-texts" style="display: none;">
+            <div class="text-line" id="f-msg1">تم التحديث بنجاح...</div>
+            <div class="text-line" id="f-msg2">تنبيه: تم إضافة <span class="highlight">عضو جديد</span> للمجموعة...</div>
+            <div class="text-line" id="f-msg3" style="color: #64B5F6; margin-top: -20px;">هذه السنة لن نكون اثنين.. سنكون عائلة 💙</div>
+        </div>
+    </div>
+
+    <div id="update-footer">
+        <div class="footer-spinner"></div>
+        <span>جاري تحديث السنة...</span>
+    </div>
+
+    <audio id="audioScene1" src="https://www.soundjay.com/free-music/snow-fall-01.mp3"></audio>
+    <audio id="audioHeart" src="https://www.soundjay.com/human/sounds/heartbeat-01a.mp3" loop></audio>
+    <audio id="audioTyping" src="https://www.soundjay.com/mechanical/sounds/typewriter-6.mp3" loop></audio>
+    <audio id="audioBaby" src="https://www.soundjay.com/human/sounds/baby-laughing-02.mp3"></audio>
+    <audio id="audioLaugh" src="https://www.soundjay.com/human/sounds/laughter-1.mp3"></audio>
+
+    <script>
+        const audioScene1 = document.getElementById('audioScene1');
+        const audioHeart = document.getElementById('audioHeart');
+        const audioTyping = document.getElementById('audioTyping');
+        const audioBaby = document.getElementById('audioBaby');
+        const audioLaugh = document.getElementById('audioLaugh');
+
+        audioScene1.volume = 0.5;
+        audioHeart.volume = 0.4;
+        audioTyping.volume = 0.3;
+
+        const letterToRuqaya = "إلى زوجتي العزيزة رقية الغالية..\nأحبج يروحي.. هاي الرسالة أريد أكلج بيها شكد أني فخور بيج، والله يروحي ما ألكه مثلج بهاي الدنيا أبد.\nروحي متعلقة بيج وما أعرف أعيش بدونج.\nكل عام أنتي إلي، وكل عام أنتي زوجتي، وكل عام أنتي كل ما أملك يا غاليتي وعزيزتي وكل دنيتي.\nأحبج يروحي، الله يحفظج إلي ويخليج، سنة سعيدة عليج حياتي.\n\n- حبيبك يوسف ❤️";
+
+        const loveWordsList = ["أحبج", "أعشكج", "أموت عليج", "حياتي أنتي", "عمري"];
+        
+        const funnyResponses = [
+            "شدعوة نسيتي؟ 😂",
+            "لا مو هذا اللون.. فكري زين",
+            "ركزي يمعودة!",
+            "ترا سهل.. لون مميز 🤣",
+            "خطأ! حاولي مرة ثانية",
+            "ها بدينة نغلس؟",
+            "مو احمر ولا اسود.. فكري بالعميق",
+            "شنو السالفة؟ ركزي",
+            "لا بربج؟ هذا جواب؟",
+            "ترا ازعل واقفل الموقع 😒",
+            "شغلي ذاكرتج شوية",
+            "ممم.. لا غلط",
+            "دوري زين بذاكرتج",
+            "عود صدك نسيتي؟",
+            "لا تحاولين تشمرين الوان بكيفج",
+            "الجواب يضحك ترا.. فكري",
+            "مو ازرك ولا اخضر",
+            "ترا دزيتلج صورة.. تذكري 😉",
+            "يلا عاد.. اريد ادخلج للسنة الجديدة",
+            "خاب لا تفشليني كدام الموقع",
+            "ترا العداد يمشي.. استعجلي",
+            "راح يخلص صبري مو بس المحاولات 🤣",
+            "زين اتصلي بيه اخذي مساعدة",
+            "ها.. استسلمتي؟",
+            "لتكتبين اي شي.. فكري ولج"
+        ];
+
+        let attemptsLeft = 10;
+        let isQuestion2 = false;
+        let attemptsQ2 = 0; 
+        let infiniteMode = false; 
+        let vibrationInterval;
+
+        function startExperience() {
+            document.getElementById('start-overlay').style.display = 'none';
+            playScene1();
+        }
+
+        function togglePrayer() {
+            const modal = document.getElementById('prayerModal');
+            modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function showHelpMessage() {
+            const modal = document.getElementById('help-modal');
+            modal.style.display = 'flex';
+            audioLaugh.currentTime = 0;
+            audioLaugh.play().catch(e => console.log("الصوت يحتاج تفاعل"));
+        }
+
+        function hideHelpMessage() {
+            const modal = document.getElementById('help-modal');
+            modal.style.display = 'none';
+            audioLaugh.pause();
+            audioLaugh.currentTime = 0;
+        }
+
+        function stopSound(audioElement) {
+            audioElement.pause();
+            audioElement.currentTime = 0;
+        }
+
+        function stopAllSounds() {
+            stopSound(audioScene1);
+            stopSound(audioHeart);
+            stopSound(audioTyping);
+            stopSound(audioBaby);
+            stopSound(audioLaugh);
+            if(vibrationInterval) clearInterval(vibrationInterval);
+        }
+
+        // --- وظيفة التحقق الرئيسية ---
+        function checkAnswer() {
+            const input = document.getElementById('nameInput');
+            const errorDiv = document.getElementById('errorMsg');
+            let val = input.value.trim();
+
+            // ------------------------------------
+            // الحالة الثانية: سؤال نسبة الحب
+            // ------------------------------------
+            if (isQuestion2) {
+                // الجواب الصحيح
+                if (val.includes("ما تنوصف") || val.includes("ماتنوصف") || val.includes("لا توصف")) {
+                    showSuccessAndProceed();
+                } else {
+                    // فشل في السؤال الثاني
+                    attemptsQ2++;
+                    
+                    if (attemptsQ2 == 1) {
+                        // أول خطأ
+                        errorDiv.innerText = "يمعوده بعد شسويلج اجي اني بمكانج اجاوب";
+                    } else if (attemptsQ2 == 2) {
+                        // ثاني خطأ
+                        errorDiv.innerText = "كتبتي قليل لو هواي؟ تره الجواب مو رقم عادي 🌚";
+                    } else if (attemptsQ2 >= 3) {
+                        // ثالث خطأ (العودة)
+                        errorDiv.innerText = "ايست منج.. ارجعي للسؤال الاول احسن 🤦‍♂️";
+                        setTimeout(() => {
+                            returnToFirstQuestion(); 
+                        }, 2000);
+                        return;
+                    }
+                    shakeInput(input);
+                }
+                return; 
+            }
+
+            // ------------------------------------
+            // الحالة الأولى: سؤال لون اللباس
+            // ------------------------------------
+            
+            // 1. فحص كلمات "بدون ملابس"
+            const nakedKeywords = ["لايرتدي", "لا يرتدي", "لايلبس", "لا يلبس", "عريان", "بدون", "ما لابس", "مايلبس", "ماكو لباس", "مالابس"];
+            let isNakedGuess = false;
+            nakedKeywords.forEach(word => {
+                if (val.includes(word)) isNakedGuess = true;
+            });
+
+            if (isNakedGuess) {
+                errorDiv.innerText = "اي مو اني رقيه😒";
+                shakeInput(input);
+                if (!infiniteMode) decreaseAttempts(); 
+                return;
+            } 
+            
+            // 2. الجواب الصحيح
+            if (val.includes("خرائي")) {
+                showSuccessAndProceed();
+            } else {
+                // 3. جواب خاطئ
+                if (!infiniteMode) {
+                    decreaseAttempts();
+                    if (attemptsLeft > 1) {
+                        const randomResp = funnyResponses[Math.floor(Math.random() * funnyResponses.length)];
+                        errorDiv.innerText = randomResp;
+                    }
+                } else {
+                    const randomResp = funnyResponses[Math.floor(Math.random() * funnyResponses.length)];
+                    errorDiv.innerText = randomResp;
+                }
+                shakeInput(input);
+            }
+        }
+
+        // --- دالة النجاح الجديدة ---
+        function showSuccessAndProceed() {
+            // إخفاء واجهة الإدخال
+            document.getElementById('input-group').style.display = 'none';
+            document.getElementById('security-title').style.display = 'none';
+            document.getElementById('errorMsg').style.display = 'none';
+            
+            // إظهار شاشة الهلهولة
+            const successOverlay = document.getElementById('success-overlay');
+            successOverlay.style.display = 'flex';
+            
+            // الانتظار 3 ثواني ثم الدخول
+            setTimeout(() => {
+                successOverlay.style.display = 'none';
+                document.getElementById('password-overlay').style.display = 'none';
+                playScene3();
+            }, 3000);
+        }
+
+        function shakeInput(input) {
+            input.style.border = "2px solid red";
+            setTimeout(() => { input.style.border = "2px solid #64B5F6"; }, 500);
+            if (navigator.vibrate) navigator.vibrate(200);
+        }
+
+        function decreaseAttempts() {
+            attemptsLeft--;
+            document.getElementById('attempt-num').innerText = attemptsLeft;
+
+            if (attemptsLeft === 1) {
+                document.getElementById('errorMsg').innerText = "اخر فرصة.. ركزي 😳";
+                document.getElementById('errorMsg').style.color = "red";
+            } 
+            else if (attemptsLeft <= 0) {
+                startDestructSequence();
+            }
+        }
+
+        function startDestructSequence() {
+            document.getElementById('input-group').style.display = 'none';
+            document.getElementById('security-title').style.display = 'none';
+            document.getElementById('errorMsg').innerText = "";
+            
+            const destructScreen = document.getElementById('destruct-screen');
+            destructScreen.style.display = 'flex';
+            
+            let timeLeft = 10;
+            const timerEl = document.getElementById('destruct-timer');
+            
+            let countdown = setInterval(() => {
+                timeLeft--;
+                timerEl.innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    timerEl.style.display = 'none';
+                    
+                    // إخفاء الرسائل القديمة
+                    document.getElementById('destruct-msg-sub').style.display = 'none';
+                    
+                    // إظهار الرسالة الجديدة فقط
+                    const mainMsg = document.getElementById('destruct-msg-main');
+                    mainMsg.innerText = "جذب يمعودة 🤣 يلا يلا سؤال ثاني هذا";
+                    mainMsg.style.color = "#4CAF50";
+                    
+                    setTimeout(() => {
+                        switchToSecondQuestion();
+                    }, 6000);
+                }
+            }, 1000);
+        }
+
+        function switchToSecondQuestion() {
+            document.getElementById('destruct-screen').style.display = 'none';
+            document.getElementById('input-group').style.display = 'flex';
+            document.getElementById('security-title').style.display = 'block';
+            
+            document.getElementById('attempts-box').style.display = 'none';
+            
+            document.getElementById('q-text').innerText = "سؤال الفرصة الأخيرة: كم نسبة حبي الج؟";
+            document.getElementById('nameInput').value = "";
+            document.getElementById('nameInput').placeholder = "اكتبي الجواب هنا...";
+            document.getElementById('errorMsg').innerText = "";
+            document.getElementById('errorMsg').style.color = "#ff1744"; 
+
+            isQuestion2 = true;
+            attemptsQ2 = 0; 
+        }
+
+        function returnToFirstQuestion() {
+            isQuestion2 = false;
+            infiniteMode = true; 
+
+            document.getElementById('q-text').innerText = "للدخول إلى 2026.. ماهو لون اللباس الذي يرتديه يوسف اليوم 🤣؟";
+            document.getElementById('nameInput').value = "";
+            document.getElementById('nameInput').placeholder = "اكتبي الجواب هنا...";
+            
+            document.getElementById('attempts-box').style.display = 'none';
+            
+            document.getElementById('errorMsg').innerText = "رجعتج لان ما فاد وياج السؤال السهل 😒";
+            
+            document.getElementById('helpBtn').style.display = 'inline-block';
+        }
+
+
+        function playScene1() {
+            stopAllSounds();
+            const scene1 = document.getElementById('scene1');
+            scene1.style.display = 'block';
+            
+            audioScene1.play().catch(e => console.log("تفاعل مطلوب"));
+
+            setTimeout(() => { document.getElementById('s1-line1').classList.add('visible'); }, 500); 
+            setTimeout(() => { document.getElementById('s1-line-update').classList.add('visible'); }, 3000); 
+            setTimeout(() => { document.getElementById('s1-line2').classList.add('visible'); }, 6000); 
+            setTimeout(() => { 
+                document.getElementById('s1-line3').classList.add('visible'); 
+                document.getElementById('s1-loader').style.opacity = 0; 
+            }, 9000);
+
+            setTimeout(() => {
+                scene1.style.opacity = 0;
+                let fade = setInterval(() => {
+                    if(audioScene1.volume > 0.05) audioScene1.volume -= 0.05;
+                    else { clearInterval(fade); stopSound(audioScene1); }
+                }, 200);
+
+                setTimeout(() => { scene1.style.display = 'none'; playScene2(); }, 1000);
+            }, 12000);
+        }
+
+        function playScene2() {
+            const scene2 = document.getElementById('scene2');
+            scene2.style.display = 'block';
+            document.body.style.backgroundColor = "#100000";
+
+            audioHeart.volume = 0.4; 
+            audioHeart.play().catch(e => console.log("تفاعل مطلوب"));
+
+            if (navigator.vibrate) {
+                 navigator.vibrate(200);
+                 vibrationInterval = setInterval(() => {
+                    navigator.vibrate(200);
+                }, 1300);
+            }
+
+            let width = 0;
+            const bar = document.getElementById('p-bar');
+            const counter = document.getElementById('p-counter');
+            const wordsBox = document.getElementById('love-words');
+            let wordIndex = 0;
+            
+            let wordInterval = setInterval(() => {
+                wordsBox.classList.remove('flash-visible'); 
+                setTimeout(() => {
+                    if (width < 100) {
+                        wordsBox.innerText = loveWordsList[wordIndex % loveWordsList.length];
+                        wordsBox.classList.add('flash-visible');
+                        wordIndex++;
+                    }
+                }, 300); 
+            }, 800);
+
+            let interval = setInterval(() => {
+                width += Math.random() * 1.5; 
+                if(width >= 100) {
+                    width = 100;
+                    clearInterval(interval);
+                    clearInterval(wordInterval); 
+                    wordsBox.innerText = ""; 
+                    
+                    setTimeout(() => {
+                        scene2.style.opacity = 0;
+                        setTimeout(() => { 
+                            scene2.style.display = 'none'; 
+                            // بدلاً من الذهاب للمشهد 3، نذهب للبوابة
+                            document.getElementById('password-overlay').style.display = 'flex';
+                            stopAllSounds(); // إيقاف صوت القلب
+                        }, 1000);
+                    }, 1000);
+                }
+                bar.style.width = width + "%";
+                counter.innerText = Math.floor(width) + "%";
+            }, 50);
+        }
+
+        function playScene3() {
+            stopAllSounds(); 
+
+            const scene3 = document.getElementById('scene3');
+            scene3.style.display = 'block';
+            document.body.style.backgroundColor = "#000"; 
+            
+            loopFireworks(); 
+            document.getElementById('update-footer').style.display = 'flex';
+
+            audioTyping.play().catch(e => console.log("تفاعل مطلوب"));
+
+            typeWriterEffect(letterToRuqaya, function() {
+                stopSound(audioTyping);
+
+                setTimeout(() => {
+                    const container = document.getElementById('typing-container');
+                    container.style.transition = "opacity 2s";
+                    container.style.opacity = 0;
+
+                    setTimeout(() => {
+                        triggerSurprise();
+                    }, 2000);
+                }, 8000); 
+            });
+        }
+
+        function typeWriterEffect(text, callback) {
+            const container = document.getElementById('typing-container');
+            let i = 0;
+            container.innerHTML = '<span class="cursor">|</span>';
+            function typing() {
+                if (i < text.length) {
+                    container.innerHTML = text.substring(0, i + 1) + '<span class="cursor">|</span>';
+                    i++;
+                    setTimeout(typing, 60); 
+                } else {
+                    if (callback) callback();
+                }
+            }
+            typing();
+        }
+
+        function triggerSurprise() {
+            document.getElementById('update-footer').style.display = 'none';
+            document.getElementById('morphBox').classList.add('morph-active');
+            
+            audioBaby.play().catch(e => console.log("تفاعل مطلوب"));
+            
+            // إظهار زر الدعاء
+            const prayerBtn = document.getElementById('prayerBtn');
+            prayerBtn.style.display = 'flex';
+            setTimeout(() => { prayerBtn.style.opacity = 1; }, 500);
+
+            // إظهار النصوص
+            const finalDiv = document.getElementById('final-texts');
+            finalDiv.style.display = 'block';
+            setTimeout(() => { document.getElementById('f-msg1').classList.add('visible'); }, 1500);
+            setTimeout(() => { document.getElementById('f-msg2').classList.add('visible'); }, 3500);
+            setTimeout(() => { document.getElementById('f-msg3').classList.add('visible'); }, 6000);
+
+            // بعد انتهاء النصوص، يظهر الزر وتنزل السنة
+            setTimeout(() => {
+                // إنزال السنة للأسفل
+                document.getElementById('year-cont').classList.add('year-move-down');
+
+                // إظهار زر الواتساب
+                const waBtn = document.getElementById('wa-btn');
+                waBtn.style.display = 'inline-block';
+                setTimeout(() => { waBtn.style.opacity = 1; }, 500);
+
+            }, 8000);
+        }
+
+        const canvas = document.getElementById('fireworksCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        let particles = [];
+        function createParticle(x, y) {
+            const colors = ['#2196F3', '#64B5F6', '#BBDEFB', '#FFD700', '#FFFFFF'];
+            for (let i = 0; i < 30; i++) {
+                particles.push({
+                    x: x, y: y, color: colors[Math.floor(Math.random() * colors.length)],
+                    radius: Math.random() * 3, velocity: { x: (Math.random() - 0.5) * 5, y: (Math.random() - 0.5) * 5 },
+                    life: 100, alpha: 1
+                });
+            }
+        }
+        function loopFireworks() {
+            requestAnimationFrame(loopFireworks);
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.2)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            if (Math.random() < 0.05) createParticle(Math.random() * canvas.width, Math.random() * canvas.height / 2);
+            particles.forEach((p, index) => {
+                if (p.life > 0) {
+                    p.velocity.y += 0.05; p.x += p.velocity.x; p.y += p.velocity.y;
+                    p.life--; p.alpha -= 0.01;
+                    ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color; ctx.globalAlpha = p.alpha; ctx.fill(); ctx.globalAlpha = 1;
+                } else { particles.splice(index, 1); }
+            });
+        }
+        window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
+    </script>
+</body>
+</html>
