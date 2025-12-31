@@ -38,7 +38,7 @@
 
         /* --- نصوص المشاهد --- */
         .text-line {
-            font-size: 1.3rem; margin-bottom: 15px; opacity: 0;
+            font-size: 1.3rem; margin-bottom: 20px; opacity: 0;
             transform: translateY(20px); transition: opacity 1.5s ease, transform 1.5s ease;
             color: #ccc; line-height: 1.6;
         }
@@ -68,14 +68,35 @@
         }
         .flash-visible { opacity: 1; }
 
+        /* --- شاشة قفل الاسم (المشهد الإضافي) --- */
+        #password-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.95); z-index: 2000;
+            flex-direction: column; justify-content: center; align-items: center;
+        }
+        .pwd-input {
+            padding: 10px; font-size: 1.2rem; border-radius: 10px; border: 2px solid #64B5F6;
+            outline: none; text-align: center; margin-bottom: 15px; width: 70%;
+            font-family: 'Tajawal', sans-serif;
+        }
+        .pwd-btn {
+            padding: 10px 30px; font-size: 1rem; background: #64B5F6; color: #000;
+            border: none; border-radius: 50px; cursor: pointer; font-weight: bold;
+        }
+        .error-msg {
+            color: #ff1744; margin-top: 15px; font-weight: bold; height: 20px;
+        }
+
         /* --- المشهد الثالث --- */
         .year-container {
-            font-size: 5rem; font-weight: bold; margin-bottom: 20px;
+            font-size: 5rem; font-weight: bold; margin-bottom: 10px;
             display: flex; align-items: center; justify-content: center; direction: ltr;
             transition: transform 1.5s ease;
         }
-        /* حركة السنة للأسفل قليلاً لافساح المجال */
-        .year-move-down { transform: translateY(20px); }
+        /* كلاس لتحريك السنة للأسفل (تم زيادتها بشكل كبير) */
+        .year-move-down {
+            transform: translateY(120px); /* نزلتها 120 بكسل عشان ترتاح */
+        }
 
         .static-num { text-shadow: 0 0 20px rgba(33, 150, 243, 0.6); color: #E3F2FD; }
         
@@ -102,10 +123,10 @@
         }
         .cursor { display: inline-block; width: 2px; height: 1.2rem; background-color: #fff; animation: blink 0.8s infinite; margin-right: 2px; }
 
-        /* --- زر الواتساب (تعديل ليكون فوق النصوص) --- */
+        /* --- زر الواتساب --- */
         .whatsapp-btn {
             display: none; 
-            margin: 0 auto 30px auto; /* مسافة من الأسفل */
+            margin: 0 auto 30px auto; 
             padding: 12px 30px;
             background-color: #25D366; color: white; text-decoration: none;
             border-radius: 50px; font-weight: bold; font-size: 1rem;
@@ -113,16 +134,16 @@
             opacity: 0; transition: opacity 1s;
         }
 
-        /* --- تلميح الهدية (تحت النصوص) --- */
+        /* --- تلميح الهدية --- */
         .gift-hint {
             display: none; margin-top: 25px; font-size: 1rem; color: #FFD700;
             opacity: 0; transition: opacity 1s; font-weight: bold;
             border: 1px dashed #FFD700; padding: 10px; border-radius: 10px;
         }
 
-        /* --- زر الدعاء العائم (تم وضعه في الزاوية) --- */
+        /* --- زر الدعاء العائم --- */
         .prayer-float {
-            position: fixed; top: 20px; right: 20px; /* الزاوية اليمنى العليا */
+            position: fixed; top: 20px; right: 20px; 
             width: 45px; height: 45px; border-radius: 50%;
             background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255,255,255,0.5);
             color: #fff; font-size: 1.2rem; display: none; 
@@ -175,6 +196,14 @@
         <button class="start-btn" onclick="startExperience()">اضغطي لبدء التحديث ↺</button>
     </div>
 
+    <div id="password-overlay">
+        <h2 style="margin-bottom: 20px; color: #64B5F6;">تنبيه أمني ⚠️</h2>
+        <p style="margin-bottom: 20px; font-size: 1.1rem;">للدخول إلى 2026.. اكتبي اسم أكثر شخص تحبينه؟</p>
+        <input type="text" id="nameInput" class="pwd-input" placeholder="اكتبي الاسم هنا...">
+        <button class="pwd-btn" onclick="checkName()">تأكيد الدخول</button>
+        <div class="error-msg" id="errorMsg"></div>
+    </div>
+
     <div class="prayer-float" id="prayerBtn" onclick="togglePrayer()">🤲</div>
 
     <div class="modal-overlay" id="prayerModal">
@@ -208,7 +237,6 @@
             <div class="progress-container"><div class="progress-bar" id="p-bar"></div></div>
             <div style="font-size: 1.5rem; font-weight: bold;" id="p-counter">0%</div>
         </div>
-        
         <div class="flashing-words-box" id="love-words"></div>
     </div>
 
@@ -261,6 +289,17 @@
         const letterToRuqaya = "إلى زوجتي العزيزة رقية الغالية..\nأحبج يروحي.. هاي الرسالة أريد أكلج بيها شكد أني فخور بيج، والله يروحي ما ألكه مثلج بهاي الدنيا أبد.\nروحي متعلقة بيج وما أعرف أعيش بدونج.\nكل عام أنتي إلي، وكل عام أنتي زوجتي، وكل عام أنتي كل ما أملك يا غاليتي وعزيزتي وكل دنيتي.\nأحبج يروحي، الله يحفظج إلي ويخليج، سنة سعيدة عليج حياتي.\n\n- حبيبك يوسف ❤️";
 
         const loveWordsList = ["أحبج", "أعشكج", "أموت عليج", "حياتي أنتي", "عمري"];
+        
+        // ردود مضحكة عند الخطأ
+        const funnyResponses = [
+            "منو هذا؟ 🤔",
+            "لا لا.. حاولي مرة ثانية",
+            "ترا أزعل! 😒",
+            "خطأ! اكتبي: يوسف",
+            "نسيتي اسمي؟ 😢",
+            "الرمز هو: يوسف"
+        ];
+
         let vibrationInterval;
 
         function startExperience() {
@@ -270,11 +309,7 @@
 
         function togglePrayer() {
             const modal = document.getElementById('prayerModal');
-            if (modal.style.display === 'flex') {
-                modal.style.display = 'none';
-            } else {
-                modal.style.display = 'flex';
-            }
+            modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
         }
 
         function stopSound(audioElement) {
@@ -288,6 +323,27 @@
             stopSound(audioTyping);
             stopSound(audioBaby);
             if(vibrationInterval) clearInterval(vibrationInterval);
+        }
+
+        // --- وظيفة التحقق من الاسم ---
+        function checkName() {
+            const input = document.getElementById('nameInput');
+            const errorDiv = document.getElementById('errorMsg');
+            const val = input.value.trim();
+
+            if (val.includes("يوسف") || val.includes("Yusuf") || val.includes("yusuf")) {
+                // النجاح
+                document.getElementById('password-overlay').style.display = 'none';
+                playScene3();
+            } else {
+                // الفشل - إظهار رد مضحك
+                const randomResp = funnyResponses[Math.floor(Math.random() * funnyResponses.length)];
+                errorDiv.innerText = randomResp;
+                
+                // اهتزاز الحقل (تأثير بصري)
+                input.style.border = "2px solid red";
+                setTimeout(() => { input.style.border = "2px solid #64B5F6"; }, 500);
+            }
         }
 
         function playScene1() {
@@ -360,7 +416,9 @@
                         scene2.style.opacity = 0;
                         setTimeout(() => { 
                             scene2.style.display = 'none'; 
-                            playScene3(); 
+                            // بدلاً من الذهاب للمشهد 3، نذهب للبوابة
+                            document.getElementById('password-overlay').style.display = 'flex';
+                            stopAllSounds(); // إيقاف صوت القلب
                         }, 1000);
                     }, 1000);
                 }
@@ -418,31 +476,33 @@
             
             audioBaby.play().catch(e => console.log("تفاعل مطلوب"));
             
-            // تحريك السنة للأسفل قليلاً
-            document.getElementById('year-cont').classList.add('year-move-down');
-
-            // إظهار زر الدعاء في الزاوية
+            // إظهار زر الدعاء
             const prayerBtn = document.getElementById('prayerBtn');
             prayerBtn.style.display = 'flex';
             setTimeout(() => { prayerBtn.style.opacity = 1; }, 500);
 
-            // إظهار زر الواتساب أولاً (لأنه في الأعلى)
-            const waBtn = document.getElementById('wa-btn');
-            waBtn.style.display = 'inline-block';
-            setTimeout(() => { waBtn.style.opacity = 1; }, 500);
-
-            // ثم إظهار النصوص تحته
+            // إظهار النصوص
             const finalDiv = document.getElementById('final-texts');
             finalDiv.style.display = 'block';
             setTimeout(() => { document.getElementById('f-msg1').classList.add('visible'); }, 1500);
             setTimeout(() => { document.getElementById('f-msg2').classList.add('visible'); }, 3500);
             setTimeout(() => { document.getElementById('f-msg3').classList.add('visible'); }, 6000);
 
-            // أخيراً تلميح الهدية في الأسفل
+            // بعد انتهاء النصوص، يظهر الزر وتنزل السنة (بتأخير 8 ثواني)
             setTimeout(() => {
+                // إنزال السنة للأسفل (مسافة كبيرة)
+                document.getElementById('year-cont').classList.add('year-move-down');
+
+                // إظهار زر الواتساب
+                const waBtn = document.getElementById('wa-btn');
+                waBtn.style.display = 'inline-block';
+                setTimeout(() => { waBtn.style.opacity = 1; }, 500);
+
+                // إظهار الهدية
                 const giftHint = document.getElementById('gift-hint');
                 giftHint.style.display = 'block';
                 setTimeout(() => { giftHint.style.opacity = 1; }, 800);
+
             }, 8000);
         }
 
