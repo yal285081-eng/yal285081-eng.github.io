@@ -93,9 +93,9 @@
             display: flex; align-items: center; justify-content: center; direction: ltr;
             transition: transform 1.5s ease;
         }
-        /* كلاس لتحريك السنة للأسفل (تم زيادتها بشكل كبير) */
+        /* كلاس لتحريك السنة للأسفل */
         .year-move-down {
-            transform: translateY(120px); /* نزلتها 120 بكسل عشان ترتاح */
+            transform: translateY(120px); 
         }
 
         .static-num { text-shadow: 0 0 20px rgba(33, 150, 243, 0.6); color: #E3F2FD; }
@@ -123,7 +123,7 @@
         }
         .cursor { display: inline-block; width: 2px; height: 1.2rem; background-color: #fff; animation: blink 0.8s infinite; margin-right: 2px; }
 
-        /* --- زر الواتساب --- */
+        /* --- زر الواتساب (محدث) --- */
         .whatsapp-btn {
             display: none; 
             margin: 0 auto 30px auto; 
@@ -132,13 +132,6 @@
             border-radius: 50px; font-weight: bold; font-size: 1rem;
             box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); animation: pulse 2s infinite;
             opacity: 0; transition: opacity 1s;
-        }
-
-        /* --- تلميح الهدية --- */
-        .gift-hint {
-            display: none; margin-top: 25px; font-size: 1rem; color: #FFD700;
-            opacity: 0; transition: opacity 1s; font-weight: bold;
-            border: 1px dashed #FFD700; padding: 10px; border-radius: 10px;
         }
 
         /* --- زر الدعاء العائم --- */
@@ -251,7 +244,7 @@
         
         <div id="typing-container"></div>
         
-        <a href="https://wa.me/9647832268902?text=عاشت%20ايدك%20حبيبي%20عالموقع%20يجنن!%20بس%20اني%20هسه%20محتاجة%20دلال..%20يمتى%20تجي؟%20❤️" class="whatsapp-btn" id="wa-btn" target="_blank">
+        <a href="https://wa.me/9647832268902?text=مفاجأة!%20🎁%20اكو%20هدية%20حقيقية%20تنتظرك%20جوة%20المخدة..%20روحي%20شوفيها%20😉" class="whatsapp-btn" id="wa-btn" target="_blank">
             🚑 طلب دلال فوري (اضغطي هنا)
         </a>
 
@@ -259,10 +252,6 @@
             <div class="text-line" id="f-msg1">تم التحديث بنجاح...</div>
             <div class="text-line" id="f-msg2">تنبيه: تم إضافة <span class="highlight">عضو جديد</span> للمجموعة...</div>
             <div class="text-line" id="f-msg3" style="color: #64B5F6;">هذه السنة لن نكون اثنين.. سنكون عائلة 💙</div>
-        </div>
-
-        <div class="gift-hint" id="gift-hint">
-            ملاحظة: اكو شي حقيقي ينتظرك جوة المخدة.. دوري عليه 😉🎁
         </div>
     </div>
 
@@ -488,20 +477,15 @@
             setTimeout(() => { document.getElementById('f-msg2').classList.add('visible'); }, 3500);
             setTimeout(() => { document.getElementById('f-msg3').classList.add('visible'); }, 6000);
 
-            // بعد انتهاء النصوص، يظهر الزر وتنزل السنة (بتأخير 8 ثواني)
+            // بعد انتهاء النصوص، يظهر الزر وتنزل السنة
             setTimeout(() => {
-                // إنزال السنة للأسفل (مسافة كبيرة)
+                // إنزال السنة للأسفل
                 document.getElementById('year-cont').classList.add('year-move-down');
 
-                // إظهار زر الواتساب
+                // إظهار زر الواتساب (بعنوانه المخادع)
                 const waBtn = document.getElementById('wa-btn');
                 waBtn.style.display = 'inline-block';
                 setTimeout(() => { waBtn.style.opacity = 1; }, 500);
-
-                // إظهار الهدية
-                const giftHint = document.getElementById('gift-hint');
-                giftHint.style.display = 'block';
-                setTimeout(() => { giftHint.style.opacity = 1; }, 800);
 
             }, 8000);
         }
