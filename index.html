@@ -159,19 +159,13 @@
         .morph-active .digit-six { opacity: 0; transform: scale(1.5) rotate(20deg); }
         .morph-active .baby-icon { opacity: 1; transform: scale(1); }
 
-        #typing-container {
-            font-size: 1.1rem; line-height: 1.8; color: #fff;
-            min-height: 150px; margin-top: 10px; text-align: center;
-            font-weight: bold; white-space: pre-wrap; 
-        }
-        .cursor { display: inline-block; width: 2px; height: 1.2rem; background-color: #fff; animation: blink 0.8s infinite; margin-right: 2px; }
-
-        /* --- زر الواتساب --- */
+        /* --- زر الواتساب (زر الدلال) --- */
         .whatsapp-btn {
             display: none; 
             margin: 0 auto 30px auto; 
             padding: 12px 30px;
-            background-color: #25D366; color: white; text-decoration: none;
+            background-color: #25D366; /* العودة للون الأخضر الأصلي */
+            color: white; text-decoration: none;
             border-radius: 50px; font-weight: bold; font-size: 1rem;
             box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); animation: pulse 2s infinite;
             opacity: 0; transition: opacity 1s;
@@ -404,6 +398,16 @@
         function togglePrayer() {
             const modal = document.getElementById('prayerModal');
             modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
+            
+            // --- تعديل: إظهار الزر (wa-btn) عند الضغط على الدعاء ---
+            const waBtn = document.getElementById('wa-btn');
+            // نظهره فقط إذا كان مخفياً
+            if (waBtn.style.display !== 'inline-block') {
+                waBtn.style.display = 'inline-block';
+                // تحريك السنة للأسفل لإفساح المجال للزر
+                document.getElementById('year-cont').classList.add('year-move-down');
+                setTimeout(() => { waBtn.style.opacity = 1; }, 100);
+            }
         }
 
         function showHelpMessage() {
@@ -488,8 +492,8 @@
                 return;
             } 
             
-            // 2. الجواب الصحيح
-            if (val.includes("خرائي")) {
+            // 2. الجواب الصحيح (تم التعديل هنا)
+            if (val.includes("كركمي")) {
                 showSuccessAndProceed();
             } else {
                 // 3. جواب خاطئ
@@ -752,18 +756,8 @@
             setTimeout(() => { document.getElementById('f-msg1').classList.add('visible'); }, 1500);
             setTimeout(() => { document.getElementById('f-msg2').classList.add('visible'); }, 3500);
             setTimeout(() => { document.getElementById('f-msg3').classList.add('visible'); }, 6000);
-
-            // بعد انتهاء النصوص، يظهر الزر وتنزل السنة
-            setTimeout(() => {
-                // إنزال السنة للأسفل
-                document.getElementById('year-cont').classList.add('year-move-down');
-
-                // إظهار زر الواتساب
-                const waBtn = document.getElementById('wa-btn');
-                waBtn.style.display = 'inline-block';
-                setTimeout(() => { waBtn.style.opacity = 1; }, 500);
-
-            }, 8000);
+            
+            // ملاحظة: تم إزالة إظهار زر الدلال من هنا، سيظهر عند الضغط على زر الدعاء
         }
 
         const canvas = document.getElementById('fireworksCanvas');
