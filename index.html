@@ -191,8 +191,8 @@
 
     <div id="password-overlay">
         <h2 style="margin-bottom: 20px; color: #64B5F6;">تنبيه أمني ⚠️</h2>
-        <p style="margin-bottom: 20px; font-size: 1.1rem;">للدخول إلى 2026.. اكتبي اسم أكثر شخص تحبينه؟</p>
-        <input type="text" id="nameInput" class="pwd-input" placeholder="اكتبي الاسم هنا...">
+        <p style="margin-bottom: 20px; font-size: 1.1rem;">للدخول إلى 2026.. ماهو لون اللباس الذي يرتديه يوسف اليوم 🤣؟</p>
+        <input type="text" id="nameInput" class="pwd-input" placeholder="اكتبي اللون هنا...">
         <button class="pwd-btn" onclick="checkName()">تأكيد الدخول</button>
         <div class="error-msg" id="errorMsg"></div>
     </div>
@@ -251,7 +251,7 @@
         <div id="final-texts" style="display: none;">
             <div class="text-line" id="f-msg1">تم التحديث بنجاح...</div>
             <div class="text-line" id="f-msg2">تنبيه: تم إضافة <span class="highlight">عضو جديد</span> للمجموعة...</div>
-            <div class="text-line" id="f-msg3" style="color: #64B5F6;">هذه السنة لن نكون اثنين.. سنكون عائلة 💙</div>
+            <div class="text-line" id="f-msg3" style="color: #64B5F6; margin-top: -20px;">هذه السنة لن نكون اثنين.. سنكون عائلة 💙</div>
         </div>
     </div>
 
@@ -279,14 +279,28 @@
 
         const loveWordsList = ["أحبج", "أعشكج", "أموت عليج", "حياتي أنتي", "عمري"];
         
-        // ردود مضحكة عند الخطأ
+        // 20 رد مضحك باللهجة العراقية
         const funnyResponses = [
-            "منو هذا؟ 🤔",
-            "لا لا.. حاولي مرة ثانية",
-            "ترا أزعل! 😒",
-            "خطأ! اكتبي: يوسف",
-            "نسيتي اسمي؟ 😢",
-            "الرمز هو: يوسف"
+            "شدعوة نسيتي؟ 😂",
+            "لا مو هذا اللون.. فكري زين",
+            "ركزي يمعودة!",
+            "ترا سهل.. لون مميز 🤣",
+            "خطأ! حاولي مرة ثانية",
+            "ها بدينة نغلس؟",
+            "مو احمر ولا اسود.. فكري بالعميق",
+            "شنو السالفة؟ ركزي",
+            "لا بربج؟ هذا جواب؟",
+            "ترا ازعل واقفل الموقع 😒",
+            "شغلي ذاكرتج شوية",
+            "ممم.. لا غلط",
+            "دوري زين بذاكرتج",
+            "عود صدك نسيتي؟",
+            "لا تحاولين تشمرين الوان بكيفج",
+            "الجواب يضحك ترا.. فكري",
+            "مو ازرك ولا اخضر",
+            "ترا دزيتلج صورة.. تذكري 😉",
+            "يلا عاد.. اريد ادخلج للسنة الجديدة",
+            "اخر فرصة.. ركزي!"
         ];
 
         let vibrationInterval;
@@ -314,22 +328,34 @@
             if(vibrationInterval) clearInterval(vibrationInterval);
         }
 
-        // --- وظيفة التحقق من الاسم ---
+        // --- وظيفة التحقق من اللون (تحديث جديد) ---
         function checkName() {
             const input = document.getElementById('nameInput');
             const errorDiv = document.getElementById('errorMsg');
-            const val = input.value.trim();
+            let val = input.value.trim();
 
-            if (val.includes("يوسف") || val.includes("Yusuf") || val.includes("yusuf")) {
+            // فحص كلمات "بدون ملابس"
+            const nakedKeywords = ["لايرتدي", "لا يرتدي", "لايلبس", "لا يلبس", "عريان", "بدون"];
+            let isNakedGuess = false;
+            nakedKeywords.forEach(word => {
+                if (val.includes(word)) isNakedGuess = true;
+            });
+
+            if (isNakedGuess) {
+                // الرد الخاص
+                errorDiv.innerText = "اي مو اني رقيه😒";
+                input.style.border = "2px solid red";
+                setTimeout(() => { input.style.border = "2px solid #64B5F6"; }, 800);
+            } 
+            else if (val.includes("خرائي")) {
                 // النجاح
                 document.getElementById('password-overlay').style.display = 'none';
                 playScene3();
             } else {
-                // الفشل - إظهار رد مضحك
+                // الفشل - رد مضحك عشوائي
                 const randomResp = funnyResponses[Math.floor(Math.random() * funnyResponses.length)];
                 errorDiv.innerText = randomResp;
                 
-                // اهتزاز الحقل (تأثير بصري)
                 input.style.border = "2px solid red";
                 setTimeout(() => { input.style.border = "2px solid #64B5F6"; }, 500);
             }
@@ -482,7 +508,7 @@
                 // إنزال السنة للأسفل
                 document.getElementById('year-cont').classList.add('year-move-down');
 
-                // إظهار زر الواتساب (بعنوانه المخادع)
+                // إظهار زر الواتساب
                 const waBtn = document.getElementById('wa-btn');
                 waBtn.style.display = 'inline-block';
                 setTimeout(() => { waBtn.style.opacity = 1; }, 500);
@@ -522,4 +548,4 @@
         window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
     </script>
 </body>
-</html>
+    </html>
