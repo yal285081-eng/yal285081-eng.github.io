@@ -38,7 +38,7 @@
 
         /* --- نصوص المشاهد --- */
         .text-line {
-            font-size: 1.3rem; margin-bottom: 20px; opacity: 0;
+            font-size: 1.3rem; margin-bottom: 15px; opacity: 0;
             transform: translateY(20px); transition: opacity 1.5s ease, transform 1.5s ease;
             color: #ccc; line-height: 1.6;
         }
@@ -70,11 +70,12 @@
 
         /* --- المشهد الثالث --- */
         .year-container {
-            font-size: 5rem; font-weight: bold; margin-bottom: 10px;
+            font-size: 5rem; font-weight: bold; margin-bottom: 20px;
             display: flex; align-items: center; justify-content: center; direction: ltr;
             transition: transform 1.5s ease;
         }
-        .year-move-down { transform: translateY(30px); }
+        /* حركة السنة للأسفل قليلاً لافساح المجال */
+        .year-move-down { transform: translateY(20px); }
 
         .static-num { text-shadow: 0 0 20px rgba(33, 150, 243, 0.6); color: #E3F2FD; }
         
@@ -101,28 +102,30 @@
         }
         .cursor { display: inline-block; width: 2px; height: 1.2rem; background-color: #fff; animation: blink 0.8s infinite; margin-right: 2px; }
 
-        /* --- زر الواتساب --- */
+        /* --- زر الواتساب (تعديل ليكون فوق النصوص) --- */
         .whatsapp-btn {
-            display: none; margin: 10px auto 10px auto; padding: 12px 30px;
+            display: none; 
+            margin: 0 auto 30px auto; /* مسافة من الأسفل */
+            padding: 12px 30px;
             background-color: #25D366; color: white; text-decoration: none;
             border-radius: 50px; font-weight: bold; font-size: 1rem;
             box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4); animation: pulse 2s infinite;
             opacity: 0; transition: opacity 1s;
         }
 
-        /* --- تلميح الهدية --- */
+        /* --- تلميح الهدية (تحت النصوص) --- */
         .gift-hint {
-            display: none; margin-top: 15px; font-size: 1rem; color: #FFD700;
+            display: none; margin-top: 25px; font-size: 1rem; color: #FFD700;
             opacity: 0; transition: opacity 1s; font-weight: bold;
             border: 1px dashed #FFD700; padding: 10px; border-radius: 10px;
         }
 
-        /* --- زر الدعاء العائم --- */
+        /* --- زر الدعاء العائم (تم وضعه في الزاوية) --- */
         .prayer-float {
-            position: fixed; top: 20px; left: 20px; 
-            width: 50px; height: 50px; border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1); border: 2px solid #fff;
-            color: #fff; font-size: 1.5rem; display: none; /* مخفي في البداية */
+            position: fixed; top: 20px; right: 20px; /* الزاوية اليمنى العليا */
+            width: 45px; height: 45px; border-radius: 50%;
+            background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255,255,255,0.5);
+            color: #fff; font-size: 1.2rem; display: none; 
             justify-content: center; align-items: center; cursor: pointer;
             z-index: 2000; opacity: 0; transition: opacity 1s;
         }
@@ -217,17 +220,18 @@
                 <span class="baby-icon">👶</span>
             </div>
         </div>
+        
         <div id="typing-container"></div>
         
+        <a href="https://wa.me/9647832268902?text=عاشت%20ايدك%20حبيبي%20عالموقع%20يجنن!%20بس%20اني%20هسه%20محتاجة%20دلال..%20يمتى%20تجي؟%20❤️" class="whatsapp-btn" id="wa-btn" target="_blank">
+            🚑 طلب دلال فوري (اضغطي هنا)
+        </a>
+
         <div id="final-texts" style="display: none;">
             <div class="text-line" id="f-msg1">تم التحديث بنجاح...</div>
             <div class="text-line" id="f-msg2">تنبيه: تم إضافة <span class="highlight">عضو جديد</span> للمجموعة...</div>
             <div class="text-line" id="f-msg3" style="color: #64B5F6;">هذه السنة لن نكون اثنين.. سنكون عائلة 💙</div>
         </div>
-
-        <a href="https://wa.me/9647832268902?text=عاشت%20ايدك%20حبيبي%20عالموقع%20يجنن!%20بس%20اني%20هسه%20محتاجة%20دلال..%20يمتى%20تجي؟%20❤️" class="whatsapp-btn" id="wa-btn" target="_blank">
-            🚑 طلب دلال فوري (اضغطي هنا)
-        </a>
 
         <div class="gift-hint" id="gift-hint">
             ملاحظة: اكو شي حقيقي ينتظرك جوة المخدة.. دوري عليه 😉🎁
@@ -254,7 +258,6 @@
         audioHeart.volume = 0.4;
         audioTyping.volume = 0.3;
 
-        // تم تحديث اسمك هنا
         const letterToRuqaya = "إلى زوجتي العزيزة رقية الغالية..\nأحبج يروحي.. هاي الرسالة أريد أكلج بيها شكد أني فخور بيج، والله يروحي ما ألكه مثلج بهاي الدنيا أبد.\nروحي متعلقة بيج وما أعرف أعيش بدونج.\nكل عام أنتي إلي، وكل عام أنتي زوجتي، وكل عام أنتي كل ما أملك يا غاليتي وعزيزتي وكل دنيتي.\nأحبج يروحي، الله يحفظج إلي ويخليج، سنة سعيدة عليج حياتي.\n\n- حبيبك يوسف ❤️";
 
         const loveWordsList = ["أحبج", "أعشكج", "أموت عليج", "حياتي أنتي", "عمري"];
@@ -265,7 +268,6 @@
             playScene1();
         }
 
-        // دالة إظهار/إخفاء الدعاء
         function togglePrayer() {
             const modal = document.getElementById('prayerModal');
             if (modal.style.display === 'flex') {
@@ -416,31 +418,31 @@
             
             audioBaby.play().catch(e => console.log("تفاعل مطلوب"));
             
-            // إظهار زر الدعاء
+            // تحريك السنة للأسفل قليلاً
+            document.getElementById('year-cont').classList.add('year-move-down');
+
+            // إظهار زر الدعاء في الزاوية
             const prayerBtn = document.getElementById('prayerBtn');
             prayerBtn.style.display = 'flex';
             setTimeout(() => { prayerBtn.style.opacity = 1; }, 500);
 
+            // إظهار زر الواتساب أولاً (لأنه في الأعلى)
+            const waBtn = document.getElementById('wa-btn');
+            waBtn.style.display = 'inline-block';
+            setTimeout(() => { waBtn.style.opacity = 1; }, 500);
+
+            // ثم إظهار النصوص تحته
             const finalDiv = document.getElementById('final-texts');
             finalDiv.style.display = 'block';
             setTimeout(() => { document.getElementById('f-msg1').classList.add('visible'); }, 1500);
             setTimeout(() => { document.getElementById('f-msg2').classList.add('visible'); }, 3500);
             setTimeout(() => { document.getElementById('f-msg3').classList.add('visible'); }, 6000);
 
-            // بعد انتهاء الرسالة الأخيرة (8 ثواني)، يظهر الزر وتنزل السنة وتظهر الهدية
+            // أخيراً تلميح الهدية في الأسفل
             setTimeout(() => {
-                document.getElementById('year-cont').classList.add('year-move-down');
-
-                // زر الواتساب
-                const waBtn = document.getElementById('wa-btn');
-                waBtn.style.display = 'inline-block';
-                setTimeout(() => { waBtn.style.opacity = 1; }, 100);
-
-                // تلميح الهدية (يظهر بعد الزر بقليل)
                 const giftHint = document.getElementById('gift-hint');
                 giftHint.style.display = 'block';
                 setTimeout(() => { giftHint.style.opacity = 1; }, 800);
-
             }, 8000);
         }
 
