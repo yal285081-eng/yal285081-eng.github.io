@@ -134,9 +134,8 @@
         .year-container {
             font-size: 5rem; font-weight: bold; margin-bottom: 10px;
             display: flex; align-items: center; justify-content: center; direction: ltr;
-            transition: transform 1.5s ease;
+            transform: translateY(120px); /* وضع السنة في الأسفل من البداية */
         }
-        .year-move-down { transform: translateY(120px); }
 
         .static-num { text-shadow: 0 0 20px rgba(33, 150, 243, 0.6); color: #E3F2FD; }
         
@@ -202,18 +201,18 @@
         }
         .close-modal { margin-top: 20px; padding: 8px 20px; background: #333; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
 
-        /* --- تصميم عجلة الحظ (الثابتة مع سهم متحرك) --- */
+        /* --- تصميم عجلة الحظ (المعدلة) --- */
         .wheel-container {
             position: relative; width: 300px; height: 300px; margin: 0 auto 20px auto;
             border-radius: 50%; border: 5px solid #fff; overflow: hidden;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
-            /* الخلفية الملونة */
+            /* الخلفية الملونة مقسمة لـ 5 خيارات */
             background: conic-gradient(
-                #FF5722 0deg 85deg,   /* سفرة */
-                #FFC107 85deg 170deg, /* ذهب */
-                #4CAF50 170deg 255deg,/* سيارة */
-                #9C27B0 255deg 340deg,/* قصر */
-                #2196F3 340deg 360deg /* الطفل */
+                #FF5722 0deg 72deg,   /* سيارة */
+                #FFC107 72deg 144deg, /* كيلو ذهب */
+                #4CAF50 144deg 216deg,/* قصر */
+                #9C27B0 216deg 288deg,/* فلووووس */
+                #2196F3 288deg 360deg /* ابني */
             );
         }
 
@@ -248,21 +247,21 @@
         }
         .lbl-text {
             position: absolute; top: 50%; left: 50%;
-            transform-origin: 0 0; font-weight: bold; font-size: 0.85rem;
+            transform-origin: 0 0; font-weight: bold; font-size: 0.7rem; /* تصغير الخط */
             text-shadow: 1px 1px 2px #000; width: 120px; text-align: center;
         }
 
-        /* مواقع النصوص لكي تكون "عدلة" قدر الإمكان */
-        /* حساب الزوايا تقريباً لتكون بمنتصف القطاع */
-        .txt-1 { transform: rotate(45deg) translate(50px, -50%) rotate(-45deg); } /* المالديف */
-        .txt-2 { transform: rotate(130deg) translate(60px, -50%) rotate(-130deg); } /* الذهب */
-        .txt-3 { transform: rotate(215deg) translate(60px, -50%) rotate(-215deg); } /* السيارة */
-        .txt-4 { transform: rotate(300deg) translate(60px, -50%) rotate(-300deg); } /* القصر */
-        /* الطفل (المكان الضيق) */
-        .txt-5 { 
-            transform: rotate(350deg) translate(90px, 0) rotate(-350deg); 
-            font-size: 0.65rem; width: 80px; text-align: center;
-        }
+        /* مواقع النصوص الجديدة */
+        /* سيارة */
+        .txt-1 { transform: rotate(36deg) translate(60px, -50%) rotate(-36deg); }
+        /* كيلو ذهب */
+        .txt-2 { transform: rotate(108deg) translate(60px, -50%) rotate(-108deg); }
+        /* قصر */
+        .txt-3 { transform: rotate(180deg) translate(60px, -50%) rotate(-180deg); }
+        /* فلووووس */
+        .txt-4 { transform: rotate(252deg) translate(60px, -50%) rotate(-252deg); }
+        /* ابني */
+        .txt-5 { transform: rotate(324deg) translate(60px, -50%) rotate(-324deg); font-size: 0.6rem; }
 
         /* --- رسالة الجائزة (الهدية) --- */
         #prize-modal-content {
@@ -378,11 +377,11 @@
                 <p style="font-size: 0.9rem; color: #ccc; margin-bottom: 10px;">فري العجلة وشوفي هديتج (ان شاء الله سيارة)</p>
                 
                 <div class="wheel-container">
-                    <div class="wheel-label txt-1">سفرة للمالديف ✈️</div>
-                    <div class="wheel-label txt-2">كيلو ذهب 👑</div>
-                    <div class="wheel-label txt-3">سيارة جكسارة 🚘</div>
-                    <div class="wheel-label txt-4">قصر بزيونة 🏰</div>
-                    <div class="wheel-label txt-5">ابني الي راح يطلع عليه 👶</div>
+                    <div class="wheel-label"><div class="lbl-text txt-1">سيارة 🚘</div></div>
+                    <div class="wheel-label"><div class="lbl-text txt-2">كيلو ذهب 👑</div></div>
+                    <div class="wheel-label"><div class="lbl-text txt-3">قصر 🏰</div></div>
+                    <div class="wheel-label"><div class="lbl-text txt-4">فلووووس 💰</div></div>
+                    <div class="wheel-label"><div class="lbl-text txt-5">ابني الي راح يطلع عليه 👶</div></div>
                     
                     <div class="wheel-arrow-spinner" id="arrowSpinner"></div>
                     <div class="center-dot"></div>
@@ -558,22 +557,35 @@
 
         function spinTheWheel() {
             const arrow = document.getElementById('arrowSpinner');
-            // الهدف: القسم الأزرق (340-360)
-            // السهم يدور حول المركز. يحتاج يوقف بين 340 و 360 درجة.
-            // 360 * 5 لفات = 1800
-            // نضيف 350 ليوصل للنص
-            arrowRotation += (1800 + 350); 
             
+            // الهدف: القسم الأزرق (الطفل)، والذي يقع بين 288 و 360 درجة.
+            // منتصف هذا القسم هو 324 درجة.
+            // نريد أن يدور السهم 5 دورات كاملة (1800 درجة) ويتوقف على 324.
+            arrowRotation = 1800 + 324; 
+            
+            arrow.style.transition = "transform 4s cubic-bezier(0.2, 0.8, 0.3, 1)";
             arrow.style.transform = `translate(-50%, -100%) rotate(${arrowRotation}deg)`;
             
             const btns = document.querySelectorAll('.start-btn');
             btns.forEach(b => b.disabled = true);
             
             setTimeout(() => {
-                document.getElementById('wheel-interface').style.display = 'none';
-                document.getElementById('prize-modal-content').style.display = 'flex';
-                btns.forEach(b => b.disabled = false);
-            }, 4100); 
+                // هنا الخدعة: بعد أن يتباطأ السهم وقبل أن يتوقف تماماً، نجعله يقفز بسرعة إلى خيار الطفل
+                // نقوم بتغيير الترانزيشن ليكون سريع جداً
+                arrow.style.transition = "transform 0.3s ease-out";
+                // نضبط الزاوية النهائية لتكون على منتصف قسم الطفل تماماً
+                arrowRotation += 10; // إضافة صغيرة للقفزة
+                arrow.style.transform = `translate(-50%, -100%) rotate(${arrowRotation}deg)`;
+
+                setTimeout(() => {
+                    document.getElementById('wheel-interface').style.display = 'none';
+                    document.getElementById('prize-modal-content').style.display = 'flex';
+                    btns.forEach(b => b.disabled = false);
+                    // إعادة الترانزيشن لطبيعته للمرة القادمة (إن وجدت)
+                    arrow.style.transition = "transform 4s cubic-bezier(0.2, 0.8, 0.3, 1)";
+                }, 300); // انتظار القفزة السريعة
+
+            }, 3700); // انتظار معظم مدة الدوران (أقل من 4 ثواني بقليل)
         }
 
         function showHelpMessage() {
@@ -774,9 +786,8 @@
 
             // بعد انتهاء النصوص، يظهر الزر وتنزل السنة
             setTimeout(() => {
-                document.getElementById('year-cont').classList.add('year-move-down');
-                // ملاحظة: الزر هنا لن يظهر، لأننا غيرنا منطقه في checkShowMainButton
-                // لكن سنبقيه هنا مخفياً كاحتياط، وسيعتمد ظهوره على الأزرار العائمة
+                // لا نحتاج لتحريك السنة للأسفل لأنها هناك بالفعل
+                // document.getElementById('year-cont').classList.add('year-move-down');
             }, 8000);
         }
 
