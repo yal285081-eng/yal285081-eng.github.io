@@ -61,11 +61,22 @@
         .progress-box { width: 100%; height: 80px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
         .progress-container { width: 100%; height: 15px; background-color: #333; border-radius: 50px; overflow: hidden; margin-bottom: 10px; }
         .progress-bar { width: 0%; height: 100%; background: linear-gradient(90deg, #ff1744, #d50000); border-radius: 50px; transition: width 0.1s linear; }
-        .love-msg-box { min-height: 100px; margin-top: 20px; opacity: 0; transform: translateY(10px); transition: all 1s ease; }
+        
+        /* تنسيق الكلمات الفلاشية في المشهد الثاني */
+        .flashing-words-box {
+            height: 50px; /* ارتفاع ثابت لمنع الحركة */
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ff80ab;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .flash-visible { opacity: 1; }
 
         /* --- المشهد الثالث --- */
         .year-container {
-            font-size: 5rem; font-weight: bold; margin-bottom: 20px;
+            font-size: 5rem; font-weight: bold; margin-bottom: 10px;
             display: flex; align-items: center; justify-content: center; direction: ltr;
         }
         .static-num { text-shadow: 0 0 20px rgba(33, 150, 243, 0.6); color: #E3F2FD; }
@@ -88,22 +99,22 @@
 
         #typing-container {
             font-size: 1.1rem; line-height: 1.8; color: #fff;
-            min-height: 150px; margin-top: 20px; text-align: center;
+            min-height: 150px; margin-top: 10px; text-align: center;
             font-weight: bold; white-space: pre-wrap; 
         }
         .cursor { display: inline-block; width: 2px; height: 1.2rem; background-color: #fff; animation: blink 0.8s infinite; margin-right: 2px; }
 
-        /* --- زر التلجرام الجديد --- */
+        /* --- زر التلجرام --- */
         .telegram-btn {
-            display: none; /* مخفي في البداية */
-            margin: 30px auto 0 auto; /* توسيط الزر */
-            padding: 15px 40px;
-            background-color: #0088cc; /* لون تلجرام */
+            display: none; 
+            margin: 10px auto 20px auto; /* مسافة فوق وتحت */
+            padding: 12px 30px;
+            background-color: #0088cc; 
             color: white;
             text-decoration: none;
             border-radius: 50px;
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1rem;
             box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4);
             animation: pulse 2s infinite;
             opacity: 0;
@@ -160,12 +171,8 @@
             <div class="progress-container"><div class="progress-bar" id="p-bar"></div></div>
             <div style="font-size: 1.5rem; font-weight: bold;" id="p-counter">0%</div>
         </div>
-        <div class="love-msg-box" id="s2-msg">
-            <p style="line-height: 1.6; font-size: 1.2rem;">
-                "في 2026، أنا عكازك وقت التعب، وضحكتك وقت الحزن.<br>
-                أحبك أكثر من أي سنة مضت."
-            </p>
-        </div>
+        
+        <div class="flashing-words-box" id="love-words"></div>
     </div>
 
     <div class="scene" id="scene3">
@@ -177,15 +184,16 @@
             </div>
         </div>
         <div id="typing-container"></div>
+        
+        <a href="https://t.me/f3z39" class="telegram-btn" id="tg-btn" target="_blank">
+            🚑 طلب دلال فوري (تليجرام)
+        </a>
+
         <div id="final-texts" style="display: none;">
             <div class="text-line" id="f-msg1">تم التحديث بنجاح...</div>
             <div class="text-line" id="f-msg2">تنبيه: تم إضافة <span class="highlight">عضو جديد</span> للمجموعة...</div>
             <div class="text-line" id="f-msg3" style="color: #64B5F6;">هذه السنة لن نكون اثنين.. سنكون عائلة 💙</div>
         </div>
-        
-        <a href="https://t.me/+9647832268902" class="telegram-btn" id="tg-btn" target="_blank">
-            🚑 طلب دلال فوري (تليجرام)
-        </a>
     </div>
 
     <div id="update-footer">
@@ -199,20 +207,19 @@
     <audio id="audioBaby" src="https://www.soundjay.com/human/sounds/baby-laughing-02.mp3"></audio>
 
     <script>
-        // تعريف عناصر الصوت
         const audioScene1 = document.getElementById('audioScene1');
         const audioHeart = document.getElementById('audioHeart');
         const audioTyping = document.getElementById('audioTyping');
         const audioBaby = document.getElementById('audioBaby');
 
-        // ضبط مستوى الصوت
         audioScene1.volume = 0.5;
         audioHeart.volume = 0.4;
         audioTyping.volume = 0.3;
 
         const letterToRuqaya = "إلى زوجتي العزيزة رقية الغالية..\nأحبج يروحي.. هاي الرسالة أريد أكلج بيها شكد أني فخور بيج، والله يروحي ما ألكه مثلج بهاي الدنيا أبد.\nروحي متعلقة بيج وما أعرف أعيش بدونج.\nكل عام أنتي إلي، وكل عام أنتي زوجتي، وكل عام أنتي كل ما أملك يا غاليتي وعزيزتي وكل دنيتي.\nأحبج يروحي، الله يحفظج إلي ويخليج، سنة سعيدة عليج حياتي ❤️";
 
-        // متغير لاهتزاز القلب
+        // كلمات الحب للمشهد الثاني
+        const loveWordsList = ["أحبج", "أعشكج", "أموت عليج", "حياتي أنتي", "عمري"];
         let vibrationInterval;
 
         function startExperience() {
@@ -220,13 +227,11 @@
             playScene1();
         }
 
-        // دالة لإيقاف الصوت
         function stopSound(audioElement) {
             audioElement.pause();
             audioElement.currentTime = 0;
         }
 
-        // إيقاف الكل
         function stopAllSounds() {
             stopSound(audioScene1);
             stopSound(audioHeart);
@@ -240,7 +245,6 @@
             const scene1 = document.getElementById('scene1');
             scene1.style.display = 'block';
             
-            // تشغيل موسيقى المشهد الأول
             audioScene1.play().catch(e => console.log("تفاعل مطلوب"));
 
             setTimeout(() => { document.getElementById('s1-line1').classList.add('visible'); }, 500); 
@@ -251,7 +255,6 @@
                 document.getElementById('s1-loader').style.opacity = 0; 
             }, 9000);
 
-            // تقليل وقت الانتظار هنا للانتقال السريع
             setTimeout(() => {
                 scene1.style.opacity = 0;
                 let fade = setInterval(() => {
@@ -260,7 +263,7 @@
                 }, 200);
 
                 setTimeout(() => { scene1.style.display = 'none'; playScene2(); }, 1000);
-            }, 12000); // تم تقليل الوقت إلى 12 ثانية بدلاً من 15
+            }, 12000);
         }
 
         function playScene2() {
@@ -268,15 +271,11 @@
             scene2.style.display = 'block';
             document.body.style.backgroundColor = "#100000";
 
-            // تشغيل صوت القلب
             audioHeart.volume = 0.4; 
             audioHeart.play().catch(e => console.log("تفاعل مطلوب"));
 
-            // تفعيل الاهتزاز مع دقات القلب (يعمل على أندرويد)
             if (navigator.vibrate) {
-                 // اهتزاز لمدة 200 ملي ثانية
                  navigator.vibrate(200);
-                 
                  vibrationInterval = setInterval(() => {
                     navigator.vibrate(200);
                 }, 1300);
@@ -285,13 +284,30 @@
             let width = 0;
             const bar = document.getElementById('p-bar');
             const counter = document.getElementById('p-counter');
+            const wordsBox = document.getElementById('love-words');
+            let wordIndex = 0;
             
+            // دالة تغيير الكلمات
+            let wordInterval = setInterval(() => {
+                wordsBox.classList.remove('flash-visible'); // إخفاء
+                
+                setTimeout(() => {
+                    if (width < 100) {
+                        wordsBox.innerText = loveWordsList[wordIndex % loveWordsList.length];
+                        wordsBox.classList.add('flash-visible'); // إظهار
+                        wordIndex++;
+                    }
+                }, 300); 
+            }, 800); // تغيير الكلمة كل 0.8 ثانية
+
+            // شريط التحميل
             let interval = setInterval(() => {
                 width += Math.random() * 1.5; 
                 if(width >= 100) {
                     width = 100;
                     clearInterval(interval);
-                    document.getElementById('s2-msg').classList.add('visible');
+                    clearInterval(wordInterval); // إيقاف الكلمات
+                    wordsBox.innerText = ""; // مسح النص
                     
                     setTimeout(() => {
                         scene2.style.opacity = 0;
@@ -299,7 +315,7 @@
                             scene2.style.display = 'none'; 
                             playScene3(); 
                         }, 1000);
-                    }, 6000);
+                    }, 1000);
                 }
                 bar.style.width = width + "%";
                 counter.innerText = Math.floor(width) + "%";
@@ -355,17 +371,16 @@
             
             audioBaby.play().catch(e => console.log("تفاعل مطلوب"));
             
-            document.getElementById('final-texts').style.display = 'block';
+            // إظهار الزر والنصوص
+            const tgBtn = document.getElementById('tg-btn');
+            tgBtn.style.display = 'inline-block';
+            setTimeout(() => { tgBtn.style.opacity = 1; }, 500);
+
+            const finalDiv = document.getElementById('final-texts');
+            finalDiv.style.display = 'block';
             setTimeout(() => { document.getElementById('f-msg1').classList.add('visible'); }, 1500);
             setTimeout(() => { document.getElementById('f-msg2').classList.add('visible'); }, 3500);
             setTimeout(() => { document.getElementById('f-msg3').classList.add('visible'); }, 6000);
-
-            // إظهار زر التلجرام بعد ظهور النصوص
-            setTimeout(() => {
-                const tgBtn = document.getElementById('tg-btn');
-                tgBtn.style.display = 'inline-block';
-                setTimeout(() => { tgBtn.style.opacity = 1; }, 100);
-            }, 8000);
         }
 
         const canvas = document.getElementById('fireworksCanvas');
@@ -400,4 +415,4 @@
         window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
     </script>
 </body>
-</html> 
+</html>
