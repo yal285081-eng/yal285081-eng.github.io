@@ -64,7 +64,7 @@
         
         /* تنسيق الكلمات الفلاشية في المشهد الثاني */
         .flashing-words-box {
-            height: 50px; /* ارتفاع ثابت لمنع الحركة */
+            height: 50px; 
             margin-top: 20px;
             font-size: 1.5rem;
             font-weight: bold;
@@ -78,7 +78,13 @@
         .year-container {
             font-size: 5rem; font-weight: bold; margin-bottom: 10px;
             display: flex; align-items: center; justify-content: center; direction: ltr;
+            transition: transform 1.5s ease; /* تأثير حركة ناعم */
         }
+        /* كلاس لتحريك السنة للأسفل */
+        .year-move-down {
+            transform: translateY(30px); /* تنزل 30 بكسل للأسفل */
+        }
+
         .static-num { text-shadow: 0 0 20px rgba(33, 150, 243, 0.6); color: #E3F2FD; }
         
         .morph-wrapper {
@@ -104,18 +110,18 @@
         }
         .cursor { display: inline-block; width: 2px; height: 1.2rem; background-color: #fff; animation: blink 0.8s infinite; margin-right: 2px; }
 
-        /* --- زر التلجرام --- */
-        .telegram-btn {
+        /* --- زر الواتساب (مكانه فوق النصوص) --- */
+        .whatsapp-btn {
             display: none; 
-            margin: 10px auto 20px auto; /* مسافة فوق وتحت */
+            margin: 10px auto 20px auto; 
             padding: 12px 30px;
-            background-color: #0088cc; 
+            background-color: #25D366; 
             color: white;
             text-decoration: none;
             border-radius: 50px;
             font-weight: bold;
             font-size: 1rem;
-            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4);
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
             animation: pulse 2s infinite;
             opacity: 0;
             transition: opacity 1s;
@@ -176,7 +182,7 @@
     </div>
 
     <div class="scene" id="scene3">
-        <div class="year-container">
+        <div class="year-container" id="year-cont">
             <span class="static-num">202</span>
             <div class="morph-wrapper" id="morphBox">
                 <span class="digit-six">6</span>
@@ -185,8 +191,8 @@
         </div>
         <div id="typing-container"></div>
         
-        <a href="https://t.me/f3z39" class="telegram-btn" id="tg-btn" target="_blank">
-            🚑 طلب دلال فوري (تليجرام)
+        <a href="https://wa.me/9647832268902?text=عاشت%20ايدك%20حبيبي%20عالموقع%20يجنن!%20بس%20اني%20هسه%20محتاجة%20دلال..%20يمتى%20تجي؟%20❤️" class="whatsapp-btn" id="wa-btn" target="_blank">
+            🚑 طلب دلال فوري (اضغطي هنا)
         </a>
 
         <div id="final-texts" style="display: none;">
@@ -287,27 +293,24 @@
             const wordsBox = document.getElementById('love-words');
             let wordIndex = 0;
             
-            // دالة تغيير الكلمات
             let wordInterval = setInterval(() => {
-                wordsBox.classList.remove('flash-visible'); // إخفاء
-                
+                wordsBox.classList.remove('flash-visible'); 
                 setTimeout(() => {
                     if (width < 100) {
                         wordsBox.innerText = loveWordsList[wordIndex % loveWordsList.length];
-                        wordsBox.classList.add('flash-visible'); // إظهار
+                        wordsBox.classList.add('flash-visible');
                         wordIndex++;
                     }
                 }, 300); 
-            }, 800); // تغيير الكلمة كل 0.8 ثانية
+            }, 800);
 
-            // شريط التحميل
             let interval = setInterval(() => {
                 width += Math.random() * 1.5; 
                 if(width >= 100) {
                     width = 100;
                     clearInterval(interval);
-                    clearInterval(wordInterval); // إيقاف الكلمات
-                    wordsBox.innerText = ""; // مسح النص
+                    clearInterval(wordInterval); 
+                    wordsBox.innerText = ""; 
                     
                     setTimeout(() => {
                         scene2.style.opacity = 0;
@@ -371,10 +374,13 @@
             
             audioBaby.play().catch(e => console.log("تفاعل مطلوب"));
             
+            // تحريك السنة للأسفل قليلاً
+            document.getElementById('year-cont').classList.add('year-move-down');
+
             // إظهار الزر والنصوص
-            const tgBtn = document.getElementById('tg-btn');
-            tgBtn.style.display = 'inline-block';
-            setTimeout(() => { tgBtn.style.opacity = 1; }, 500);
+            const waBtn = document.getElementById('wa-btn');
+            waBtn.style.display = 'inline-block';
+            setTimeout(() => { waBtn.style.opacity = 1; }, 500);
 
             const finalDiv = document.getElementById('final-texts');
             finalDiv.style.display = 'block';
