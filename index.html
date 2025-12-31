@@ -84,7 +84,30 @@
             border: none; border-radius: 50px; cursor: pointer; font-weight: bold;
         }
         .error-msg {
-            color: #ff1744; margin-top: 15px; font-weight: bold; height: 20px;
+            color: #ff1744; margin-top: 15px; font-weight: bold; min-height: 25px;
+        }
+        
+        /* عداد المحاولات */
+        .attempts-counter {
+            color: #FFD700; font-size: 0.9rem; margin-bottom: 10px; font-weight: bold;
+            border: 1px dashed #FFD700; padding: 5px 15px; border-radius: 20px;
+        }
+
+        /* شاشة التدمير الذاتي */
+        #destruct-screen {
+            display: none; flex-direction: column; justify-content: center; align-items: center;
+            position: absolute; width: 100%;
+        }
+        .destruct-timer {
+            font-size: 6rem; color: red; font-weight: bold; text-shadow: 0 0 20px red;
+            margin: 20px 0;
+        }
+        .destruct-warning {
+            color: #ef5350; font-size: 1.5rem; margin-bottom: 20px; font-weight: bold;
+        }
+
+        #input-group {
+            display: flex; flex-direction: column; align-items: center; width: 100%;
         }
 
         /* --- المشهد الثالث --- */
@@ -123,7 +146,7 @@
         }
         .cursor { display: inline-block; width: 2px; height: 1.2rem; background-color: #fff; animation: blink 0.8s infinite; margin-right: 2px; }
 
-        /* --- زر الواتساب (محدث) --- */
+        /* --- زر الواتساب --- */
         .whatsapp-btn {
             display: none; 
             margin: 0 auto 30px auto; 
@@ -191,9 +214,22 @@
 
     <div id="password-overlay">
         <h2 style="margin-bottom: 20px; color: #64B5F6;">تنبيه أمني ⚠️</h2>
-        <p style="margin-bottom: 20px; font-size: 1.1rem;">للدخول إلى 2026.. ماهو لون اللباس الذي يرتديه يوسف اليوم 🤣؟</p>
-        <input type="text" id="nameInput" class="pwd-input" placeholder="اكتبي اللون هنا...">
-        <button class="pwd-btn" onclick="checkName()">تأكيد الدخول</button>
+        
+        <div id="input-group">
+            <p id="q-text" style="margin-bottom: 20px; font-size: 1.1rem;">للدخول إلى 2026.. ماهو لون اللباس الذي يرتديه يوسف اليوم 🤣؟</p>
+            
+            <div id="attempts-box" class="attempts-counter">باقي المحاولات: <span id="attempt-num">10</span></div>
+
+            <input type="text" id="nameInput" class="pwd-input" placeholder="اكتبي الجواب هنا...">
+            <button class="pwd-btn" onclick="checkAnswer()">تأكيد الدخول</button>
+        </div>
+
+        <div id="destruct-screen">
+            <div class="destruct-warning">سيتم حذف الموقع نهائياً...</div>
+            <div class="destruct-warning" style="font-size: 1rem; color: #ccc;">فشل التحقق الأمني. لن يتم الدخول لعام 2026.</div>
+            <div class="destruct-timer" id="destruct-timer">10</div>
+        </div>
+
         <div class="error-msg" id="errorMsg"></div>
     </div>
 
@@ -279,7 +315,7 @@
 
         const loveWordsList = ["أحبج", "أعشكج", "أموت عليج", "حياتي أنتي", "عمري"];
         
-        // 20 رد مضحك باللهجة العراقية
+        // قائمة ردود مضحكة موسعة
         const funnyResponses = [
             "شدعوة نسيتي؟ 😂",
             "لا مو هذا اللون.. فكري زين",
@@ -300,9 +336,16 @@
             "مو ازرك ولا اخضر",
             "ترا دزيتلج صورة.. تذكري 😉",
             "يلا عاد.. اريد ادخلج للسنة الجديدة",
-            "اخر فرصة.. ركزي!"
+            "خاب لا تفشليني كدام الموقع",
+            "ترا العداد يمشي.. استعجلي",
+            "راح يخلص صبري مو بس المحاولات 🤣",
+            "زين اتصلي بيه اخذي مساعدة",
+            "ها.. استسلمتي؟",
+            "لتكتبين اي شي.. فكري ولج"
         ];
 
+        let attemptsLeft = 10;
+        let isQuestion2 = false; // لتحديد هل نحن في السؤال الثاني (نسبة الحب)
         let vibrationInterval;
 
         function startExperience() {
@@ -328,13 +371,34 @@
             if(vibrationInterval) clearInterval(vibrationInterval);
         }
 
-        // --- وظيفة التحقق من اللون (تحديث جديد) ---
-        function checkName() {
+        // --- وظيفة التحقق الرئيسية ---
+        function checkAnswer() {
             const input = document.getElementById('nameInput');
             const errorDiv = document.getElementById('errorMsg');
             let val = input.value.trim();
 
-            // فحص كلمات "بدون ملابس"
+            // ------------------------------------
+            // الحالة الثانية: سؤال نسبة الحب
+            // ------------------------------------
+            if (isQuestion2) {
+                if (val.includes("100") || val.includes("مية") || val.includes("ميه") || val === "١٠٠") {
+                    // النجاح للسؤال الثاني
+                    document.getElementById('password-overlay').style.display = 'none';
+                    playScene3();
+                } else {
+                    // الفشل في سؤال الحب
+                    errorDiv.innerText = "يمعوده بعد شسويلج اجي اني بمكانج اجاوب";
+                    input.style.border = "2px solid red";
+                    setTimeout(() => { input.style.border = "2px solid #64B5F6"; }, 500);
+                }
+                return; 
+            }
+
+            // ------------------------------------
+            // الحالة الأولى: سؤال لون اللباس
+            // ------------------------------------
+            
+            // 1. فحص كلمات "بدون ملابس"
             const nakedKeywords = ["لايرتدي", "لا يرتدي", "لايلبس", "لا يلبس", "عريان", "بدون"];
             let isNakedGuess = false;
             nakedKeywords.forEach(word => {
@@ -342,24 +406,99 @@
             });
 
             if (isNakedGuess) {
-                // الرد الخاص
                 errorDiv.innerText = "اي مو اني رقيه😒";
-                input.style.border = "2px solid red";
-                setTimeout(() => { input.style.border = "2px solid #64B5F6"; }, 800);
+                shakeInput(input);
+                decreaseAttempts();
+                return;
             } 
-            else if (val.includes("خرائي")) {
-                // النجاح
+            
+            // 2. الجواب الصحيح
+            if (val.includes("خرائي")) {
                 document.getElementById('password-overlay').style.display = 'none';
                 playScene3();
             } else {
-                // الفشل - رد مضحك عشوائي
-                const randomResp = funnyResponses[Math.floor(Math.random() * funnyResponses.length)];
-                errorDiv.innerText = randomResp;
+                // 3. جواب خاطئ
+                decreaseAttempts();
                 
-                input.style.border = "2px solid red";
-                setTimeout(() => { input.style.border = "2px solid #64B5F6"; }, 500);
+                // إذا لم تنتهِ المحاولات، اعرض رد مضحك (شرط ألا تكون آخر فرصة)
+                if (attemptsLeft > 1) {
+                    const randomResp = funnyResponses[Math.floor(Math.random() * funnyResponses.length)];
+                    errorDiv.innerText = randomResp;
+                }
+                shakeInput(input);
             }
         }
+
+        function shakeInput(input) {
+            input.style.border = "2px solid red";
+            setTimeout(() => { input.style.border = "2px solid #64B5F6"; }, 500);
+            if (navigator.vibrate) navigator.vibrate(200);
+        }
+
+        function decreaseAttempts() {
+            attemptsLeft--;
+            document.getElementById('attempt-num').innerText = attemptsLeft;
+
+            if (attemptsLeft === 1) {
+                // تنبيه آخر فرصة
+                document.getElementById('errorMsg').innerText = "اخر فرصة.. ركزي 😳";
+                document.getElementById('errorMsg').style.color = "red";
+            } 
+            else if (attemptsLeft <= 0) {
+                // تفعيل التدمير الذاتي
+                startDestructSequence();
+            }
+        }
+
+        function startDestructSequence() {
+            // إخفاء حقول الإدخال
+            document.getElementById('input-group').style.display = 'none';
+            document.getElementById('errorMsg').innerText = "";
+            
+            // إظهار شاشة التدمير
+            const destructScreen = document.getElementById('destruct-screen');
+            destructScreen.style.display = 'flex';
+            
+            let timeLeft = 10;
+            const timerEl = document.getElementById('destruct-timer');
+            
+            let countdown = setInterval(() => {
+                timeLeft--;
+                timerEl.innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(countdown);
+                    // انتهاء العداد -> عرض الرسالة "جذب"
+                    timerEl.style.display = 'none';
+                    document.querySelector('.destruct-warning').innerText = "جذب يعمود 🤣 يلا يلا سؤال ثاني هذا";
+                    document.querySelector('.destruct-warning').style.color = "#4CAF50";
+                    
+                    setTimeout(() => {
+                        // إعادة إظهار المربع بالسؤال الجديد
+                        switchToSecondQuestion();
+                    }, 3000);
+                }
+            }, 1000);
+        }
+
+        function switchToSecondQuestion() {
+            // إعادة تعيين الواجهة
+            document.getElementById('destruct-screen').style.display = 'none';
+            document.getElementById('input-group').style.display = 'flex';
+            
+            // إخفاء العداد لأنه لم يعد مهماً
+            document.getElementById('attempts-box').style.display = 'none';
+            
+            // تغيير النصوص
+            document.getElementById('q-text').innerText = "سؤال الفرصة الأخيرة: كم نسبة حبي الج؟";
+            document.getElementById('nameInput').value = "";
+            document.getElementById('nameInput').placeholder = "اكتبي الرقم هنا...";
+            document.getElementById('errorMsg').innerText = "";
+            document.getElementById('errorMsg').style.color = "#ff1744"; // ارجاع لون الخط للأحمر
+
+            // تفعيل منطق السؤال الثاني
+            isQuestion2 = true;
+        }
+
 
         function playScene1() {
             stopAllSounds();
@@ -548,4 +687,4 @@
         window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
     </script>
 </body>
-    </html>
+</html>
