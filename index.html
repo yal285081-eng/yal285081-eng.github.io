@@ -114,6 +114,18 @@
             color: #ef5350; font-size: 1.5rem; margin-bottom: 20px; font-weight: bold;
         }
 
+        /* شاشة الهلهولة (النجاح) */
+        #success-overlay {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95); z-index: 2500;
+            flex-direction: column; justify-content: center; align-items: center;
+            text-align: center;
+        }
+        .success-text {
+            font-size: 2rem; color: #4CAF50; font-weight: bold; margin-bottom: 20px;
+            animation: pulse 1s infinite;
+        }
+
         #input-group {
             display: flex; flex-direction: column; align-items: center; width: 100%;
         }
@@ -247,8 +259,8 @@
         </div>
 
         <div id="destruct-screen">
-            <div class="destruct-warning">سيتم حذف الموقع نهائياً...</div>
-            <div class="destruct-warning" style="font-size: 1rem; color: #ccc;">فشل التحقق الأمني. لن يتم الدخول لعام 2026.</div>
+            <div class="destruct-warning" id="destruct-msg-main">سيتم حذف الموقع نهائياً...</div>
+            <div class="destruct-warning" id="destruct-msg-sub" style="font-size: 1rem; color: #ccc;">فشل التحقق الأمني. لن يتم الدخول لعام 2026.</div>
             <div class="destruct-timer" id="destruct-timer">10</div>
         </div>
 
@@ -260,6 +272,10 @@
             خطية تريد مساعده 🤣
             <div style="font-size: 0.8rem; margin-top: 10px; color: #666;">(اضغطي لإغلاق الرسالة)</div>
         </div>
+    </div>
+
+    <div id="success-overlay">
+        <div class="success-text">صلوات على محمد<br>تحتاجين هلهولة 👏👏</div>
     </div>
 
     <div class="prayer-float" id="prayerBtn" onclick="togglePrayer()">🤲</div>
@@ -376,8 +392,8 @@
 
         let attemptsLeft = 10;
         let isQuestion2 = false;
-        let attemptsQ2 = 0; // عداد محاولات السؤال الثاني
-        let infiniteMode = false; // الوضع اللانهائي عند العودة للسؤال الأول
+        let attemptsQ2 = 0; 
+        let infiniteMode = false; 
         let vibrationInterval;
 
         function startExperience() {
@@ -428,23 +444,28 @@
             // الحالة الثانية: سؤال نسبة الحب
             // ------------------------------------
             if (isQuestion2) {
-                // الجواب الصحيح أصبح (ما تنوصف)
-                if (val.includes("ما تنوصف") || val.includes("ماتنوصف") || val.includes("لا توصف") || val.includes("ماتنوصغ")) {
-                    document.getElementById('password-overlay').style.display = 'none';
-                    playScene3();
+                // الجواب الصحيح
+                if (val.includes("ما تنوصف") || val.includes("ماتنوصف") || val.includes("لا توصف")) {
+                    showSuccessAndProceed();
                 } else {
                     // فشل في السؤال الثاني
                     attemptsQ2++;
                     
-                    if (attemptsQ2 >= 3) {
-                        // إذا فشلت 3 مرات بالسؤال الثاني
-                        alert("اكلج شلون تاليها وياج ارجعي ارجعي للسؤال القبله ما يفيد وياج انتي الى هيج");
-                        returnToFirstQuestion(); // إرجاع للسؤال الأول
-                    } else {
+                    if (attemptsQ2 == 1) {
+                        // أول خطأ
                         errorDiv.innerText = "يمعوده بعد شسويلج اجي اني بمكانج اجاوب";
-                        input.style.border = "2px solid red";
-                        setTimeout(() => { input.style.border = "2px solid #64B5F6"; }, 500);
+                    } else if (attemptsQ2 == 2) {
+                        // ثاني خطأ
+                        errorDiv.innerText = "كتبتي قليل لو هواي؟ تره الجواب مو رقم عادي 🌚";
+                    } else if (attemptsQ2 >= 3) {
+                        // ثالث خطأ (العودة)
+                        errorDiv.innerText = "ايست منج.. ارجعي للسؤال الاول احسن 🤦‍♂️";
+                        setTimeout(() => {
+                            returnToFirstQuestion(); 
+                        }, 2000);
+                        return;
                     }
+                    shakeInput(input);
                 }
                 return; 
             }
@@ -463,14 +484,13 @@
             if (isNakedGuess) {
                 errorDiv.innerText = "اي مو اني رقيه😒";
                 shakeInput(input);
-                if (!infiniteMode) decreaseAttempts(); // ينقص العداد فقط اذا مو بالوضع اللانهائي
+                if (!infiniteMode) decreaseAttempts(); 
                 return;
             } 
             
             // 2. الجواب الصحيح
             if (val.includes("خرائي")) {
-                document.getElementById('password-overlay').style.display = 'none';
-                playScene3();
+                showSuccessAndProceed();
             } else {
                 // 3. جواب خاطئ
                 if (!infiniteMode) {
@@ -480,12 +500,30 @@
                         errorDiv.innerText = randomResp;
                     }
                 } else {
-                    // في الوضع اللانهائي، تظهر فقط ردود مضحكة بدون نقصان
                     const randomResp = funnyResponses[Math.floor(Math.random() * funnyResponses.length)];
                     errorDiv.innerText = randomResp;
                 }
                 shakeInput(input);
             }
+        }
+
+        // --- دالة النجاح الجديدة ---
+        function showSuccessAndProceed() {
+            // إخفاء واجهة الإدخال
+            document.getElementById('input-group').style.display = 'none';
+            document.getElementById('security-title').style.display = 'none';
+            document.getElementById('errorMsg').style.display = 'none';
+            
+            // إظهار شاشة الهلهولة
+            const successOverlay = document.getElementById('success-overlay');
+            successOverlay.style.display = 'flex';
+            
+            // الانتظار 3 ثواني ثم الدخول
+            setTimeout(() => {
+                successOverlay.style.display = 'none';
+                document.getElementById('password-overlay').style.display = 'none';
+                playScene3();
+            }, 3000);
         }
 
         function shakeInput(input) {
@@ -524,9 +562,14 @@
                 if (timeLeft <= 0) {
                     clearInterval(countdown);
                     timerEl.style.display = 'none';
-                    // تم تعديل الكلمة هنا
-                    document.querySelector('.destruct-warning').innerText = "جذب يعمودة 🤣 يلا يلا سؤال ثاني هذا";
-                    document.querySelector('.destruct-warning').style.color = "#4CAF50";
+                    
+                    // إخفاء الرسائل القديمة
+                    document.getElementById('destruct-msg-sub').style.display = 'none';
+                    
+                    // إظهار الرسالة الجديدة فقط
+                    const mainMsg = document.getElementById('destruct-msg-main');
+                    mainMsg.innerText = "جذب يمعودة 🤣 يلا يلا سؤال ثاني هذا";
+                    mainMsg.style.color = "#4CAF50";
                     
                     setTimeout(() => {
                         switchToSecondQuestion();
@@ -549,27 +592,21 @@
             document.getElementById('errorMsg').style.color = "#ff1744"; 
 
             isQuestion2 = true;
-            attemptsQ2 = 0; // تصفير محاولات السؤال الثاني
+            attemptsQ2 = 0; 
         }
 
-        // --- دالة العودة للسؤال الأول (العقاب) ---
         function returnToFirstQuestion() {
-            // إعادة تفعيل السؤال الأول
             isQuestion2 = false;
-            infiniteMode = true; // تفعيل الوضع اللانهائي
+            infiniteMode = true; 
 
-            // إرجاع النصوص القديمة
             document.getElementById('q-text').innerText = "للدخول إلى 2026.. ماهو لون اللباس الذي يرتديه يوسف اليوم 🤣؟";
             document.getElementById('nameInput').value = "";
             document.getElementById('nameInput').placeholder = "اكتبي الجواب هنا...";
             
-            // إخفاء العداد
             document.getElementById('attempts-box').style.display = 'none';
             
-            // تنظيف رسائل الخطأ
             document.getElementById('errorMsg').innerText = "رجعتج لان ما فاد وياج السؤال السهل 😒";
             
-            // إظهار زر المساعدة
             document.getElementById('helpBtn').style.display = 'inline-block';
         }
 
@@ -761,4 +798,4 @@
         window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
     </script>
 </body>
-    </html>
+</html>
