@@ -374,19 +374,23 @@
             
             audioBaby.play().catch(e => console.log("تفاعل مطلوب"));
             
-            // تحريك السنة للأسفل قليلاً
-            document.getElementById('year-cont').classList.add('year-move-down');
-
-            // إظهار الزر والنصوص
-            const waBtn = document.getElementById('wa-btn');
-            waBtn.style.display = 'inline-block';
-            setTimeout(() => { waBtn.style.opacity = 1; }, 500);
-
+            // إظهار النصوص بالتتابع
             const finalDiv = document.getElementById('final-texts');
             finalDiv.style.display = 'block';
             setTimeout(() => { document.getElementById('f-msg1').classList.add('visible'); }, 1500);
             setTimeout(() => { document.getElementById('f-msg2').classList.add('visible'); }, 3500);
             setTimeout(() => { document.getElementById('f-msg3').classList.add('visible'); }, 6000);
+
+            // بعد انتهاء الرسالة الأخيرة (8 ثواني)، يظهر الزر وتنزل السنة
+            setTimeout(() => {
+                // تحريك السنة للأسفل
+                document.getElementById('year-cont').classList.add('year-move-down');
+
+                // إظهار الزر
+                const waBtn = document.getElementById('wa-btn');
+                waBtn.style.display = 'inline-block';
+                setTimeout(() => { waBtn.style.opacity = 1; }, 100);
+            }, 8000);
         }
 
         const canvas = document.getElementById('fireworksCanvas');
