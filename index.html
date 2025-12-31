@@ -93,6 +93,23 @@
         }
         .cursor { display: inline-block; width: 2px; height: 1.2rem; background-color: #fff; animation: blink 0.8s infinite; margin-right: 2px; }
 
+        /* --- زر الواتساب الجديد --- */
+        .whatsapp-btn {
+            display: none; 
+            margin-top: 30px;
+            padding: 15px 30px;
+            background-color: #25D366;
+            color: white;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            animation: pulse 2s infinite;
+            opacity: 0;
+            transition: opacity 1s;
+        }
+
         /* --- شريط التحديث السفلي --- */
         #update-footer {
             position: fixed; bottom: 0; left: 0; width: 100%;
@@ -165,6 +182,10 @@
             <div class="text-line" id="f-msg2">تنبيه: تم إضافة <span class="highlight">عضو جديد</span> للمجموعة...</div>
             <div class="text-line" id="f-msg3" style="color: #64B5F6;">هذه السنة لن نكون اثنين.. سنكون عائلة 💙</div>
         </div>
+        
+        <a href="https://wa.me/9647832268902?text=حبيبي..%20شفت%20الموقع%20ويجنن!%20بس%20أني%20هسه%20محتاجة%20حضن%20ودلال..%20تعال%20بسرعة%20❤️" class="whatsapp-btn" id="wa-btn" target="_blank">
+            🚑 طلب دلال فوري (اضغطي هنا)
+        </a>
     </div>
 
     <div id="update-footer">
@@ -185,11 +206,14 @@
         const audioBaby = document.getElementById('audioBaby');
 
         // ضبط مستوى الصوت
-        audioScene1.volume = 0.5; // موسيقى المشهد الأول
-        audioHeart.volume = 0.4;  // دقات القلب
-        audioTyping.volume = 0.3; // صوت الكتابة
+        audioScene1.volume = 0.5;
+        audioHeart.volume = 0.4;
+        audioTyping.volume = 0.3;
 
         const letterToRuqaya = "إلى زوجتي العزيزة رقية الغالية..\nأحبج يروحي.. هاي الرسالة أريد أكلج بيها شكد أني فخور بيج، والله يروحي ما ألكه مثلج بهاي الدنيا أبد.\nروحي متعلقة بيج وما أعرف أعيش بدونج.\nكل عام أنتي إلي، وكل عام أنتي زوجتي، وكل عام أنتي كل ما أملك يا غاليتي وعزيزتي وكل دنيتي.\nأحبج يروحي، الله يحفظج إلي ويخليج، سنة سعيدة عليج حياتي ❤️";
+
+        // متغير لاهتزاز القلب
+        let vibrationInterval;
 
         function startExperience() {
             document.getElementById('start-overlay').style.display = 'none';
@@ -208,6 +232,7 @@
             stopSound(audioHeart);
             stopSound(audioTyping);
             stopSound(audioBaby);
+            if(vibrationInterval) clearInterval(vibrationInterval);
         }
 
         function playScene1() {
@@ -216,7 +241,7 @@
             scene1.style.display = 'block';
             
             // تشغيل موسيقى المشهد الأول
-            audioScene1.play().catch(e => console.log("الصوت يحتاج تفاعل"));
+            audioScene1.play().catch(e => console.log("تفاعل مطلوب"));
 
             setTimeout(() => { document.getElementById('s1-line1').classList.add('visible'); }, 500); 
             setTimeout(() => { document.getElementById('s1-line-update').classList.add('visible'); }, 3000); 
@@ -228,7 +253,6 @@
 
             setTimeout(() => {
                 scene1.style.opacity = 0;
-                // خفض الصوت تدريجيا
                 let fade = setInterval(() => {
                     if(audioScene1.volume > 0.05) audioScene1.volume -= 0.05;
                     else { clearInterval(fade); stopSound(audioScene1); }
@@ -245,7 +269,14 @@
 
             // تشغيل صوت القلب
             audioHeart.volume = 0.4; 
-            audioHeart.play().catch(e => console.log("الصوت يحتاج تفاعل"));
+            audioHeart.play().catch(e => console.log("تفاعل مطلوب"));
+
+            // تفعيل الاهتزاز مع دقات القلب
+            if ("vibrate" in navigator) {
+                vibrationInterval = setInterval(() => {
+                    navigator.vibrate(100);
+                }, 1300);
+            }
 
             let width = 0;
             const bar = document.getElementById('p-bar');
@@ -272,8 +303,7 @@
         }
 
         function playScene3() {
-            // إيقاف كل الأصوات السابقة
-            stopAllSounds();
+            stopAllSounds(); 
 
             const scene3 = document.getElementById('scene3');
             scene3.style.display = 'block';
@@ -282,11 +312,9 @@
             loopFireworks(); 
             document.getElementById('update-footer').style.display = 'flex';
 
-            // تشغيل صوت الكتابة
-            audioTyping.play().catch(e => console.log("الصوت يحتاج تفاعل"));
+            audioTyping.play().catch(e => console.log("تفاعل مطلوب"));
 
             typeWriterEffect(letterToRuqaya, function() {
-                // عند انتهاء الكتابة نوقف صوت الكتابة
                 stopSound(audioTyping);
 
                 setTimeout(() => {
@@ -321,13 +349,19 @@
             document.getElementById('update-footer').style.display = 'none';
             document.getElementById('morphBox').classList.add('morph-active');
             
-            // تشغيل صوت الطفل
-            audioBaby.play().catch(e => console.log("الصوت يحتاج تفاعل"));
+            audioBaby.play().catch(e => console.log("تفاعل مطلوب"));
             
             document.getElementById('final-texts').style.display = 'block';
             setTimeout(() => { document.getElementById('f-msg1').classList.add('visible'); }, 1500);
             setTimeout(() => { document.getElementById('f-msg2').classList.add('visible'); }, 3500);
             setTimeout(() => { document.getElementById('f-msg3').classList.add('visible'); }, 6000);
+
+            // إظهار زر الواتساب
+            setTimeout(() => {
+                const waBtn = document.getElementById('wa-btn');
+                waBtn.style.display = 'inline-block';
+                setTimeout(() => { waBtn.style.opacity = 1; }, 100);
+            }, 8000);
         }
 
         const canvas = document.getElementById('fireworksCanvas');
