@@ -83,6 +83,14 @@
             padding: 10px 30px; font-size: 1rem; background: #64B5F6; color: #000;
             border: none; border-radius: 50px; cursor: pointer; font-weight: bold;
         }
+        
+        /* زر المساعدة */
+        .help-btn {
+            padding: 8px 25px; font-size: 0.9rem; background: #FFD700; color: #000;
+            border: none; border-radius: 50px; cursor: pointer; font-weight: bold;
+            margin-top: 15px; display: none; animation: pulse 2s infinite;
+        }
+
         .error-msg {
             color: #ff1744; margin-top: 15px; font-weight: bold; min-height: 25px;
         }
@@ -181,6 +189,19 @@
         }
         .close-modal { margin-top: 20px; padding: 8px 20px; background: #333; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
 
+        /* --- رسالة المساعدة (Modal) --- */
+        #help-modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.85); z-index: 4000;
+            justify-content: center; align-items: center;
+        }
+        .help-content {
+            background: #fff; color: #000; padding: 40px; border-radius: 20px;
+            font-size: 1.5rem; font-weight: bold;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.8);
+            text-align: center;
+        }
+
         /* --- شريط التحديث السفلي --- */
         #update-footer {
             position: fixed; bottom: 0; left: 0; width: 100%;
@@ -213,7 +234,7 @@
     </div>
 
     <div id="password-overlay">
-        <h2 style="margin-bottom: 20px; color: #64B5F6;">تنبيه أمني ⚠️</h2>
+        <h2 id="security-title" style="margin-bottom: 20px; color: #64B5F6;">تنبيه أمني ⚠️</h2>
         
         <div id="input-group">
             <p id="q-text" style="margin-bottom: 20px; font-size: 1.1rem;">للدخول إلى 2026.. ماهو لون اللباس الذي يرتديه يوسف اليوم 🤣؟</p>
@@ -222,6 +243,7 @@
 
             <input type="text" id="nameInput" class="pwd-input" placeholder="اكتبي الجواب هنا...">
             <button class="pwd-btn" onclick="checkAnswer()">تأكيد الدخول</button>
+            <button class="help-btn" id="helpBtn" onclick="showHelpMessage()">مساعدة 💡</button>
         </div>
 
         <div id="destruct-screen">
@@ -231,6 +253,13 @@
         </div>
 
         <div class="error-msg" id="errorMsg"></div>
+    </div>
+
+    <div id="help-modal" onclick="hideHelpMessage()">
+        <div class="help-content">
+            خطية تريد مساعده 🤣
+            <div style="font-size: 0.8rem; margin-top: 10px; color: #666;">(اضغطي لإغلاق الرسالة)</div>
+        </div>
     </div>
 
     <div class="prayer-float" id="prayerBtn" onclick="togglePrayer()">🤲</div>
@@ -300,12 +329,14 @@
     <audio id="audioHeart" src="https://www.soundjay.com/human/sounds/heartbeat-01a.mp3" loop></audio>
     <audio id="audioTyping" src="https://www.soundjay.com/mechanical/sounds/typewriter-6.mp3" loop></audio>
     <audio id="audioBaby" src="https://www.soundjay.com/human/sounds/baby-laughing-02.mp3"></audio>
+    <audio id="audioLaugh" src="https://www.soundjay.com/human/sounds/laughter-1.mp3"></audio>
 
     <script>
         const audioScene1 = document.getElementById('audioScene1');
         const audioHeart = document.getElementById('audioHeart');
         const audioTyping = document.getElementById('audioTyping');
         const audioBaby = document.getElementById('audioBaby');
+        const audioLaugh = document.getElementById('audioLaugh');
 
         audioScene1.volume = 0.5;
         audioHeart.volume = 0.4;
@@ -315,7 +346,6 @@
 
         const loveWordsList = ["أحبج", "أعشكج", "أموت عليج", "حياتي أنتي", "عمري"];
         
-        // قائمة ردود مضحكة موسعة
         const funnyResponses = [
             "شدعوة نسيتي؟ 😂",
             "لا مو هذا اللون.. فكري زين",
@@ -345,7 +375,9 @@
         ];
 
         let attemptsLeft = 10;
-        let isQuestion2 = false; // لتحديد هل نحن في السؤال الثاني (نسبة الحب)
+        let isQuestion2 = false;
+        let attemptsQ2 = 0; // عداد محاولات السؤال الثاني
+        let infiniteMode = false; // الوضع اللانهائي عند العودة للسؤال الأول
         let vibrationInterval;
 
         function startExperience() {
@@ -358,6 +390,20 @@
             modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
         }
 
+        function showHelpMessage() {
+            const modal = document.getElementById('help-modal');
+            modal.style.display = 'flex';
+            audioLaugh.currentTime = 0;
+            audioLaugh.play().catch(e => console.log("الصوت يحتاج تفاعل"));
+        }
+
+        function hideHelpMessage() {
+            const modal = document.getElementById('help-modal');
+            modal.style.display = 'none';
+            audioLaugh.pause();
+            audioLaugh.currentTime = 0;
+        }
+
         function stopSound(audioElement) {
             audioElement.pause();
             audioElement.currentTime = 0;
@@ -368,6 +414,7 @@
             stopSound(audioHeart);
             stopSound(audioTyping);
             stopSound(audioBaby);
+            stopSound(audioLaugh);
             if(vibrationInterval) clearInterval(vibrationInterval);
         }
 
@@ -381,15 +428,23 @@
             // الحالة الثانية: سؤال نسبة الحب
             // ------------------------------------
             if (isQuestion2) {
-                if (val.includes("100") || val.includes("مية") || val.includes("ميه") || val === "١٠٠") {
-                    // النجاح للسؤال الثاني
+                // الجواب الصحيح أصبح (ما تنوصف)
+                if (val.includes("ما تنوصف") || val.includes("ماتنوصف") || val.includes("لا توصف") || val.includes("ماتنوصغ")) {
                     document.getElementById('password-overlay').style.display = 'none';
                     playScene3();
                 } else {
-                    // الفشل في سؤال الحب
-                    errorDiv.innerText = "يمعوده بعد شسويلج اجي اني بمكانج اجاوب";
-                    input.style.border = "2px solid red";
-                    setTimeout(() => { input.style.border = "2px solid #64B5F6"; }, 500);
+                    // فشل في السؤال الثاني
+                    attemptsQ2++;
+                    
+                    if (attemptsQ2 >= 3) {
+                        // إذا فشلت 3 مرات بالسؤال الثاني
+                        alert("اكلج شلون تاليها وياج ارجعي ارجعي للسؤال القبله ما يفيد وياج انتي الى هيج");
+                        returnToFirstQuestion(); // إرجاع للسؤال الأول
+                    } else {
+                        errorDiv.innerText = "يمعوده بعد شسويلج اجي اني بمكانج اجاوب";
+                        input.style.border = "2px solid red";
+                        setTimeout(() => { input.style.border = "2px solid #64B5F6"; }, 500);
+                    }
                 }
                 return; 
             }
@@ -399,7 +454,7 @@
             // ------------------------------------
             
             // 1. فحص كلمات "بدون ملابس"
-            const nakedKeywords = ["لايرتدي", "لا يرتدي", "لايلبس", "لا يلبس", "عريان", "بدون"];
+            const nakedKeywords = ["لايرتدي", "لا يرتدي", "لايلبس", "لا يلبس", "عريان", "بدون", "ما لابس", "مايلبس", "ماكو لباس", "مالابس"];
             let isNakedGuess = false;
             nakedKeywords.forEach(word => {
                 if (val.includes(word)) isNakedGuess = true;
@@ -408,7 +463,7 @@
             if (isNakedGuess) {
                 errorDiv.innerText = "اي مو اني رقيه😒";
                 shakeInput(input);
-                decreaseAttempts();
+                if (!infiniteMode) decreaseAttempts(); // ينقص العداد فقط اذا مو بالوضع اللانهائي
                 return;
             } 
             
@@ -418,10 +473,14 @@
                 playScene3();
             } else {
                 // 3. جواب خاطئ
-                decreaseAttempts();
-                
-                // إذا لم تنتهِ المحاولات، اعرض رد مضحك (شرط ألا تكون آخر فرصة)
-                if (attemptsLeft > 1) {
+                if (!infiniteMode) {
+                    decreaseAttempts();
+                    if (attemptsLeft > 1) {
+                        const randomResp = funnyResponses[Math.floor(Math.random() * funnyResponses.length)];
+                        errorDiv.innerText = randomResp;
+                    }
+                } else {
+                    // في الوضع اللانهائي، تظهر فقط ردود مضحكة بدون نقصان
                     const randomResp = funnyResponses[Math.floor(Math.random() * funnyResponses.length)];
                     errorDiv.innerText = randomResp;
                 }
@@ -440,22 +499,19 @@
             document.getElementById('attempt-num').innerText = attemptsLeft;
 
             if (attemptsLeft === 1) {
-                // تنبيه آخر فرصة
                 document.getElementById('errorMsg').innerText = "اخر فرصة.. ركزي 😳";
                 document.getElementById('errorMsg').style.color = "red";
             } 
             else if (attemptsLeft <= 0) {
-                // تفعيل التدمير الذاتي
                 startDestructSequence();
             }
         }
 
         function startDestructSequence() {
-            // إخفاء حقول الإدخال
             document.getElementById('input-group').style.display = 'none';
+            document.getElementById('security-title').style.display = 'none';
             document.getElementById('errorMsg').innerText = "";
             
-            // إظهار شاشة التدمير
             const destructScreen = document.getElementById('destruct-screen');
             destructScreen.style.display = 'flex';
             
@@ -467,36 +523,54 @@
                 timerEl.innerText = timeLeft;
                 if (timeLeft <= 0) {
                     clearInterval(countdown);
-                    // انتهاء العداد -> عرض الرسالة "جذب"
                     timerEl.style.display = 'none';
-                    document.querySelector('.destruct-warning').innerText = "جذب يعمود 🤣 يلا يلا سؤال ثاني هذا";
+                    // تم تعديل الكلمة هنا
+                    document.querySelector('.destruct-warning').innerText = "جذب يعمودة 🤣 يلا يلا سؤال ثاني هذا";
                     document.querySelector('.destruct-warning').style.color = "#4CAF50";
                     
                     setTimeout(() => {
-                        // إعادة إظهار المربع بالسؤال الجديد
                         switchToSecondQuestion();
-                    }, 3000);
+                    }, 6000);
                 }
             }, 1000);
         }
 
         function switchToSecondQuestion() {
-            // إعادة تعيين الواجهة
             document.getElementById('destruct-screen').style.display = 'none';
             document.getElementById('input-group').style.display = 'flex';
+            document.getElementById('security-title').style.display = 'block';
             
-            // إخفاء العداد لأنه لم يعد مهماً
             document.getElementById('attempts-box').style.display = 'none';
             
-            // تغيير النصوص
             document.getElementById('q-text').innerText = "سؤال الفرصة الأخيرة: كم نسبة حبي الج؟";
             document.getElementById('nameInput').value = "";
-            document.getElementById('nameInput').placeholder = "اكتبي الرقم هنا...";
+            document.getElementById('nameInput').placeholder = "اكتبي الجواب هنا...";
             document.getElementById('errorMsg').innerText = "";
-            document.getElementById('errorMsg').style.color = "#ff1744"; // ارجاع لون الخط للأحمر
+            document.getElementById('errorMsg').style.color = "#ff1744"; 
 
-            // تفعيل منطق السؤال الثاني
             isQuestion2 = true;
+            attemptsQ2 = 0; // تصفير محاولات السؤال الثاني
+        }
+
+        // --- دالة العودة للسؤال الأول (العقاب) ---
+        function returnToFirstQuestion() {
+            // إعادة تفعيل السؤال الأول
+            isQuestion2 = false;
+            infiniteMode = true; // تفعيل الوضع اللانهائي
+
+            // إرجاع النصوص القديمة
+            document.getElementById('q-text').innerText = "للدخول إلى 2026.. ماهو لون اللباس الذي يرتديه يوسف اليوم 🤣؟";
+            document.getElementById('nameInput').value = "";
+            document.getElementById('nameInput').placeholder = "اكتبي الجواب هنا...";
+            
+            // إخفاء العداد
+            document.getElementById('attempts-box').style.display = 'none';
+            
+            // تنظيف رسائل الخطأ
+            document.getElementById('errorMsg').innerText = "رجعتج لان ما فاد وياج السؤال السهل 😒";
+            
+            // إظهار زر المساعدة
+            document.getElementById('helpBtn').style.display = 'inline-block';
         }
 
 
@@ -687,4 +761,4 @@
         window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
     </script>
 </body>
-</html>
+    </html>
