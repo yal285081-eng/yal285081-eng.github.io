@@ -93,29 +93,17 @@
         }
         .cursor { display: inline-block; width: 2px; height: 1.2rem; background-color: #fff; animation: blink 0.8s infinite; margin-right: 2px; }
 
-        /* --- شريط التحديث السفلي (الجديد) --- */
+        /* --- شريط التحديث السفلي --- */
         #update-footer {
-            position: fixed;
-            bottom: 0; left: 0; width: 100%;
-            background-color: rgba(20, 20, 20, 0.95); /* خلفية داكنة شفافة قليلا */
-            padding: 12px 0;
-            display: none; /* مخفي افتراضيا */
-            justify-content: center;
-            align-items: center;
-            font-size: 0.9rem;
-            color: #ccc;
-            z-index: 100;
-            border-top: 1px solid #333;
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            background-color: rgba(20, 20, 20, 0.95);
+            padding: 12px 0; display: none; justify-content: center; align-items: center;
+            font-size: 0.9rem; color: #ccc; z-index: 100; border-top: 1px solid #333;
         }
         .footer-spinner {
-            border: 2px solid rgba(255, 255, 255, 0.1);
-            border-top: 2px solid #64B5F6; /* لون أزرق فاتح */
-            border-radius: 50%;
-            width: 16px; height: 16px;
-            animation: spin 1s linear infinite;
-            margin-left: 12px; /* مسافة بين النص والايقونة */
+            border: 2px solid rgba(255, 255, 255, 0.1); border-top: 2px solid #64B5F6;
+            border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; margin-left: 12px;
         }
-
 
         canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
 
@@ -139,11 +127,9 @@
     <div class="scene" id="scene1">
         <div class="loader" id="s1-loader"></div>
         <div class="text-line" id="s1-line1">جارٍ إغلاق ملفات سنة 2025...</div>
-        
         <div class="text-line" id="s1-line-update" style="color: #64B5F6;">
             جاري أرشفة النسخة القديمة.. والتحضير لترقية 2026 🔄
         </div>
-
         <div class="text-line" id="s1-line2">تم رصد <span class="highlight">تعب وألم</span> في الأيام الأخيرة...</div>
         <div class="text-line" id="s1-line3" style="margin-top: 30px; color: #fff;">
             لكن النظام اكتشف أنكِ كنتِ <span class="highlight">أقوى وأجمل امرأة</span> تحملت كل هذا.
@@ -173,9 +159,7 @@
                 <span class="baby-icon">👶</span>
             </div>
         </div>
-
         <div id="typing-container"></div>
-
         <div id="final-texts" style="display: none;">
             <div class="text-line" id="f-msg1">تم التحديث بنجاح...</div>
             <div class="text-line" id="f-msg2">تنبيه: تم إضافة <span class="highlight">عضو جديد</span> للمجموعة...</div>
@@ -188,26 +172,23 @@
         <span>جاري تحديث السنة...</span>
     </div>
 
+    <audio id="audioScene1" src="https://www.soundjay.com/free-music/midnight-ride-01a.mp3"></audio>
+    <audio id="audioHeart" src="https://www.soundjay.com/human/sounds/heartbeat-01a.mp3" loop></audio>
+    <audio id="audioTyping" src="https://www.soundjay.com/mechanical/sounds/typewriter-6.mp3" loop></audio>
+    <audio id="audioBaby" src="https://www.soundjay.com/human/sounds/baby-laughing-02.mp3"></audio>
+
     <script>
-        // --- الأصوات ---
-        // 1. موسيقى محيطية هادئة جداً (Ambient Drone) للمشهد الأول
-        // استخدام رابط خارجي لموسيقى هادئة جداً (بديل للبيانو)
-        const verySadAmbient = new Audio('https://cdn.pixabay.com/download/audio/2022/10/28/audio_b752730067.mp3?filename=soft-ambient-drone-123766.mp3'); 
-        verySadAmbient.volume = 0.3; // صوت منخفض جداً
+        // تعريف عناصر الصوت
+        const audioScene1 = document.getElementById('audioScene1');
+        const audioHeart = document.getElementById('audioHeart');
+        const audioTyping = document.getElementById('audioTyping');
+        const audioBaby = document.getElementById('audioBaby');
 
-        // 2. صوت دقات القلب (المشهد الثاني)
-        const heartSound = new Audio('https://www.soundjay.com/human/sounds/heartbeat-01a.mp3');
-        heartSound.volume = 0.3; 
-        heartSound.loop = true;
+        // ضبط مستوى الصوت
+        audioScene1.volume = 0.5; // موسيقى المشهد الأول
+        audioHeart.volume = 0.4;  // دقات القلب
+        audioTyping.volume = 0.3; // صوت الكتابة
 
-        // 3. ضحكة طفل (المشهد الثالث)
-        const babySound = new Audio('https://www.soundjay.com/human/sounds/baby-laughing-02.mp3');
-
-        // 4. صوت الكتابة (المشهد الثالث)
-        const typeSound = new Audio('https://www.soundjay.com/mechanical/sounds/typewriter-6.mp3');
-        typeSound.volume = 0.2; // صوت خافت للنقرات
-
-        // الرسالة
         const letterToRuqaya = "إلى زوجتي العزيزة رقية الغالية..\nأحبج يروحي.. هاي الرسالة أريد أكلج بيها شكد أني فخور بيج، والله يروحي ما ألكه مثلج بهاي الدنيا أبد.\nروحي متعلقة بيج وما أعرف أعيش بدونج.\nكل عام أنتي إلي، وكل عام أنتي زوجتي، وكل عام أنتي كل ما أملك يا غاليتي وعزيزتي وكل دنيتي.\nأحبج يروحي، الله يحفظج إلي ويخليج، سنة سعيدة عليج حياتي ❤️";
 
         function startExperience() {
@@ -215,12 +196,27 @@
             playScene1();
         }
 
+        // دالة لإيقاف الصوت
+        function stopSound(audioElement) {
+            audioElement.pause();
+            audioElement.currentTime = 0;
+        }
+
+        // إيقاف الكل
+        function stopAllSounds() {
+            stopSound(audioScene1);
+            stopSound(audioHeart);
+            stopSound(audioTyping);
+            stopSound(audioBaby);
+        }
+
         function playScene1() {
+            stopAllSounds();
             const scene1 = document.getElementById('scene1');
             scene1.style.display = 'block';
             
-            // تشغيل الموسيقى الهادئة الجديدة
-            verySadAmbient.play().catch(e => console.log("Audio requires interaction"));
+            // تشغيل موسيقى المشهد الأول
+            audioScene1.play().catch(e => console.log("الصوت يحتاج تفاعل"));
 
             setTimeout(() => { document.getElementById('s1-line1').classList.add('visible'); }, 500); 
             setTimeout(() => { document.getElementById('s1-line-update').classList.add('visible'); }, 3000); 
@@ -232,9 +228,10 @@
 
             setTimeout(() => {
                 scene1.style.opacity = 0;
-                let fadeAudio = setInterval(function () {
-                    if (verySadAmbient.volume > 0.05) { verySadAmbient.volume -= 0.05; }
-                    else { clearInterval(fadeAudio); verySadAmbient.pause(); }
+                // خفض الصوت تدريجيا
+                let fade = setInterval(() => {
+                    if(audioScene1.volume > 0.05) audioScene1.volume -= 0.05;
+                    else { clearInterval(fade); stopSound(audioScene1); }
                 }, 200);
 
                 setTimeout(() => { scene1.style.display = 'none'; playScene2(); }, 1000);
@@ -246,7 +243,9 @@
             scene2.style.display = 'block';
             document.body.style.backgroundColor = "#100000";
 
-            heartSound.play();
+            // تشغيل صوت القلب
+            audioHeart.volume = 0.4; 
+            audioHeart.play().catch(e => console.log("الصوت يحتاج تفاعل"));
 
             let width = 0;
             const bar = document.getElementById('p-bar');
@@ -263,7 +262,6 @@
                         scene2.style.opacity = 0;
                         setTimeout(() => { 
                             scene2.style.display = 'none'; 
-                            heartSound.pause(); 
                             playScene3(); 
                         }, 1000);
                     }, 6000);
@@ -274,17 +272,23 @@
         }
 
         function playScene3() {
+            // إيقاف كل الأصوات السابقة
+            stopAllSounds();
+
             const scene3 = document.getElementById('scene3');
             scene3.style.display = 'block';
             document.body.style.backgroundColor = "#000"; 
             
             loopFireworks(); 
-
-            // إظهار شريط التحديث السفلي
             document.getElementById('update-footer').style.display = 'flex';
 
-            // بدء الكتابة مع الصوت
+            // تشغيل صوت الكتابة
+            audioTyping.play().catch(e => console.log("الصوت يحتاج تفاعل"));
+
             typeWriterEffect(letterToRuqaya, function() {
+                // عند انتهاء الكتابة نوقف صوت الكتابة
+                stopSound(audioTyping);
+
                 setTimeout(() => {
                     const container = document.getElementById('typing-container');
                     container.style.transition = "opacity 2s";
@@ -293,7 +297,6 @@
                     setTimeout(() => {
                         triggerSurprise();
                     }, 2000);
-
                 }, 8000); 
             });
         }
@@ -304,13 +307,9 @@
             container.innerHTML = '<span class="cursor">|</span>';
             function typing() {
                 if (i < text.length) {
-                    // تشغيل صوت نقرة قصيرة لكل حرف
-                    typeSound.currentTime = 0;
-                    typeSound.play();
-
                     container.innerHTML = text.substring(0, i + 1) + '<span class="cursor">|</span>';
                     i++;
-                    setTimeout(typing, 60); // سرعة الكتابة (أبطأ قليلا لتناسب الصوت)
+                    setTimeout(typing, 60); 
                 } else {
                     if (callback) callback();
                 }
@@ -319,11 +318,12 @@
         }
 
         function triggerSurprise() {
-            // إخفاء شريط التحديث السفلي
             document.getElementById('update-footer').style.display = 'none';
-
             document.getElementById('morphBox').classList.add('morph-active');
-            babySound.play();
+            
+            // تشغيل صوت الطفل
+            audioBaby.play().catch(e => console.log("الصوت يحتاج تفاعل"));
+            
             document.getElementById('final-texts').style.display = 'block';
             setTimeout(() => { document.getElementById('f-msg1').classList.add('visible'); }, 1500);
             setTimeout(() => { document.getElementById('f-msg2').classList.add('visible'); }, 3500);
@@ -362,4 +362,4 @@
         window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
     </script>
 </body>
-</html>
+    </html>
