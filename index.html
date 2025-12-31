@@ -93,18 +93,18 @@
         }
         .cursor { display: inline-block; width: 2px; height: 1.2rem; background-color: #fff; animation: blink 0.8s infinite; margin-right: 2px; }
 
-        /* --- زر الواتساب الجديد --- */
-        .whatsapp-btn {
-            display: none; 
-            margin-top: 30px;
-            padding: 15px 30px;
-            background-color: #25D366;
+        /* --- زر التلجرام الجديد --- */
+        .telegram-btn {
+            display: none; /* مخفي في البداية */
+            margin: 30px auto 0 auto; /* توسيط الزر */
+            padding: 15px 40px;
+            background-color: #0088cc; /* لون تلجرام */
             color: white;
             text-decoration: none;
             border-radius: 50px;
             font-weight: bold;
             font-size: 1.1rem;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            box-shadow: 0 4px 15px rgba(0, 136, 204, 0.4);
             animation: pulse 2s infinite;
             opacity: 0;
             transition: opacity 1s;
@@ -183,8 +183,8 @@
             <div class="text-line" id="f-msg3" style="color: #64B5F6;">هذه السنة لن نكون اثنين.. سنكون عائلة 💙</div>
         </div>
         
-        <a href="https://wa.me/9647832268902?text=حبيبي..%20شفت%20الموقع%20ويجنن!%20بس%20أني%20هسه%20محتاجة%20حضن%20ودلال..%20تعال%20بسرعة%20❤️" class="whatsapp-btn" id="wa-btn" target="_blank">
-            🚑 طلب دلال فوري (اضغطي هنا)
+        <a href="https://t.me/+9647832268902" class="telegram-btn" id="tg-btn" target="_blank">
+            🚑 طلب دلال فوري (تليجرام)
         </a>
     </div>
 
@@ -251,6 +251,7 @@
                 document.getElementById('s1-loader').style.opacity = 0; 
             }, 9000);
 
+            // تقليل وقت الانتظار هنا للانتقال السريع
             setTimeout(() => {
                 scene1.style.opacity = 0;
                 let fade = setInterval(() => {
@@ -259,7 +260,7 @@
                 }, 200);
 
                 setTimeout(() => { scene1.style.display = 'none'; playScene2(); }, 1000);
-            }, 15000);
+            }, 12000); // تم تقليل الوقت إلى 12 ثانية بدلاً من 15
         }
 
         function playScene2() {
@@ -271,10 +272,13 @@
             audioHeart.volume = 0.4; 
             audioHeart.play().catch(e => console.log("تفاعل مطلوب"));
 
-            // تفعيل الاهتزاز مع دقات القلب
-            if ("vibrate" in navigator) {
-                vibrationInterval = setInterval(() => {
-                    navigator.vibrate(100);
+            // تفعيل الاهتزاز مع دقات القلب (يعمل على أندرويد)
+            if (navigator.vibrate) {
+                 // اهتزاز لمدة 200 ملي ثانية
+                 navigator.vibrate(200);
+                 
+                 vibrationInterval = setInterval(() => {
+                    navigator.vibrate(200);
                 }, 1300);
             }
 
@@ -356,11 +360,11 @@
             setTimeout(() => { document.getElementById('f-msg2').classList.add('visible'); }, 3500);
             setTimeout(() => { document.getElementById('f-msg3').classList.add('visible'); }, 6000);
 
-            // إظهار زر الواتساب
+            // إظهار زر التلجرام بعد ظهور النصوص
             setTimeout(() => {
-                const waBtn = document.getElementById('wa-btn');
-                waBtn.style.display = 'inline-block';
-                setTimeout(() => { waBtn.style.opacity = 1; }, 100);
+                const tgBtn = document.getElementById('tg-btn');
+                tgBtn.style.display = 'inline-block';
+                setTimeout(() => { tgBtn.style.opacity = 1; }, 100);
             }, 8000);
         }
 
@@ -396,4 +400,4 @@
         window.addEventListener('resize', () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; });
     </script>
 </body>
-</html>
+</html> 
