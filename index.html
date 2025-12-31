@@ -202,11 +202,10 @@
         }
         .close-modal { margin-top: 20px; padding: 8px 20px; background: #333; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
 
-        /* --- تصميم عجلة الحظ (تحديث جديد للكتابة) --- */
+        /* --- تصميم عجلة الحظ (الثابتة مع سهم متحرك) --- */
         .wheel-container {
             position: relative; width: 300px; height: 300px; margin: 0 auto 20px auto;
             border-radius: 50%; border: 5px solid #fff; overflow: hidden;
-            transition: transform 4s cubic-bezier(0.2, 0.8, 0.3, 1); /* دوران سلس */
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
             /* الخلفية الملونة */
             background: conic-gradient(
@@ -218,35 +217,52 @@
             );
         }
 
-        .wheel-arrow {
-            position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
-            width: 0; height: 0; 
-            border-left: 15px solid transparent; border-right: 15px solid transparent;
-            border-top: 30px solid #fff; z-index: 10;
+        /* السهم الذي يدور في المنتصف */
+        .wheel-arrow-spinner {
+            position: absolute; top: 50%; left: 50%; 
+            width: 6px; height: 130px; /* طول السهم */
+            background: #fff; 
+            transform-origin: bottom center; /* الدوران حول المنتصف */
+            transform: translate(-50%, -100%) rotate(0deg); 
+            z-index: 20; border-radius: 5px 5px 0 0;
+            transition: transform 4s cubic-bezier(0.2, 0.8, 0.3, 1);
+        }
+        .wheel-arrow-spinner::after {
+            content: ''; position: absolute; top: -10px; left: -7px;
+            border-left: 10px solid transparent; border-right: 10px solid transparent;
+            border-bottom: 20px solid #fff;
         }
 
-        /* تنسيق الكتابة داخل العجلة لتكون مرتبة */
+        /* نقطة المركز */
+        .center-dot {
+            position: absolute; top: 50%; left: 50%; 
+            width: 20px; height: 20px; background: #FFD700; 
+            border-radius: 50%; transform: translate(-50%, -50%);
+            z-index: 25; border: 2px solid #fff;
+        }
+
+        /* تنسيق الكتابة الثابتة */
         .wheel-label {
-            position: absolute;
-            top: 50%; left: 50%;
-            width: 140px; /* نصف قطر العجلة تقريباً */
-            height: 20px;
-            transform-origin: 0 50%; /* نقطة الارتكاز هي المركز */
-            text-align: right; /* الكتابة تبدأ من المركز لليمين */
-            padding-right: 15px; /* مسافة عن الحافة */
-            box-sizing: border-box;
-            font-size: 0.85rem; font-weight: bold; color: white; 
-            text-shadow: 1px 1px 2px black;
-            margin-top: -10px; /* توسيط عمودي */
-            line-height: 20px;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+        }
+        .lbl-text {
+            position: absolute; top: 50%; left: 50%;
+            transform-origin: 0 0; font-weight: bold; font-size: 0.85rem;
+            text-shadow: 1px 1px 2px #000; width: 120px; text-align: center;
         }
 
-        /* زوايا الكتابة لتناسب الأقسام */
-        .lbl-1 { transform: rotate(42deg); }
-        .lbl-2 { transform: rotate(127deg); }
-        .lbl-3 { transform: rotate(212deg); }
-        .lbl-4 { transform: rotate(297deg); }
-        .lbl-5 { transform: rotate(350deg); font-size: 0.7rem; } /* خط اصغر للقسم الصغير */
+        /* مواقع النصوص لكي تكون "عدلة" قدر الإمكان */
+        /* حساب الزوايا تقريباً لتكون بمنتصف القطاع */
+        .txt-1 { transform: rotate(45deg) translate(50px, -50%) rotate(-45deg); } /* المالديف */
+        .txt-2 { transform: rotate(130deg) translate(60px, -50%) rotate(-130deg); } /* الذهب */
+        .txt-3 { transform: rotate(215deg) translate(60px, -50%) rotate(-215deg); } /* السيارة */
+        .txt-4 { transform: rotate(300deg) translate(60px, -50%) rotate(-300deg); } /* القصر */
+        /* الطفل (المكان الضيق) */
+        .txt-5 { 
+            transform: rotate(350deg) translate(90px, 0) rotate(-350deg); 
+            font-size: 0.65rem; width: 80px; text-align: center;
+        }
 
         /* --- رسالة الجائزة (الهدية) --- */
         #prize-modal-content {
@@ -361,14 +377,17 @@
                 <h3 style="color: #FFD700; margin-bottom: 20px;">عجلة حظ 2026 🎡</h3>
                 <p style="font-size: 0.9rem; color: #ccc; margin-bottom: 10px;">فري العجلة وشوفي هديتج (ان شاء الله سيارة)</p>
                 
-                <div class="wheel-container" id="theWheel">
-                    <div class="wheel-label lbl-1">سفرة للمالديف ✈️</div>
-                    <div class="wheel-label lbl-2">كيلو ذهب 👑</div>
-                    <div class="wheel-label lbl-3">سيارة جكسارة 🚘</div>
-                    <div class="wheel-label lbl-4">قصر بزيونة 🏰</div>
-                    <div class="wheel-label lbl-5">ابني الي راح يطلع عليه 👶</div>
+                <div class="wheel-container">
+                    <div class="wheel-label txt-1">سفرة للمالديف ✈️</div>
+                    <div class="wheel-label txt-2">كيلو ذهب 👑</div>
+                    <div class="wheel-label txt-3">سيارة جكسارة 🚘</div>
+                    <div class="wheel-label txt-4">قصر بزيونة 🏰</div>
+                    <div class="wheel-label txt-5">ابني الي راح يطلع عليه 👶</div>
+                    
+                    <div class="wheel-arrow-spinner" id="arrowSpinner"></div>
+                    <div class="center-dot"></div>
                 </div>
-                <div class="wheel-arrow"></div>
+
                 <button class="start-btn" style="padding: 10px 30px; font-size: 1rem;" onclick="spinTheWheel()">فرّي العجلة 🎲</button>
             </div>
 
@@ -486,24 +505,35 @@
         let attemptsQ2 = 0; 
         let infiniteMode = false; 
         let vibrationInterval;
-        let wheelRotation = 0; // متغير لخزن الدوران الحالي للعجلة (لحل مشكلة الدوران مرة واحدة)
+        let arrowRotation = 0;
+        
+        // متغيرات للتحقق من رؤية الايقونات
+        let seenPrayer = false;
+        let seenWheel = false;
 
         function startExperience() {
             document.getElementById('start-overlay').style.display = 'none';
             playScene1();
         }
 
+        // --- دوال التحكم بالأزرار وظهورها ---
+
         function togglePrayer() {
-            // اخفاء العجلة اذا كانت مفتوحة
+            // تسجيل أن المستخدم رأى الدعاء
+            seenPrayer = true;
+            checkShowMainButton();
+
             document.getElementById('wheelModal').style.display = 'none';
             const modal = document.getElementById('prayerModal');
             modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
         }
 
         function toggleWheel() {
-            // اخفاء الدعاء اذا كان مفتوح
+            // تسجيل أن المستخدم رأى العجلة
+            seenWheel = true;
+            checkShowMainButton();
+
             document.getElementById('prayerModal').style.display = 'none';
-            // إعادة ضبط العجلة لواجهتها الاصلية اذا كانت مفتوحة سابقاً
             document.getElementById('wheel-interface').style.display = 'block';
             document.getElementById('prize-modal-content').style.display = 'none';
 
@@ -511,29 +541,37 @@
             modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
         }
         
+        // التحقق من الشرط لإظهار الزر الرئيسي
+        function checkShowMainButton() {
+            if (seenPrayer && seenWheel) {
+                const waBtn = document.getElementById('wa-btn');
+                if (waBtn.style.display === 'none' || waBtn.style.display === '') {
+                    waBtn.style.display = 'inline-block';
+                    setTimeout(() => { waBtn.style.opacity = 1; }, 500);
+                }
+            }
+        }
+        
         function closeWheelFinal() {
              document.getElementById('wheelModal').style.display = 'none';
         }
 
         function spinTheWheel() {
-            const wheel = document.getElementById('theWheel');
+            const arrow = document.getElementById('arrowSpinner');
+            // الهدف: القسم الأزرق (340-360)
+            // السهم يدور حول المركز. يحتاج يوقف بين 340 و 360 درجة.
+            // 360 * 5 لفات = 1800
+            // نضيف 350 ليوصل للنص
+            arrowRotation += (1800 + 350); 
             
-            // نزيد الدوران الحالي دائماً بقيمة جديدة لضمان الدوران في كل ضغطة
-            // 1800 (5 دورات كاملة) + 10 درجات (لتصل للقسم الأزرق 350)
-            wheelRotation += (1800 + 10); 
+            arrow.style.transform = `translate(-50%, -100%) rotate(${arrowRotation}deg)`;
             
-            wheel.style.transform = `rotate(${wheelRotation}deg)`;
-            
-            // تعطيل الزر أثناء الدوران لمنع التكرار
             const btns = document.querySelectorAll('.start-btn');
             btns.forEach(b => b.disabled = true);
             
             setTimeout(() => {
-                // بعد انتهاء الدوران، نخفي العجلة ونظهر رسالة الفوز داخل نفس النافذة
                 document.getElementById('wheel-interface').style.display = 'none';
                 document.getElementById('prize-modal-content').style.display = 'flex';
-                
-                // إعادة تفعيل الزر للمرات القادمة
                 btns.forEach(b => b.disabled = false);
             }, 4100); 
         }
@@ -603,7 +641,8 @@
                 return;
             } 
             
-            if (val.includes("خرائي")) {
+            // الجواب الجديد: كركمي
+            if (val.includes("كركمي")) {
                 showSuccessAndProceed();
             } else {
                 if (!infiniteMode) {
@@ -736,9 +775,8 @@
             // بعد انتهاء النصوص، يظهر الزر وتنزل السنة
             setTimeout(() => {
                 document.getElementById('year-cont').classList.add('year-move-down');
-                const waBtn = document.getElementById('wa-btn');
-                waBtn.style.display = 'inline-block';
-                setTimeout(() => { waBtn.style.opacity = 1; }, 500);
+                // ملاحظة: الزر هنا لن يظهر، لأننا غيرنا منطقه في checkShowMainButton
+                // لكن سنبقيه هنا مخفياً كاحتياط، وسيعتمد ظهوره على الأزرار العائمة
             }, 8000);
         }
 
