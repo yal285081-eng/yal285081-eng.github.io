@@ -68,7 +68,7 @@
         }
         .flash-visible { opacity: 1; }
 
-        /* --- شاشة قفل الاسم (المشهد الإضافي) --- */
+        /* --- شاشة قفل الاسم --- */
         #password-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.95); z-index: 2000;
@@ -136,10 +136,7 @@
             display: flex; align-items: center; justify-content: center; direction: ltr;
             transition: transform 1.5s ease;
         }
-        /* كلاس لتحريك السنة للأسفل */
-        .year-move-down {
-            transform: translateY(120px); 
-        }
+        .year-move-down { transform: translateY(120px); }
 
         .static-num { text-shadow: 0 0 20px rgba(33, 150, 243, 0.6); color: #E3F2FD; }
         
@@ -177,18 +174,21 @@
             opacity: 0; transition: opacity 1s;
         }
 
-        /* --- زر الدعاء العائم --- */
-        .prayer-float {
-            position: fixed; top: 20px; right: 20px; 
+        /* --- الأزرار العائمة (دعاء + عجلة) --- */
+        .float-btn {
+            position: fixed; top: 20px;
             width: 45px; height: 45px; border-radius: 50%;
             background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255,255,255,0.5);
-            color: #fff; font-size: 1.2rem; display: none; 
+            color: #fff; font-size: 1.5rem; display: none; 
             justify-content: center; align-items: center; cursor: pointer;
             z-index: 2000; opacity: 0; transition: opacity 1s;
         }
-        .prayer-float:hover { background: rgba(255, 255, 255, 0.3); }
+        .float-btn:hover { background: rgba(255, 255, 255, 0.3); }
 
-        /* --- نافذة الدعاء (Modal) --- */
+        #prayerBtn { right: 20px; }
+        #wheelBtn { left: 20px; } /* عجلة الحظ على اليسار */
+
+        /* --- نوافذ Modals --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0, 0, 0, 0.9); z-index: 3000;
@@ -200,6 +200,35 @@
             box-shadow: 0 0 30px rgba(100, 181, 246, 0.2);
         }
         .close-modal { margin-top: 20px; padding: 8px 20px; background: #333; color: #fff; border: none; border-radius: 5px; cursor: pointer; }
+
+        /* --- تصميم عجلة الحظ --- */
+        .wheel-container {
+            position: relative; width: 300px; height: 300px; margin: 0 auto 20px auto;
+            border-radius: 50%; border: 5px solid #fff; overflow: hidden;
+            transition: transform 4s cubic-bezier(0.2, 0.8, 0.3, 1); /* دوران سلس */
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            /* تصميم القطاعات: 4 كبار وواحد صغير جداً */
+            background: conic-gradient(
+                #FF5722 0deg 85deg,   /* سفرة */
+                #FFC107 85deg 170deg, /* ذهب */
+                #4CAF50 170deg 255deg,/* سيارة */
+                #9C27B0 255deg 340deg,/* قصر */
+                #2196F3 340deg 360deg /* الطفل (صغير جداً) */
+            );
+        }
+
+        .wheel-arrow {
+            position: absolute; top: -10px; left: 50%; transform: translateX(-50%);
+            width: 0; height: 0; 
+            border-left: 15px solid transparent; border-right: 15px solid transparent;
+            border-top: 30px solid #fff; z-index: 10;
+        }
+
+        .wheel-label {
+            position: absolute; top: 50%; left: 50%; transform-origin: 0 0;
+            font-size: 0.9rem; font-weight: bold; color: white; text-shadow: 1px 1px 2px black;
+            width: 120px; text-align: right;
+        }
 
         /* --- رسالة المساعدة (Modal) --- */
         #help-modal {
@@ -278,7 +307,9 @@
         <div class="success-text">صلوات على محمد<br>تحتاجين هلهولة 👏👏</div>
     </div>
 
-    <div class="prayer-float" id="prayerBtn" onclick="togglePrayer()">🤲</div>
+    <div class="float-btn" id="prayerBtn" onclick="togglePrayer()">🤲</div>
+    
+    <div class="float-btn" id="wheelBtn" onclick="toggleWheel()">🎡</div>
 
     <div class="modal-overlay" id="prayerModal">
         <div class="modal-content">
@@ -289,6 +320,24 @@
                 واجعلها سنة خير وبركة علينا يا أرحم الراحمين."
             </p>
             <button class="close-modal" onclick="togglePrayer()">آمين</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="wheelModal">
+        <div class="modal-content" style="background: #222; border: 2px solid #FFD700;">
+            <h3 style="color: #FFD700; margin-bottom: 20px;">عجلة حظ 2026 🎡</h3>
+            <p style="font-size: 0.9rem; color: #ccc; margin-bottom: 10px;">فري العجلة وشوفي هديتج (ان شاء الله سيارة)</p>
+            
+            <div class="wheel-container" id="theWheel">
+                <div class="wheel-label" style="transform: rotate(42deg) translate(80px);">سفرة للمالديف ✈️</div>
+                <div class="wheel-label" style="transform: rotate(127deg) translate(80px);">كيلو ذهب 👑</div>
+                <div class="wheel-label" style="transform: rotate(212deg) translate(80px);">سيارة جكسارة 🚘</div>
+                <div class="wheel-label" style="transform: rotate(297deg) translate(80px);">قصر بزيونة 🏰</div>
+                <div class="wheel-label" style="transform: rotate(350deg) translate(90px); font-size: 0.7rem; width: 100px;">ابني الي راح يطلع عليه 👶</div>
+            </div>
+            <div class="wheel-arrow"></div>
+
+            <button class="start-btn" style="padding: 10px 30px; font-size: 1rem;" onclick="spinTheWheel()">فرّي العجلة 🎲</button>
         </div>
     </div>
 
@@ -402,8 +451,36 @@
         }
 
         function togglePrayer() {
+            // اخفاء العجلة اذا كانت مفتوحة
+            document.getElementById('wheelModal').style.display = 'none';
             const modal = document.getElementById('prayerModal');
             modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function toggleWheel() {
+            // اخفاء الدعاء اذا كان مفتوح
+            document.getElementById('prayerModal').style.display = 'none';
+            const modal = document.getElementById('wheelModal');
+            modal.style.display = (modal.style.display === 'flex') ? 'none' : 'flex';
+        }
+
+        function spinTheWheel() {
+            const wheel = document.getElementById('theWheel');
+            // الحساب: 360 * 5 لفات كاملة = 1800
+            // الهدف: القسم الأزرق (340-360). السهم فوق (0).
+            // لكي يصبح القسم 350 عند السهم (0)، نحتاج تدوير العجلة بحيث 350 تصل للصفر.
+            // 360 - 350 = 10 درجات اضافية.
+            // لنقل نريدها تقف في المنتصف (350). الدوران الكلي = 1800 + 10 = 1810.
+            const rotateDeg = 1800 + 10; 
+            
+            wheel.style.transform = `rotate(${rotateDeg}deg)`;
+            
+            // الصوت اثناء الدوران (اختياري، هنا نعتمد على المؤثر البصري)
+            
+            setTimeout(() => {
+                alert("مبروك! ربحتي نسخة مصغرة مني.. استلميها بالولادة ان شاء الله 🤣");
+                toggleWheel(); // اغلاق النافذة
+            }, 4100); // الانتظار لحد ما توقف العجلة (4 ثواني)
         }
 
         function showHelpMessage() {
@@ -434,35 +511,23 @@
             if(vibrationInterval) clearInterval(vibrationInterval);
         }
 
-        // --- وظيفة التحقق الرئيسية ---
         function checkAnswer() {
             const input = document.getElementById('nameInput');
             const errorDiv = document.getElementById('errorMsg');
             let val = input.value.trim();
 
-            // ------------------------------------
-            // الحالة الثانية: سؤال نسبة الحب
-            // ------------------------------------
             if (isQuestion2) {
-                // الجواب الصحيح
                 if (val.includes("ما تنوصف") || val.includes("ماتنوصف") || val.includes("لا توصف")) {
                     showSuccessAndProceed();
                 } else {
-                    // فشل في السؤال الثاني
                     attemptsQ2++;
-                    
                     if (attemptsQ2 == 1) {
-                        // أول خطأ
                         errorDiv.innerText = "يمعوده بعد شسويلج اجي اني بمكانج اجاوب";
                     } else if (attemptsQ2 == 2) {
-                        // ثاني خطأ
                         errorDiv.innerText = "كتبتي قليل لو هواي؟ تره الجواب مو رقم عادي 🌚";
                     } else if (attemptsQ2 >= 3) {
-                        // ثالث خطأ (العودة)
                         errorDiv.innerText = "ايست منج.. ارجعي للسؤال الاول احسن 🤦‍♂️";
-                        setTimeout(() => {
-                            returnToFirstQuestion(); 
-                        }, 2000);
+                        setTimeout(() => { returnToFirstQuestion(); }, 2000);
                         return;
                     }
                     shakeInput(input);
@@ -470,11 +535,6 @@
                 return; 
             }
 
-            // ------------------------------------
-            // الحالة الأولى: سؤال لون اللباس
-            // ------------------------------------
-            
-            // 1. فحص كلمات "بدون ملابس"
             const nakedKeywords = ["لايرتدي", "لا يرتدي", "لايلبس", "لا يلبس", "عريان", "بدون", "ما لابس", "مايلبس", "ماكو لباس", "مالابس"];
             let isNakedGuess = false;
             nakedKeywords.forEach(word => {
@@ -488,11 +548,9 @@
                 return;
             } 
             
-            // 2. الجواب الصحيح
             if (val.includes("خرائي")) {
                 showSuccessAndProceed();
             } else {
-                // 3. جواب خاطئ
                 if (!infiniteMode) {
                     decreaseAttempts();
                     if (attemptsLeft > 1) {
@@ -507,18 +565,14 @@
             }
         }
 
-        // --- دالة النجاح الجديدة ---
         function showSuccessAndProceed() {
-            // إخفاء واجهة الإدخال
             document.getElementById('input-group').style.display = 'none';
             document.getElementById('security-title').style.display = 'none';
             document.getElementById('errorMsg').style.display = 'none';
             
-            // إظهار شاشة الهلهولة
             const successOverlay = document.getElementById('success-overlay');
             successOverlay.style.display = 'flex';
             
-            // الانتظار 3 ثواني ثم الدخول
             setTimeout(() => {
                 successOverlay.style.display = 'none';
                 document.getElementById('password-overlay').style.display = 'none';
@@ -563,10 +617,8 @@
                     clearInterval(countdown);
                     timerEl.style.display = 'none';
                     
-                    // إخفاء الرسائل القديمة
                     document.getElementById('destruct-msg-sub').style.display = 'none';
                     
-                    // إظهار الرسالة الجديدة فقط
                     const mainMsg = document.getElementById('destruct-msg-main');
                     mainMsg.innerText = "جذب يمعودة 🤣 يلا يلا سؤال ثاني هذا";
                     mainMsg.style.color = "#4CAF50";
@@ -582,7 +634,6 @@
             document.getElementById('destruct-screen').style.display = 'none';
             document.getElementById('input-group').style.display = 'flex';
             document.getElementById('security-title').style.display = 'block';
-            
             document.getElementById('attempts-box').style.display = 'none';
             
             document.getElementById('q-text').innerText = "سؤال الفرصة الأخيرة: كم نسبة حبي الج؟";
@@ -602,22 +653,46 @@
             document.getElementById('q-text').innerText = "للدخول إلى 2026.. ماهو لون اللباس الذي يرتديه يوسف اليوم 🤣؟";
             document.getElementById('nameInput').value = "";
             document.getElementById('nameInput').placeholder = "اكتبي الجواب هنا...";
-            
             document.getElementById('attempts-box').style.display = 'none';
-            
             document.getElementById('errorMsg').innerText = "رجعتج لان ما فاد وياج السؤال السهل 😒";
-            
             document.getElementById('helpBtn').style.display = 'inline-block';
         }
 
+        function triggerSurprise() {
+            document.getElementById('update-footer').style.display = 'none';
+            document.getElementById('morphBox').classList.add('morph-active');
+            
+            audioBaby.play().catch(e => console.log("تفاعل مطلوب"));
+            
+            // اظهار الازرار العائمة
+            const prayerBtn = document.getElementById('prayerBtn');
+            const wheelBtn = document.getElementById('wheelBtn');
+            prayerBtn.style.display = 'flex';
+            wheelBtn.style.display = 'flex';
+            setTimeout(() => { prayerBtn.style.opacity = 1; wheelBtn.style.opacity = 1; }, 500);
 
+            // إظهار النصوص
+            const finalDiv = document.getElementById('final-texts');
+            finalDiv.style.display = 'block';
+            setTimeout(() => { document.getElementById('f-msg1').classList.add('visible'); }, 1500);
+            setTimeout(() => { document.getElementById('f-msg2').classList.add('visible'); }, 3500);
+            setTimeout(() => { document.getElementById('f-msg3').classList.add('visible'); }, 6000);
+
+            // بعد انتهاء النصوص، يظهر الزر وتنزل السنة
+            setTimeout(() => {
+                document.getElementById('year-cont').classList.add('year-move-down');
+                const waBtn = document.getElementById('wa-btn');
+                waBtn.style.display = 'inline-block';
+                setTimeout(() => { waBtn.style.opacity = 1; }, 500);
+            }, 8000);
+        }
+
+        // ... دوال المشاهد والصوت والألعاب النارية (نفس السابق) ...
         function playScene1() {
             stopAllSounds();
             const scene1 = document.getElementById('scene1');
             scene1.style.display = 'block';
-            
             audioScene1.play().catch(e => console.log("تفاعل مطلوب"));
-
             setTimeout(() => { document.getElementById('s1-line1').classList.add('visible'); }, 500); 
             setTimeout(() => { document.getElementById('s1-line-update').classList.add('visible'); }, 3000); 
             setTimeout(() => { document.getElementById('s1-line2').classList.add('visible'); }, 6000); 
@@ -625,14 +700,12 @@
                 document.getElementById('s1-line3').classList.add('visible'); 
                 document.getElementById('s1-loader').style.opacity = 0; 
             }, 9000);
-
             setTimeout(() => {
                 scene1.style.opacity = 0;
                 let fade = setInterval(() => {
                     if(audioScene1.volume > 0.05) audioScene1.volume -= 0.05;
                     else { clearInterval(fade); stopSound(audioScene1); }
                 }, 200);
-
                 setTimeout(() => { scene1.style.display = 'none'; playScene2(); }, 1000);
             }, 12000);
         }
@@ -641,23 +714,17 @@
             const scene2 = document.getElementById('scene2');
             scene2.style.display = 'block';
             document.body.style.backgroundColor = "#100000";
-
             audioHeart.volume = 0.4; 
             audioHeart.play().catch(e => console.log("تفاعل مطلوب"));
-
             if (navigator.vibrate) {
                  navigator.vibrate(200);
-                 vibrationInterval = setInterval(() => {
-                    navigator.vibrate(200);
-                }, 1300);
+                 vibrationInterval = setInterval(() => { navigator.vibrate(200); }, 1300);
             }
-
             let width = 0;
             const bar = document.getElementById('p-bar');
             const counter = document.getElementById('p-counter');
             const wordsBox = document.getElementById('love-words');
             let wordIndex = 0;
-            
             let wordInterval = setInterval(() => {
                 wordsBox.classList.remove('flash-visible'); 
                 setTimeout(() => {
@@ -668,7 +735,6 @@
                     }
                 }, 300); 
             }, 800);
-
             let interval = setInterval(() => {
                 width += Math.random() * 1.5; 
                 if(width >= 100) {
@@ -676,14 +742,12 @@
                     clearInterval(interval);
                     clearInterval(wordInterval); 
                     wordsBox.innerText = ""; 
-                    
                     setTimeout(() => {
                         scene2.style.opacity = 0;
                         setTimeout(() => { 
                             scene2.style.display = 'none'; 
-                            // بدلاً من الذهاب للمشهد 3، نذهب للبوابة
                             document.getElementById('password-overlay').style.display = 'flex';
-                            stopAllSounds(); // إيقاف صوت القلب
+                            stopAllSounds(); 
                         }, 1000);
                     }, 1000);
                 }
@@ -694,27 +758,19 @@
 
         function playScene3() {
             stopAllSounds(); 
-
             const scene3 = document.getElementById('scene3');
             scene3.style.display = 'block';
             document.body.style.backgroundColor = "#000"; 
-            
             loopFireworks(); 
             document.getElementById('update-footer').style.display = 'flex';
-
             audioTyping.play().catch(e => console.log("تفاعل مطلوب"));
-
             typeWriterEffect(letterToRuqaya, function() {
                 stopSound(audioTyping);
-
                 setTimeout(() => {
                     const container = document.getElementById('typing-container');
                     container.style.transition = "opacity 2s";
                     container.style.opacity = 0;
-
-                    setTimeout(() => {
-                        triggerSurprise();
-                    }, 2000);
+                    setTimeout(() => { triggerSurprise(); }, 2000);
                 }, 8000); 
             });
         }
@@ -728,42 +784,9 @@
                     container.innerHTML = text.substring(0, i + 1) + '<span class="cursor">|</span>';
                     i++;
                     setTimeout(typing, 60); 
-                } else {
-                    if (callback) callback();
-                }
+                } else { if (callback) callback(); }
             }
             typing();
-        }
-
-        function triggerSurprise() {
-            document.getElementById('update-footer').style.display = 'none';
-            document.getElementById('morphBox').classList.add('morph-active');
-            
-            audioBaby.play().catch(e => console.log("تفاعل مطلوب"));
-            
-            // إظهار زر الدعاء
-            const prayerBtn = document.getElementById('prayerBtn');
-            prayerBtn.style.display = 'flex';
-            setTimeout(() => { prayerBtn.style.opacity = 1; }, 500);
-
-            // إظهار النصوص
-            const finalDiv = document.getElementById('final-texts');
-            finalDiv.style.display = 'block';
-            setTimeout(() => { document.getElementById('f-msg1').classList.add('visible'); }, 1500);
-            setTimeout(() => { document.getElementById('f-msg2').classList.add('visible'); }, 3500);
-            setTimeout(() => { document.getElementById('f-msg3').classList.add('visible'); }, 6000);
-
-            // بعد انتهاء النصوص، يظهر الزر وتنزل السنة
-            setTimeout(() => {
-                // إنزال السنة للأسفل
-                document.getElementById('year-cont').classList.add('year-move-down');
-
-                // إظهار زر الواتساب
-                const waBtn = document.getElementById('wa-btn');
-                waBtn.style.display = 'inline-block';
-                setTimeout(() => { waBtn.style.opacity = 1; }, 500);
-
-            }, 8000);
         }
 
         const canvas = document.getElementById('fireworksCanvas');
